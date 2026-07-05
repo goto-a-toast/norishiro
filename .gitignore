@@ -1,6 +1,10 @@
 # ダウンロードしたGTFSデータ(スクリプトで再取得できる)
 gtfs_*/
 
+# 交通空白マップのダウンロードデータ・生成物(docs/plan_gap_map.md 参照)
+data/
+output/
+
 # 生成物(スクリプトで再生成できる)
 timetable_*.pdf
 timetable_*.html
