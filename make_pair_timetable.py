@@ -25,6 +25,7 @@ import argparse
 import io
 import re
 import subprocess
+import unicodedata
 import zipfile
 from datetime import datetime
 from pathlib import Path
@@ -275,28 +276,34 @@ def build_pairs(stop_times, trips, service_ids, board_ids, alight_ids):
     循環線では同じバス停を1つの便が2回通ることがあるため、
     「乗車の並び順 < 降車の並び順」の組み合わせのうち
     いちばん停留所数が少ないもの(=すぐ着く乗り方)を採用する。
+
+    戻り値には実際に使われた乗車stop_id(のりば)の集合も含める。
+    同じバス停名でものりば(stop_id)が複数あるフィードで、
+    「実際に使われているのりば」を後から特定するために使う。
     """
     use_trips = trips[trips["service_id"].isin(service_ids)]
     st = stop_times[stop_times["stop_id"].isin(board_ids | alight_ids)].copy()
     st = st.merge(use_trips[["trip_id", "route_id"]], on="trip_id")
     st["stop_sequence"] = st["stop_sequence"].astype(int)
 
-    pairs, route_ids = [], set()
+    pairs, route_ids, used_board_ids = [], set(), set()
     for _, g in st.groupby("trip_id"):
         boards  = g[g["stop_id"].isin(board_ids)]
         alights = g[g["stop_id"].isin(alight_ids)]
         candidates = [
             (b["departure_time"], a["arrival_time"],
-             a["stop_sequence"] - b["stop_sequence"], b["route_id"])
+             a["stop_sequence"] - b["stop_sequence"], b["route_id"], b["stop_id"])
             for _, b in boards.iterrows()
             for _, a in alights.iterrows()
             if b["stop_sequence"] < a["stop_sequence"]
         ]
         if candidates:
-            dep, arr, _, rid = min(candidates, key=lambda c: c[2])
+            dep, arr, _, rid, bsid = min(candidates, key=lambda c: c[2])
             pairs.append({"dep": dep, "arr": arr})
             route_ids.add(rid)
-    return sorted(pairs, key=lambda p: to_minutes(p["dep"])), route_ids
+            used_board_ids.add(bsid)
+    return (sorted(pairs, key=lambda p: to_minutes(p["dep"])),
+            route_ids, used_board_ids)
 
 
 def ride_minutes(pairs: list[dict]) -> int:
@@ -305,26 +312,74 @@ def ride_minutes(pairs: list[dict]) -> int:
     return round(total / len(pairs))
 
 
+def boarding_platform_label(stops: pd.DataFrame, used_board_ids: set) -> str | None:
+    """実際に使われた乗車stop_id(のりば)から「◯番のりば」の表示文字列を作る。
+
+    のりばが複数stop_idに分かれていても、この区間で実際に使う便が
+    全て同じplatform_codeなら「3番のりば」のように断定して表示できる。
+    のりばが複数に割れている/platform_code列が無い/情報が無い場合は
+    誤表示を避けるため None を返す(=表示しない)"""
+    if not used_board_ids or "platform_code" not in stops.columns:
+        return None
+    used = stops[stops["stop_id"].isin(used_board_ids)]
+    codes = used["platform_code"]
+    if codes.isna().any():
+        return None
+    uniq = codes.unique()
+    if len(uniq) != 1:
+        return None
+    code = unicodedata.normalize("NFKC", uniq[0])
+    return f"{code}番のりば" if re.fullmatch(r"\d+", code) else code
+
+
+def format_route_line(route_names: list[str]) -> str:
+    """路線名のリストから、系統番号ヘッダーの表示文字列を作る。
+
+    「Ｄ５５・Ｃ４」のような英数字の系統コードは全角→半角に統一し、
+    「・」で区切られた個々のコードを取り出して重複なく並べ、
+    「つぎの番号のバスに のってください: N52 / C2」のように
+    役割つきで表示する(初見でも意味が分かるように)。
+    系統コードらしくない(路線名がそのまま入っている)場合は、
+    従来どおりの路線名表示にフォールバックする"""
+    codes = []
+    for name in route_names:
+        name = unicodedata.normalize("NFKC", name)
+        for part in name.split("・"):
+            part = part.strip()
+            if part and part not in codes:
+                codes.append(part)
+    if codes and all(re.fullmatch(r"[A-Za-z0-9]{1,4}", c) for c in codes):
+        shown = codes[:6]
+        suffix = " ほか" if len(codes) > 6 else ""
+        return "つぎの番号のバスに のってください: " + " / ".join(shown) + suffix
+    suffix = " ほか" if len(codes) > 3 else ""
+    return "、".join(codes[:3]) + suffix
+
+
 # ===============================================================
 # HTMLの組み立て
 # ===============================================================
 def clock_text(hhmmss: str) -> tuple[str, str]:
     """'13:20:00' → ('ごご', '1:20') のように、段のラベルと12時間表記に変換する。
     11:00〜12:59は「ごぜん11時」「ごご0時」の言い方で迷いやすい時間帯なので、
-    独立した「ひる」の段にして 11:20 / 12:00 とそのまま表示する"""
+    独立した「ひる」の段にして 11:20 / 12:00 とそのまま表示する。
+    18:00以降は「ごご7:20」のように2桁目が消えて「ごぜん7:22」と
+    読み間違えやすいため、独立した「よる」の段にする"""
     h, m = hhmmss.split(":")[:2]
     h = int(h) % 24  # GTFSでは深夜便が「25:10」等になることがあるので24で割った余りに
     if h < 11:
         return "ごぜん", f"{h}:{m}"
     if h < 13:
         return "ひる", f"{h}:{m}"
-    return "ごご", f"{h - 12}:{m}"
+    if h < 18:
+        return "ごご", f"{h - 12}:{m}"
+    return "よる", f"{h - 12}:{m}"
 
 
 def count_rows(pairs: list[dict], per_row: int) -> int:
     """時刻セルが「1行に per_row 個」入るとき、全体で何行になるかを数える。
-    ごぜん/ひる/ごごの段ごとに切り上げで行数が決まる"""
-    counts = {"ごぜん": 0, "ひる": 0, "ごご": 0}
+    ごぜん/ひる/ごご/よるの段ごとに切り上げで行数が決まる"""
+    counts = {"ごぜん": 0, "ひる": 0, "ごご": 0, "よる": 0}
     for p in pairs:
         ampm, _ = clock_text(p["dep"])
         counts[ampm] += 1
@@ -339,8 +394,8 @@ def is_dense(out_pairs: list[dict], in_pairs: list[dict]) -> bool:
 
 
 def time_rows(pairs: list[dict]) -> str:
-    """時刻ペアを「ごぜん」「ひる」「ごご」の段の行に変換する"""
-    groups: dict[str, list[str]] = {"ごぜん": [], "ひる": [], "ごご": []}
+    """時刻ペアを「ごぜん」「ひる」「ごご」「よる」の段の行に変換する"""
+    groups: dict[str, list[str]] = {"ごぜん": [], "ひる": [], "ごご": [], "よる": []}
     for p in pairs:
         ampm, text = clock_text(p["dep"])
         groups[ampm].append(text)
@@ -363,34 +418,63 @@ def time_rows(pairs: list[dict]) -> str:
 
 
 def direction_block(css_class: str, label: str, board: str, alight: str,
-                    pairs: list[dict], dense: bool) -> str:
+                    pairs: list[dict], dense: bool,
+                    board_platform: str | None) -> str:
     """「行き」または「帰り」のブロック1つ分のHTMLを作る"""
     if not pairs:
         return ""
     dense_class = " dense" if dense else ""
+    platform_html = (f'<span class="platform-badge">{board_platform}</span>'
+                      if board_platform else "")
     return f"""
     <section class="direction-block {css_class}{dense_class}">
       <div class="direction-header">
         <span class="direction-label">{label}</span>
         <span class="stops-line">
-          <span class="stop-label">のる</span>{board}
+          <span class="stop-label">のる</span>{board}{platform_html}
           →
           <span class="stop-label">おりる</span>{alight}
         </span>
-        <span class="ride-time">乗車約{ride_minutes(pairs)}分</span>
       </div>
+      <div class="ride-time">乗車約{ride_minutes(pairs)}分</div>
       {time_rows(pairs)}
     </section>"""
 
 
+def circled_number(n: int) -> str:
+    """1→①、2→②…の丸数字。20を超えたら「(21)」のような表記にフォールバックする"""
+    return chr(0x2460 + n - 1) if 1 <= n <= 20 else f"({n})"
+
+
+def page_footer_html(page_labels: list[str], current_index: int) -> str:
+    """複数ダイヤ(複数ページ)のとき、下部に
+    「① 平日 / ② 土曜 / ③ 日曜・祝日 (全3枚)」のように
+    今見ているページと全体構成を表示する。1ページのみのとき(毎日運行)は表示しない。
+    今のページ番号は他より強調して分かるようにする"""
+    if len(page_labels) <= 1:
+        return ""
+    items = []
+    for i, label in enumerate(page_labels, start=1):
+        text = f"{circled_number(i)} {label}"
+        if i == current_index:
+            text = f'<span class="page-current">{text}</span>'
+        items.append(text)
+    return (f'<div class="page-footer">' + " / ".join(items)
+            + f" (全{len(page_labels)}枚)</div>")
+
+
 def render_page(service_label, stop_a, stop_b, out_pairs, in_pairs,
-                route_text, notes, validity_text) -> str:
+                route_text, notes, validity_text,
+                board_platform_out=None, board_platform_in=None,
+                page_labels=None, page_index=None) -> str:
     """ダイヤ1種類分(=1ページ)のHTMLを作る"""
     badge = "毎日運行" if service_label == "毎日" else f"{service_label}ダイヤ"
     # 行数が多いページは自動で小さめのセルに切り替える(1ページに収めるため)
     dense = is_dense(out_pairs, in_pairs)
     notes_html = "".join(f"<li>{n}</li>" for n in notes)
     notes_block = f'<ul class="notes">{notes_html}</ul>' if notes else ""
+    footer_html = (page_footer_html(page_labels, page_index)
+                   if page_labels is not None else "")
     return f"""
   <div class="page">
     <header>
@@ -398,13 +482,14 @@ def render_page(service_label, stop_a, stop_b, out_pairs, in_pairs,
       <div class="pair">{stop_a} ⇔ {stop_b}</div>
       <div class="route-name">{route_text}</div>
     </header>
-    {direction_block("outbound", "行き", stop_a, stop_b, out_pairs, dense)}
-    {direction_block("return", "帰り", stop_b, stop_a, in_pairs, dense)}
+    {direction_block("outbound", "行き", stop_a, stop_b, out_pairs, dense, board_platform_out)}
+    {direction_block("return", "帰り", stop_b, stop_a, in_pairs, dense, board_platform_in)}
     {notes_block}
     <p class="validity-note">{validity_text}</p>
     <div class="reserve-space">
       (予備スペース: QRコード・デマンド交通の電話番号を後で配置)
     </div>
+    {footer_html}
   </div>"""
 
 
@@ -435,6 +520,19 @@ def main():
     stop_a, ids_a = find_stop(stops, args.board)
     stop_b, ids_b = find_stop(stops, args.alight)
     print(f"乗車: {stop_a}({len(ids_a)}のりば) / 降車: {stop_b}({len(ids_b)}のりば)")
+    for name, ids in [(stop_a, ids_a), (stop_b, ids_b)]:
+        if len(ids) <= 1:
+            continue
+        if "platform_code" not in stops.columns or stops["platform_code"].dropna().empty:
+            print(f"  ※「{name}」は{len(ids)}か所のstop_idがありますが、"
+                  "このフィードにはのりば情報(platform_code)が無いため、"
+                  "紙面での「◯番のりば」表示はできません")
+        else:
+            codes = stops.loc[stops["stop_id"].isin(ids), "platform_code"]
+            print(f"  「{name}」は{len(ids)}か所ののりばに分かれています"
+                  f"(platform_code: {sorted(codes.dropna().unique().tolist())}"
+                  + (f"、うち{codes.isna().sum()}件は情報なし" if codes.isna().any() else "")
+                  + ") → 実際に使う便から自動判定します")
 
     if calendar is None or calendar.empty:
         raise SystemExit("calendar.txt が無いフィードにはまだ対応していません")
@@ -452,27 +550,46 @@ def main():
         end_raw   = calendar["end_date"].max()
     validity_text = f"{fmt_date(start_raw)}現在のダイヤ / 有効期限 {fmt_date(end_raw)}"
 
-    # ダイヤ(曜日パターン)ごとに1ページずつ作る
-    pages = []
+    # ダイヤ(曜日パターン)ごとに1ページ分のデータを集める。
+    # ページ番号表示(①②③…)には全体のページ数とラベルが要るので、
+    # 先に全ページ分のデータを集めてから最後にまとめてレンダリングする
+    page_data = []
     all_route_ids = set()
     for g in groups:
-        out_pairs, rids1 = build_pairs(stop_times, trips, g["service_ids"], ids_a, ids_b)
-        in_pairs,  rids2 = build_pairs(stop_times, trips, g["service_ids"], ids_b, ids_a)
+        out_pairs, rids1, board_out = build_pairs(stop_times, trips, g["service_ids"], ids_a, ids_b)
+        in_pairs,  rids2, board_in  = build_pairs(stop_times, trips, g["service_ids"], ids_b, ids_a)
         if not out_pairs and not in_pairs:
             continue
         all_route_ids |= rids1 | rids2
         route_names = routes[routes["route_id"].isin(rids1 | rids2)]
         name_col = route_names["route_long_name"].fillna(route_names["route_short_name"])
         uniq = list(dict.fromkeys(name_col))       # 順序を保って重複を除く
-        route_text = "、".join(uniq[:3]) + (" ほか" if len(uniq) > 3 else "")
-        print(f"  [{g['label']}] 行き{len(out_pairs)}本 / 帰り{len(in_pairs)}本"
+        route_text = format_route_line(uniq)
+        platform_out = boarding_platform_label(stops, board_out)
+        platform_in  = boarding_platform_label(stops, board_in)
+        print(f"  [{g['label']}] 行き{len(out_pairs)}本"
+              + (f"({platform_out}発)" if platform_out else "")
+              + f" / 帰り{len(in_pairs)}本"
+              + (f"({platform_in}発)" if platform_in else "")
               + (" (行数が多いため縮小表示)" if is_dense(out_pairs, in_pairs) else ""))
-        pages.append(render_page(g["label"], stop_a, stop_b, out_pairs, in_pairs,
-                                 route_text, notes, validity_text))
+        page_data.append({
+            "label": g["label"], "out_pairs": out_pairs, "in_pairs": in_pairs,
+            "route_text": route_text,
+            "platform_out": platform_out, "platform_in": platform_in,
+        })
 
-    if not pages:
+    if not page_data:
         raise SystemExit(f"「{stop_a}」から「{stop_b}」へ直通する便が見つかりません。"
                          "別のバス停の組み合わせを試してください")
+
+    page_labels = [d["label"] for d in page_data]
+    pages = [
+        render_page(d["label"], stop_a, stop_b, d["out_pairs"], d["in_pairs"],
+                    d["route_text"], notes, validity_text,
+                    d["platform_out"], d["platform_in"],
+                    page_labels, i)
+        for i, d in enumerate(page_data, start=1)
+    ]
 
     html = f"""<!DOCTYPE html>
 <html lang="ja">

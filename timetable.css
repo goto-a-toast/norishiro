@@ -31,18 +31,20 @@
   --size-note:         10pt;      /* 欄外の注記(ダイヤ日付など) */
 
   /* ---- 余白・間隔 ---- */
-  --space-block-gap:   6mm;       /* 「行き」と「帰り」ブロックの間 */
-  --space-block-pad:   4mm;       /* ブロック内側の余白 */
-  --space-cell-gap:    2mm;       /* 時刻セル同士のすき間 */
+  --space-block-gap:   3mm;       /* 「行き」と「帰り」ブロックの間 */
+  --space-block-pad:   3mm;       /* ブロック内側の余白 */
+  --space-cell-gap:    1.5mm;     /* 時刻セル同士のすき間 */
   --cell-width:        37mm;      /* 時刻セルの幅(枠線込みで4個/行に収まる値) */
   --ampm-width:        14.5mm;    /* 「ごぜん」「ひる」「ごご」ラベルの幅 */
-  --reserve-height:    38mm;      /* 最下部の予備スペースの高さ */
+  /* 「よる」の段が増えて縦に長くなった分、予備スペースを詰めて確保している。
+     QRコード等を後で置く際はここを広げ、必要なら --space-block-pad 等を見直すこと */
+  --reserve-height:    7mm;       /* 最下部の予備スペースの高さ */
 }
 
 /* A4縦。ページの外周余白はここで指定 */
 @page {
   size: A4 portrait;
-  margin: 12mm 12mm 10mm 12mm;
+  margin: 10mm 12mm 8mm 12mm;
 }
 
 /* ダウンロードした BIZ UDPゴシック を埋め込む */
@@ -80,7 +82,7 @@ header { text-align: center; }
 
 h1 {
   font-size: var(--size-title);
-  margin: 0 0 2mm 0;
+  margin: 0 0 1.5mm 0;
   letter-spacing: 0.05em;
 }
 
@@ -120,7 +122,7 @@ h1 {
 .direction-header {
   display: flex;
   align-items: center;
-  margin-bottom: 2.5mm;
+  margin-bottom: 1.5mm;
 }
 
 .direction-label {
@@ -135,7 +137,11 @@ h1 {
 .outbound .direction-label { background: var(--color-outbound); }
 .return   .direction-label { background: var(--color-return); }
 
-.stops-line { font-size: var(--size-stop-name); font-weight: bold; }
+.stops-line {
+  font-size: var(--size-stop-name);
+  font-weight: bold;
+  white-space: nowrap;   /* バス停名が単語の途中で折り返されるのを防ぐ */
+}
 .stops-line .stop-label {
   font-size: var(--size-stop-label);
   font-weight: normal;
@@ -146,14 +152,28 @@ h1 {
   margin: 0 1.5mm;
 }
 
-/* 「乗車約○分」の表示(ヘッダー右端に寄せる) */
+/* バス停名の直後に付く「◯番のりば」表示 */
+.platform-badge {
+  font-size: var(--size-stop-label);
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-text);
+  border-radius: 1.5mm;
+  padding: 0.5mm 2mm;
+  margin-left: 1.5mm;
+  white-space: nowrap;
+}
+
+/* 「乗車約○分」の表示。バス停名が長くのりば表示も付く行があるため、
+   ヘッダー内には同居させず、右寄せの専用行として独立させている */
 .ride-time {
   font-size: var(--size-stop-label);
   background: #ffffff;
   border: 0.3mm solid var(--color-border);
   border-radius: 1.5mm;
   padding: 0.5mm 2.5mm;
-  margin-left: auto;
+  margin: 0 0 1.5mm auto;
+  width: fit-content;
   white-space: nowrap;   /* 「乗車約2分」を1行に保つ */
 }
 
@@ -228,4 +248,20 @@ h1 {
   justify-content: center;
   color: #aaaaaa;
   font-size: var(--size-note);
+}
+
+/* 複数ダイヤ(複数ページ)のとき、今見ているページと全体構成を示す欄外表示 */
+.page-footer {
+  font-size: var(--size-note);
+  text-align: center;
+  margin-top: 1mm;
+  color: #555555;
+}
+.page-footer .page-current {
+  font-weight: bold;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 0.4mm solid var(--color-border);
+  border-radius: 1.5mm;
+  padding: 0.3mm 1.5mm;
 }
