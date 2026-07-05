@@ -1,0 +1,231 @@
+/* =====================================================================
+   大活字・往復ペア時刻表のデザイン設定
+   -------------------------------------------------------------------
+   色・文字サイズ・余白は下の :root の変数にまとめてあります。
+   ここの数字を変えるだけで紙面全体のデザインを調整できます。
+   ===================================================================== */
+
+:root {
+  /* ---- 色 ---- */
+  --color-text:        #1a1a1a;   /* 基本の文字色(真っ黒より少し柔らかい) */
+  --color-outbound:    #00518e;   /* 「行き」ブロックのテーマ色(濃い青) */
+  --color-return:      #a83200;   /* 「帰り」ブロックのテーマ色(濃い橙) */
+  /* 白黒コピー対策: 色だけでなく「背景の濃さ」でも行き/帰りを区別する。
+     行き=ほぼ白の薄い青、帰り=グレーに落としてもはっきり濃く見える橙系 */
+  --bg-outbound:       #eff5fb;   /* 「行き」ブロックの背景(うすい) */
+  --bg-return:         #f0d9c2;   /* 「帰り」ブロックの背景(濃いめ) */
+  --color-time-bg:     #ffffff;   /* 時刻セルの背景色 */
+  --color-border:      #444444;   /* 枠線の色 */
+
+  /* ---- 文字サイズ ---- */
+  --size-title:        24pt;      /* 一番上のタイトル */
+  --size-pair:         17pt;      /* 「○○ ⇔ ○○」の区間表示 */
+  --size-direction:    20pt;      /* 「行き」「帰り」の見出し */
+  --size-stop-label:   12pt;      /* 「のる」「おりる」のラベル */
+  --size-stop-name:    14pt;      /* バス停名 */
+  /* 時刻のサイズはセル幅との組で決まっている。BIZ UDPゴシックの数字は1桁0.76emで、
+     最長の「12:00」が約3.1em。32pt(≒11.3mm)×3.1em≒35mm が --cell-width に
+     収まるように調整済み。大きくしたい場合は --cell-width とセットで変えること */
+  --size-time:         32pt;      /* ★時刻の数字(28pt以上を維持すること) */
+  --size-ampm:         12pt;      /* 「ごぜん」「ひる」「ごご」のラベル */
+  --size-note:         10pt;      /* 欄外の注記(ダイヤ日付など) */
+
+  /* ---- 余白・間隔 ---- */
+  --space-block-gap:   6mm;       /* 「行き」と「帰り」ブロックの間 */
+  --space-block-pad:   4mm;       /* ブロック内側の余白 */
+  --space-cell-gap:    2mm;       /* 時刻セル同士のすき間 */
+  --cell-width:        37mm;      /* 時刻セルの幅(枠線込みで4個/行に収まる値) */
+  --ampm-width:        14.5mm;    /* 「ごぜん」「ひる」「ごご」ラベルの幅 */
+  --reserve-height:    38mm;      /* 最下部の予備スペースの高さ */
+}
+
+/* A4縦。ページの外周余白はここで指定 */
+@page {
+  size: A4 portrait;
+  margin: 12mm 12mm 10mm 12mm;
+}
+
+/* ダウンロードした BIZ UDPゴシック を埋め込む */
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold;
+}
+
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* ダイヤ(平日/土曜/日祝)ごとに1ページずつ改ページする */
+.page:not(:last-child) {
+  page-break-after: always;
+}
+
+/* 便数が多いページ用の縮小表示。CSS変数を上書きするだけで全体が縮む */
+.direction-block.dense {
+  --size-time:  24pt;
+  --cell-width: 28.5mm;   /* 5個/行になる幅 */
+  --size-ampm:  11pt;
+}
+
+/* ---------------- ヘッダー ---------------- */
+header { text-align: center; }
+
+h1 {
+  font-size: var(--size-title);
+  margin: 0 0 2mm 0;
+  letter-spacing: 0.05em;
+}
+
+/* タイトル横の「毎日運行」などのバッジ(calendar.txtから自動判定) */
+.service-days {
+  font-size: var(--size-pair);
+  background: var(--color-text);
+  color: #ffffff;
+  border-radius: 2mm;
+  padding: 1mm 4mm;
+  vertical-align: middle;
+}
+
+.pair {
+  font-size: var(--size-pair);
+  font-weight: bold;
+  margin-bottom: 1mm;
+}
+
+.route-name {
+  font-size: var(--size-note);
+  margin-bottom: 3mm;
+}
+
+/* ---------------- 方向ブロック(行き/帰り) ---------------- */
+.direction-block {
+  border: 1.2mm solid var(--color-border);
+  border-radius: 3mm;
+  padding: var(--space-block-pad);
+  margin-bottom: var(--space-block-gap);
+}
+
+/* 色+背景の濃淡の両方で方向を区別する(白黒コピー対策) */
+.direction-block.outbound { border-color: var(--color-outbound); background: var(--bg-outbound); }
+.direction-block.return   { border-color: var(--color-return);   background: var(--bg-return); }
+
+.direction-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5mm;
+}
+
+.direction-label {
+  font-size: var(--size-direction);
+  font-weight: bold;
+  color: #ffffff;
+  padding: 1mm 6mm;
+  border-radius: 2mm;
+  margin-right: 4mm;
+  white-space: nowrap;   /* 「行き」が縦に折り返されるのを防ぐ */
+}
+.outbound .direction-label { background: var(--color-outbound); }
+.return   .direction-label { background: var(--color-return); }
+
+.stops-line { font-size: var(--size-stop-name); font-weight: bold; }
+.stops-line .stop-label {
+  font-size: var(--size-stop-label);
+  font-weight: normal;
+  background: #ffffff;
+  border: 0.3mm solid var(--color-border);
+  border-radius: 1.5mm;
+  padding: 0.5mm 2mm;
+  margin: 0 1.5mm;
+}
+
+/* 「乗車約○分」の表示(ヘッダー右端に寄せる) */
+.ride-time {
+  font-size: var(--size-stop-label);
+  background: #ffffff;
+  border: 0.3mm solid var(--color-border);
+  border-radius: 1.5mm;
+  padding: 0.5mm 2.5mm;
+  margin-left: auto;
+  white-space: nowrap;   /* 「乗車約2分」を1行に保つ */
+}
+
+/* ---------------- 時刻の並び(ごぜん/ごごの2段) ---------------- */
+.time-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: var(--space-cell-gap);
+}
+
+.ampm-label {
+  width: var(--ampm-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--size-ampm);
+  font-weight: bold;
+  background: #ffffff;
+  border: 0.4mm solid var(--color-border);
+  border-radius: 2mm;
+  margin-right: var(--space-cell-gap);
+  white-space: nowrap;   /* 「ごぜん」が縦に折り返されるのを防ぐ */
+}
+
+.times {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-cell-gap);
+}
+
+.time-cell {
+  background: var(--color-time-bg);
+  border: 0.5mm solid var(--color-border);
+  border-radius: 2mm;
+  width: var(--cell-width);
+  text-align: center;
+  padding: 1mm 0;
+}
+
+.time-dep {
+  font-size: var(--size-time);
+  font-weight: bold;
+  line-height: 1.1;
+  letter-spacing: -0.03em;  /* 「10:20」等の5桁がセル内に余裕をもって収まるよう少し詰める */
+}
+.outbound .time-dep { color: var(--color-outbound); }
+.return   .time-dep { color: var(--color-return); }
+
+/* ---------------- 欄外注記・予備スペース ---------------- */
+/* calendar_dates.txt から自動生成した注記(祝日ダイヤ・運休日など) */
+.notes {
+  font-size: var(--size-stop-label);
+  font-weight: bold;
+  margin: 0 0 1mm 0;
+  padding-left: 6mm;
+}
+.notes li { margin-bottom: 0.5mm; }
+
+.validity-note {
+  font-size: var(--size-note);
+  text-align: right;
+  margin: 0 0 2mm 0;
+}
+
+.reserve-space {
+  height: var(--reserve-height);
+  border: 0.5mm dashed #999999;
+  border-radius: 2mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaaaaa;
+  font-size: var(--size-note);
+}

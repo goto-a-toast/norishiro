@@ -1,0 +1,17 @@
+# ダウンロードしたGTFSデータ(スクリプトで再取得できる)
+gtfs_*/
+
+# 生成物(スクリプトで再生成できる)
+timetable_*.pdf
+timetable_*.html
+
+# macOSが勝手に作るファイル(外付けSSD上の「._〜」も含む)
+.DS_Store
+._*
+
+# Pythonのキャッシュ
+__pycache__/
+*.pyc
+
+# Claude Codeのローカル設定
+.claude/
