@@ -1,0 +1,1959 @@
+{
+ "district": "d11",
+ "to": {
+  "f01": {
+   "unreachable": true
+  },
+  "f03": {
+   "unreachable": true
+  },
+  "f05": {
+   "unreachable": true
+  },
+  "f06": {
+   "unreachable": true
+  },
+  "f07": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 53,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:28",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:28",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 53,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:28",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:28",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:58",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:58",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:43",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "18:03",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 43,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "18:03",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "町営バス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f08": {
+   "unreachable": true
+  },
+  "f09": {
+   "unreachable": true
+  },
+  "f10": {
+   "unreachable": true
+  },
+  "f11": {
+   "unreachable": true
+  },
+  "f12": {
+   "unreachable": true
+  },
+  "f13": {
+   "unreachable": true
+  },
+  "f14": {
+   "unreachable": true
+  },
+  "f15": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 58,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:33",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:33",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 58,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:33",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:33",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "13:03",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "13:03",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:48",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "18:08",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 48,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "18:08",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "町営バス",
+      "ride_min": 66,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f16": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 64,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 64,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "13:09",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "13:09",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "18:14",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "18:14",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "町営バス",
+      "ride_min": 72,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f17": {
+   "unreachable": true
+  },
+  "f18": {
+   "unreachable": true
+  },
+  "f19": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 41,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:16",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:16",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 41,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:16",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:16",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:46",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:46",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:31",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:51",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 31,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:51",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "（独）国立病院機構山形病院",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f20": {
+   "unreachable": true
+  },
+  "f21": {
+   "unreachable": true
+  },
+  "f23": {
+   "unreachable": true
+  },
+  "f24": {
+   "unreachable": true
+  },
+  "f25": {
+   "unreachable": true
+  },
+  "f27": {
+   "unreachable": true
+  },
+  "f28": {
+   "unreachable": true
+  },
+  "f29": {
+   "unreachable": true
+  },
+  "f30": {
+   "unreachable": true
+  },
+  "f31": {
+   "unreachable": true
+  },
+  "f32": {
+   "unreachable": true
+  },
+  "f33": {
+   "unreachable": true
+  },
+  "f34": {
+   "unreachable": true
+  },
+  "f35": {
+   "unreachable": true
+  },
+  "f37": {
+   "unreachable": true
+  },
+  "f39": {
+   "unreachable": true
+  },
+  "f40": {
+   "unreachable": true
+  },
+  "f41": {
+   "unreachable": true
+  },
+  "f42": {
+   "unreachable": true
+  },
+  "f43": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:24",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:24",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:24",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:24",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:54",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:39",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:59",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 39,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:59",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "町営バス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "07:10",
+      "arr": "09:16",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 55,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "07:55",
+      "arr": "09:16",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 10,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "08:45",
+      "arr": "09:39",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 53,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 1,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "09:30",
+      "arr": "11:41",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "10:30",
+      "arr": "11:41",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "11:15",
+      "arr": "14:01",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 95,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "12:15",
+      "arr": "14:01",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 35,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "13:15",
+      "arr": "14:24",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 53,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 16,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "14:15",
+      "arr": "16:26",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "15:15",
+      "arr": "16:26",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "08:45",
+      "arr": "09:39",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 53,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 1,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "09:45",
+      "arr": "11:41",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 45,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "12:15",
+      "arr": "14:01",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 35,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "14:15",
+      "arr": "16:26",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "15:15",
+      "arr": "16:26",
+      "board": "山形市役所",
+      "platform": "１",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 71,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   }
+  },
+  "f44": {
+   "board_walk_min": 16,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:02",
+      "arr": "10:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 58,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "10:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 19,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "12:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "12:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 60,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "15:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 34,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "17:35",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 33,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "17:35",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 60,
+      "transfer": {
+       "at": "長崎元町",
+       "wait_min": 2,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "09:02",
+      "arr": "11:35",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 103,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "09:23",
+      "arr": "11:35",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 64,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:27",
+      "arr": "13:05",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 48,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "11:48",
+      "arr": "13:05",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 9,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "13:47",
+      "arr": "14:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 13,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "14:08",
+      "arr": "16:50",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 94,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:12",
+      "arr": "18:10",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 50,
+      "transfer": {
+       "at": "新田町",
+       "wait_min": 68,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     },
+     {
+      "dep": "16:33",
+      "arr": "18:10",
+      "board": "文新田南",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "町営バス",
+      "ride_min": 68,
+      "transfer": {
+       "at": "長崎桜町",
+       "wait_min": 29,
+       "route2": "Ｊ６０・Ｃ１"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "07:02",
+      "arr": "09:16",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 55,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "07:47",
+      "arr": "09:16",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 10,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "08:37",
+      "arr": "09:39",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 61,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 1,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "09:22",
+      "arr": "11:41",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "10:22",
+      "arr": "11:41",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "11:07",
+      "arr": "14:01",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 95,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "12:07",
+      "arr": "14:01",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 35,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "13:07",
+      "arr": "14:24",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 61,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 16,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "14:07",
+      "arr": "16:26",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "15:07",
+      "arr": "16:26",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     }
+    ],
+    "saturday": [
+     {
+      "dep": "08:37",
+      "arr": "09:39",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 61,
+      "transfer": {
+       "at": "向新田（観音前）",
+       "wait_min": 1,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "09:37",
+      "arr": "11:41",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 45,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "12:07",
+      "arr": "14:01",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 35,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "14:07",
+      "arr": "16:26",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 60,
+       "route2": "町営バス"
+      }
+     },
+     {
+      "dep": "15:07",
+      "arr": "16:26",
+      "board": "山形駅",
+      "platform": "４",
+      "alight": "明治地区",
+      "route": "Ｊ６０・Ｃ１",
+      "ride_min": 79,
+      "transfer": {
+       "at": "あおば（しぶや歯科医院前）",
+       "wait_min": 0,
+       "route2": "町営バス"
+      }
+     }
+    ],
+    "sunday_holiday": []
+   }
+  }
+ }
+}

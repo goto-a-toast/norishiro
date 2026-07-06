@@ -1,0 +1,1023 @@
+{
+ "district": "d13",
+ "to": {
+  "f01": {
+   "unreachable": true
+  },
+  "f03": {
+   "unreachable": true
+  },
+  "f05": {
+   "unreachable": true
+  },
+  "f06": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:23",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形厚生病院",
+      "route": "あじさいバス",
+      "ride_min": 69,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 16,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "16:17",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形厚生病院",
+      "route": "あじさいバス",
+      "ride_min": 60,
+      "transfer": {
+       "at": "沼木口",
+       "wait_min": 259,
+       "route2": "Ｗ７７・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "16:17",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形厚生病院",
+      "route": "あじさいバス",
+      "ride_min": 60,
+      "transfer": {
+       "at": "沼木口",
+       "wait_min": 199,
+       "route2": "Ｗ７７・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "16:17",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形厚生病院",
+      "route": "あじさいバス",
+      "ride_min": 60,
+      "transfer": {
+       "at": "沼木口",
+       "wait_min": 79,
+       "route2": "Ｗ７７・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "06:40",
+      "arr": "10:00",
+      "board": "山形厚生病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７・Ｃ８",
+      "ride_min": 30,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 170,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "07:05",
+      "arr": "10:00",
+      "board": "山形厚生病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７・Ｃ８",
+      "ride_min": 30,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 145,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "09:00",
+      "arr": "10:00",
+      "board": "山形厚生病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１・Ｃ８",
+      "ride_min": 30,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 30,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "12:30",
+      "arr": "14:00",
+      "board": "山形厚生病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１・Ｃ８",
+      "ride_min": 40,
+      "transfer": {
+       "at": "ヨークベニマル南館店前",
+       "wait_min": 50,
+       "route2": "あじさいバス"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f07": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:06",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:36",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:10",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "あじさいバス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:36",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市立病院済生館",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "07:48",
+      "arr": "10:00",
+      "board": "山形市立病院済生館",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１：南アンダー経由",
+      "ride_min": 44,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 88,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "10:33",
+      "arr": "12:00",
+      "board": "山形市立病院済生館",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１・Ｃ８",
+      "ride_min": 42,
+      "transfer": {
+       "at": "ヨークベニマル南館店前",
+       "wait_min": 45,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "11:18",
+      "arr": "13:20",
+      "board": "山形市立病院済生館",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 51,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 71,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "12:18",
+      "arr": "13:20",
+      "board": "山形市立病院済生館",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 51,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 11,
+       "route2": "あじさいバス"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f08": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "10:55",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形徳洲会病院",
+      "route": "あじさいバス",
+      "ride_min": 29,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:25",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形徳洲会病院",
+      "route": "あじさいバス",
+      "ride_min": 29,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:25",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形徳洲会病院",
+      "route": "あじさいバス",
+      "ride_min": 29,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:25",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形徳洲会病院",
+      "route": "あじさいバス",
+      "ride_min": 29,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "08:13",
+      "arr": "13:20",
+      "board": "山形徳洲会病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７０：南アンダー経由",
+      "ride_min": 36,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 271,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "10:03",
+      "arr": "13:20",
+      "board": "山形徳洲会病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７１・Ｃ８",
+      "ride_min": 36,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 161,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "11:33",
+      "arr": "13:20",
+      "board": "山形徳洲会病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 36,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 71,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "12:33",
+      "arr": "13:20",
+      "board": "山形徳洲会病院",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 36,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 11,
+       "route2": "あじさいバス"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f09": {
+   "unreachable": true
+  },
+  "f10": {
+   "unreachable": true
+  },
+  "f11": {
+   "unreachable": true
+  },
+  "f12": {
+   "unreachable": true
+  },
+  "f13": {
+   "unreachable": true
+  },
+  "f14": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:20",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）小白川至誠堂病院",
+      "route": "あじさいバス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:50",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）小白川至誠堂病院",
+      "route": "あじさいバス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:24",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）小白川至誠堂病院",
+      "route": "あじさいバス",
+      "ride_min": 75,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:50",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）小白川至誠堂病院",
+      "route": "あじさいバス",
+      "ride_min": 54,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f15": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:08",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "あじさいバス",
+      "ride_min": 42,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:38",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "あじさいバス",
+      "ride_min": 42,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:12",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "あじさいバス",
+      "ride_min": 63,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:38",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）松柏会至誠堂総合病院",
+      "route": "あじさいバス",
+      "ride_min": 42,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f16": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:15",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "あじさいバス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:45",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "あじさいバス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:19",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "あじさいバス",
+      "ride_min": 70,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:45",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "（医）横山厚生会横山病院",
+      "route": "あじさいバス",
+      "ride_min": 49,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f17": {
+   "unreachable": true
+  },
+  "f18": {
+   "unreachable": true
+  },
+  "f19": {
+   "unreachable": true
+  },
+  "f20": {
+   "unreachable": true
+  },
+  "f21": {
+   "unreachable": true
+  },
+  "f23": {
+   "unreachable": true
+  },
+  "f24": {
+   "unreachable": true
+  },
+  "f25": {
+   "unreachable": true
+  },
+  "f27": {
+   "unreachable": true
+  },
+  "f28": {
+   "unreachable": true
+  },
+  "f29": {
+   "unreachable": true
+  },
+  "f30": {
+   "unreachable": true
+  },
+  "f31": {
+   "unreachable": true
+  },
+  "f32": {
+   "unreachable": true
+  },
+  "f33": {
+   "unreachable": true
+  },
+  "f34": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "10:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "ヨークベニマル南館店",
+      "route": "あじさいバス",
+      "ride_min": 34,
+      "transfer": null
+     },
+     {
+      "dep": "10:58",
+      "arr": "11:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "ヨークベニマル南館店",
+      "route": "あじさいバス",
+      "ride_min": 34,
+      "transfer": null
+     },
+     {
+      "dep": "11:58",
+      "arr": "12:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "ヨークベニマル南館店",
+      "route": "あじさいバス",
+      "ride_min": 34,
+      "transfer": null
+     },
+     {
+      "dep": "13:18",
+      "arr": "13:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "ヨークベニマル南館店",
+      "route": "あじさいバス",
+      "ride_min": 14,
+      "transfer": null
+     },
+     {
+      "dep": "13:58",
+      "arr": "14:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "ヨークベニマル南館店",
+      "route": "あじさいバス",
+      "ride_min": 34,
+      "transfer": null
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "08:10",
+      "arr": "10:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１：南アンダー経由",
+      "ride_min": 22,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 88,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "10:45",
+      "arr": "11:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "あじさいバス",
+      "ride_min": 15,
+      "transfer": null
+     },
+     {
+      "dep": "10:55",
+      "arr": "12:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１・Ｃ８",
+      "ride_min": 22,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 43,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "11:45",
+      "arr": "12:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "あじさいバス",
+      "ride_min": 15,
+      "transfer": null
+     },
+     {
+      "dep": "12:45",
+      "arr": "13:20",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "あじさいバス",
+      "ride_min": 35,
+      "transfer": null
+     },
+     {
+      "dep": "13:45",
+      "arr": "14:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "あじさいバス",
+      "ride_min": 15,
+      "transfer": null
+     },
+     {
+      "dep": "14:45",
+      "arr": "15:00",
+      "board": "ヨークベニマル南館店",
+      "platform": null,
+      "alight": "村木沢地区",
+      "route": "あじさいバス",
+      "ride_min": 15,
+      "transfer": null
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f35": {
+   "unreachable": true
+  },
+  "f37": {
+   "unreachable": true
+  },
+  "f39": {
+   "unreachable": true
+  },
+  "f40": {
+   "unreachable": true
+  },
+  "f41": {
+   "unreachable": true
+  },
+  "f42": {
+   "unreachable": true
+  },
+  "f43": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:06",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:36",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:10",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "あじさいバス",
+      "ride_min": 61,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:36",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形市役所",
+      "route": "あじさいバス",
+      "ride_min": 40,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [
+     {
+      "dep": "07:46",
+      "arr": "10:00",
+      "board": "山形市役所",
+      "platform": "５",
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１：南アンダー経由",
+      "ride_min": 46,
+      "transfer": {
+       "at": "西公園入口",
+       "wait_min": 88,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "10:31",
+      "arr": "12:00",
+      "board": "山形市役所",
+      "platform": "５",
+      "alight": "村木沢地区",
+      "route": "Ｗ７７１・Ｃ８",
+      "ride_min": 44,
+      "transfer": {
+       "at": "ヨークベニマル南館店前",
+       "wait_min": 45,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "11:16",
+      "arr": "13:20",
+      "board": "山形市役所",
+      "platform": "５",
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 53,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 71,
+       "route2": "あじさいバス"
+      }
+     },
+     {
+      "dep": "12:16",
+      "arr": "13:20",
+      "board": "山形市役所",
+      "platform": "５",
+      "alight": "村木沢地区",
+      "route": "Ｗ７０・Ｃ８",
+      "ride_min": 53,
+      "transfer": {
+       "at": "飯塚コミュニティセンター",
+       "wait_min": 11,
+       "route2": "あじさいバス"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  },
+  "f44": {
+   "board_walk_min": 2,
+   "outbound": {
+    "weekday": [
+     {
+      "dep": "09:58",
+      "arr": "11:02",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "あじさいバス",
+      "ride_min": 36,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 28,
+       "route2": "Ｗ７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "10:58",
+      "arr": "12:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "あじさいバス",
+      "ride_min": 36,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     },
+     {
+      "dep": "11:58",
+      "arr": "13:06",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "あじさいバス",
+      "ride_min": 57,
+      "transfer": {
+       "at": "南沼原コミュニティセンター前",
+       "wait_min": 11,
+       "route2": "Ｗ７７１・Ｃ８"
+      }
+     },
+     {
+      "dep": "13:58",
+      "arr": "15:32",
+      "board": "金沢児童遊園前",
+      "platform": null,
+      "alight": "山形駅",
+      "route": "あじさいバス",
+      "ride_min": 36,
+      "transfer": {
+       "at": "さわやか荘前",
+       "wait_min": 58,
+       "route2": "Ｗ７０・Ｃ８"
+      }
+     }
+    ],
+    "saturday": [],
+    "sunday_holiday": []
+   },
+   "inbound": {
+    "weekday": [],
+    "saturday": [],
+    "sunday_holiday": []
+   }
+  }
+ }
+}

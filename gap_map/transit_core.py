@@ -108,7 +108,7 @@ def raptor_search(network: Network, initial_stops: dict, max_transfers: int = 0,
                 touched_patterns.add(pattern_idx)
 
         round_updates = {}   # stop_id -> (到着時刻, Leg)  ※Leg.prevはこの時点で確定済み
-        for pattern_idx in touched_patterns:
+        for pattern_idx in sorted(touched_patterns):
             _scan_pattern(network.patterns[pattern_idx], boarding_times, boarding_leg, round_updates)
 
         # このラウンドで到着時刻が更新された停留所を確定させる
@@ -127,7 +127,12 @@ def raptor_search(network: Network, initial_stops: dict, max_transfers: int = 0,
         # 次ラウンドで使うboarding_times/boarding_legを作る
         next_boarding_times = {}
         next_boarding_leg = {}
-        for stop_id in newly_by_ride:
+        # 2026-07-06: stop_idの文字列setはPythonのハッシュランダム化で反復順が
+        # 実行のたびに変わりうる。到着時刻が同着のときにどちらのLegが勝つかが
+        # この順序に依存してしまい、export_web_data.py(F3)の「毎回同じ出力になる」
+        # という条件を満たせなかった(到着時刻そのものは常に同じ値になり、
+        # 影響するのは同着時のタイブレークだけ)。sorted()で走査順を固定して解消する
+        for stop_id in sorted(newly_by_ride):
             arrival = best_arrival[stop_id]
             ride_leg = best_leg[stop_id]   # このラウンドで確定した「乗車」区間(prev込みで完成している)
 
