@@ -1,0 +1,349 @@
+/* =====================================================================
+   かんたんモードのデザイン設定
+   -------------------------------------------------------------------
+   色・フォントは第1部の大活字PDF(timetable.css)と同じ変数を踏襲し、
+   「紙とWebで同じ見た目」にしている。単位はpx(印刷でなく画面表示のため)。
+   計画書のルール: 基本文字24px以上・ボタン高さ72px以上・間隔8px以上・
+   横スクロール禁止・色だけに頼らず文字併記。
+   ===================================================================== */
+
+:root {
+  --color-text:      #1a1a1a;
+  --color-outbound:  #00518e;   /* 行き=青(PDFと同じ) */
+  --color-return:    #a83200;   /* 帰り=橙(PDFと同じ) */
+  --bg-outbound:     #eff5fb;
+  --bg-return:       #f0d9c2;
+  --color-border:    #444444;
+  --color-bg:        #ffffff;
+  --color-disabled:  #999999;
+  --color-disabled-bg: #eeeeee;
+  --tap-size:        72px;
+  --back-size:       64px;
+}
+
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  overflow-x: hidden;   /* 横スクロール禁止 */
+}
+
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text);
+  font-size: 24px;
+  line-height: 1.5;
+  background: var(--color-bg);
+}
+
+noscript {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  padding: 40px 16px;
+}
+
+#app { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* ---------------- ヘッダー(もどる + ステップ表示) ---------------- */
+#app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  position: sticky;
+  top: 0;
+  background: var(--color-bg);
+  z-index: 10;
+}
+
+.back-btn {
+  height: var(--back-size);
+  padding: 0 20px;
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-disabled-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--color-disabled);
+  margin-left: auto;
+}
+.step-arrow { color: var(--color-disabled); }
+.step.current { color: var(--color-outbound); }
+
+/* ---------------- 共通見出し ---------------- */
+h1 {
+  font-size: 32px;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.instruction {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+.breadcrumb {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0 16px;
+  word-break: break-word;
+}
+
+/* ---------------- タブ(市・カテゴリ) ---------------- */
+.city-tabs, .category-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.city-tab, .cat-tab {
+  flex: 1;
+  min-width: 120px;
+  height: var(--tap-size);
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-disabled-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.city-tab[aria-selected="true"], .cat-tab[aria-selected="true"] {
+  color: #ffffff;
+  background: var(--color-outbound);
+  border-color: var(--color-outbound);
+}
+
+/* ---------------- 地区グリッド(画面1) ---------------- */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.district-btn {
+  min-height: var(--tap-size);
+  padding: 10px 6px;
+  font-size: 26px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 3px solid var(--color-border);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.district-btn .kana {
+  display: block;
+  font-size: 16px;
+  font-weight: normal;
+  color: #555555;
+  margin-top: 2px;
+}
+
+/* ---------------- 施設リスト(画面2) ---------------- */
+.facility-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.facility-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--tap-size);
+  padding: 10px 16px;
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 3px solid var(--color-border);
+  border-radius: 14px;
+  text-align: left;
+  gap: 12px;
+}
+
+.facility-btn .facility-name { flex: 1; }
+.facility-btn .facility-time {
+  font-size: 20px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.facility-btn.disabled {
+  color: var(--color-disabled);
+  background: var(--color-disabled-bg);
+  border-color: var(--color-disabled);
+}
+
+.no-facility-note {
+  font-size: 22px;
+  color: #555555;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ---------------- 時計モード(画面3) ---------------- */
+.clock-box {
+  border: 3px solid var(--color-outbound);
+  background: var(--bg-outbound);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.clock-box .clock-main {
+  font-size: 30px;
+  font-weight: bold;
+}
+.clock-box .clock-sub {
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+.board-walk-note {
+  font-size: 22px;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+/* ---------------- 行き/帰りブロック ---------------- */
+.direction-block {
+  border: 3px solid var(--color-border);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.direction-block.outbound { border-color: var(--color-outbound); background: var(--bg-outbound); }
+.direction-block.return   { border-color: var(--color-return);   background: var(--bg-return); }
+
+.direction-header { margin-bottom: 8px; }
+.direction-label {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  padding: 4px 16px;
+  border-radius: 10px;
+}
+.outbound .direction-label { background: var(--color-outbound); }
+.return   .direction-label { background: var(--color-return); }
+
+.time-table { display: flex; flex-direction: column; gap: 8px; }
+
+.time-row {
+  background: #ffffff;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.time-row .time-main {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.time-row .dep-time {
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+}
+.outbound .time-row .dep-time { color: var(--color-outbound); }
+.return   .time-row .dep-time { color: var(--color-return); }
+
+.time-row .arr-time { font-size: 18px; color: #555555; }
+.time-row .route-name { font-size: 16px; color: #555555; }
+
+.time-row .stop-line {
+  font-size: 18px;
+  margin-top: 4px;
+}
+.time-row .platform-badge {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-text);
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+.time-row .transfer-badge {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #8a5a00;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+.time-row .alt-note { font-size: 14px; color: #777777; margin-top: 2px; }
+
+.no-service-note {
+  font-size: 20px;
+  color: #555555;
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* ---------------- 操作ボタン(音声・印刷) ---------------- */
+.action-row {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+.action-btn {
+  flex: 1;
+  height: var(--tap-size);
+  font-size: 22px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-disabled-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.day-type-note, .validity-note {
+  font-size: 18px;
+  text-align: center;
+  color: #555555;
+  margin: 4px 0;
+}
+
+/* 印刷時はページ送りやボタン類を省く程度の最小対応(しっかりモードF5で本格対応) */
+@media print {
+  #app-header, .action-row { display: none; }
+}

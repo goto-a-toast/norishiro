@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>バスの時刻表 - かんたんモード</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript>この機能にはJavaScriptが必要です</noscript>
+
+<div id="app" hidden>
+  <header id="app-header">
+    <button id="back-btn" class="back-btn" type="button" hidden>← もどる</button>
+    <div class="steps" aria-hidden="true">
+      <span class="step" data-step="1">①</span>
+      <span class="step-arrow">→</span>
+      <span class="step" data-step="2">②</span>
+      <span class="step-arrow">→</span>
+      <span class="step" data-step="3">③</span>
+    </div>
+  </header>
+
+  <!-- 画面1: 地区をえらぶ -->
+  <main id="screen1" class="screen">
+    <h1>バスの時刻表を<br>つくります</h1>
+    <p class="instruction">① おすまいの地区をえらんでください</p>
+    <div class="city-tabs" role="tablist">
+      <button class="city-tab" type="button" data-city="山形市" aria-selected="true">山形市</button>
+      <button class="city-tab" type="button" data-city="上山市" aria-selected="false">上山市</button>
+    </div>
+    <div id="district-grid" class="grid-2col"></div>
+  </main>
+
+  <!-- 画面2: いきたい場所をえらぶ -->
+  <main id="screen2" class="screen" hidden>
+    <p class="breadcrumb">① <span id="s2-district-name"></span> → ② いきたい場所</p>
+    <div class="category-tabs" role="tablist">
+      <button class="cat-tab" type="button" data-cat="hospital" aria-selected="true">🏥 病院</button>
+      <button class="cat-tab" type="button" data-cat="supermarket" aria-selected="false">🛒 スーパー</button>
+      <button class="cat-tab" type="button" data-cat="town" aria-selected="false">🏛 まちなか</button>
+    </div>
+    <div id="facility-list" class="facility-list"></div>
+  </main>
+
+  <!-- 画面3: 時刻表 -->
+  <main id="screen3" class="screen" hidden>
+    <p class="breadcrumb"><span id="s3-district-name"></span> → <span id="s3-facility-name"></span></p>
+
+    <div id="clock-box" class="clock-box" aria-live="polite"></div>
+    <p id="board-walk-note" class="board-walk-note"></p>
+
+    <section class="direction-block outbound">
+      <div class="direction-header"><span class="direction-label">行き</span></div>
+      <div id="outbound-table" class="time-table"></div>
+    </section>
+
+    <section class="direction-block return">
+      <div class="direction-header"><span class="direction-label">帰り</span></div>
+      <div id="inbound-table" class="time-table"></div>
+    </section>
+
+    <div class="action-row">
+      <button id="speak-btn" class="action-btn" type="button" hidden>🔊 音声できく</button>
+      <button id="print-btn" class="action-btn" type="button">🖨 印刷する</button>
+    </div>
+
+    <p id="day-type-note" class="day-type-note"></p>
+    <p id="validity-note" class="validity-note"></p>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
