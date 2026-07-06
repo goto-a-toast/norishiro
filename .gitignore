@@ -2,8 +2,11 @@
 gtfs_*/
 
 # 交通空白マップのダウンロードデータ・生成物(docs/plan_gap_map.md 参照)
-data/
-output/
+# ルートの data/ だけを無視する(webapp/data/ のJSONはPages配信に必要なのでコミットする)
+/data/*
+/output/
+# 例外: 地区マスタは人間が表示名・かなを編集するのでコミットして残す
+!/data/districts_master.csv
 
 # 生成物(スクリプトで再生成できる)
 timetable_*.pdf

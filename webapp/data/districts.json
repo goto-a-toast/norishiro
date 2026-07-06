@@ -1,0 +1,371 @@
+[
+ {
+  "id": "d01",
+  "name": "みはらしの丘地区",
+  "kana": "みはらしのおか",
+  "municipality": "山形市",
+  "lat": 38.19375,
+  "lon": 140.290625,
+  "source_school": "みはらしの丘小学校区"
+ },
+ {
+  "id": "d02",
+  "name": "出羽地区",
+  "kana": "でわ",
+  "municipality": "山形市",
+  "lat": 38.314583,
+  "lon": 140.359375,
+  "source_school": "出羽小学校区"
+ },
+ {
+  "id": "d03",
+  "name": "千歳地区",
+  "kana": "ちとせ",
+  "municipality": "山形市",
+  "lat": 38.285417,
+  "lon": 140.340625,
+  "source_school": "千歳小学校区"
+ },
+ {
+  "id": "d04",
+  "name": "南地区",
+  "kana": "みなみ",
+  "municipality": "山形市",
+  "lat": 38.222917,
+  "lon": 140.328125,
+  "source_school": "南小学校区"
+ },
+ {
+  "id": "d05",
+  "name": "南山形地区",
+  "kana": "みなみやまがた",
+  "municipality": "山形市",
+  "lat": 38.20625,
+  "lon": 140.303125,
+  "source_school": "南山形小学校区"
+ },
+ {
+  "id": "d06",
+  "name": "南沼原地区",
+  "kana": "みなみぬまはら",
+  "municipality": "山形市",
+  "lat": 38.235417,
+  "lon": 140.309375,
+  "source_school": "南沼原小学校区"
+ },
+ {
+  "id": "d07",
+  "name": "大曽根地区",
+  "kana": "おおそね",
+  "municipality": "山形市",
+  "lat": 38.264583,
+  "lon": 140.278125,
+  "source_school": "大曽根小学校区"
+ },
+ {
+  "id": "d08",
+  "name": "大郷地区",
+  "kana": "おおさと",
+  "municipality": "山形市",
+  "lat": 38.30625,
+  "lon": 140.296875,
+  "source_school": "大郷小学校区"
+ },
+ {
+  "id": "d09",
+  "name": "宮浦地区",
+  "kana": "みやうら",
+  "municipality": "山形市",
+  "lat": 38.25625,
+  "lon": 140.296875,
+  "source_school": "宮浦小学校区"
+ },
+ {
+  "id": "d10",
+  "name": "山寺地区",
+  "kana": "やまでら",
+  "municipality": "山形市",
+  "lat": 38.310417,
+  "lon": 140.434375,
+  "source_school": "山寺小学校区"
+ },
+ {
+  "id": "d11",
+  "name": "明治地区",
+  "kana": "めいじ",
+  "municipality": "山形市",
+  "lat": 38.335417,
+  "lon": 140.309375,
+  "source_school": "明治小学校区"
+ },
+ {
+  "id": "d12",
+  "name": "本沢地区",
+  "kana": "もとさわ",
+  "municipality": "山形市",
+  "lat": 38.214583,
+  "lon": 140.278125,
+  "source_school": "本沢小学校区"
+ },
+ {
+  "id": "d13",
+  "name": "村木沢地区",
+  "kana": "むらきざわ",
+  "municipality": "山形市",
+  "lat": 38.247917,
+  "lon": 140.265625,
+  "source_school": "村木沢小学校区"
+ },
+ {
+  "id": "d14",
+  "name": "東地区",
+  "kana": "ひがし",
+  "municipality": "山形市",
+  "lat": 38.272917,
+  "lon": 140.353125,
+  "source_school": "東小学校区"
+ },
+ {
+  "id": "d15",
+  "name": "東沢地区",
+  "kana": "ひがしさわ",
+  "municipality": "山形市",
+  "lat": 38.239583,
+  "lon": 140.371875,
+  "source_school": "東沢小学校区"
+ },
+ {
+  "id": "d16",
+  "name": "桜田地区",
+  "kana": "さくらだ",
+  "municipality": "山形市",
+  "lat": 38.21875,
+  "lon": 140.315625,
+  "source_school": "桜田小学校区"
+ },
+ {
+  "id": "d17",
+  "name": "楯山地区",
+  "kana": "たてやま",
+  "municipality": "山形市",
+  "lat": 38.30625,
+  "lon": 140.359375,
+  "source_school": "楯山小学校区"
+ },
+ {
+  "id": "d18",
+  "name": "滝山地区",
+  "kana": "たきやま",
+  "municipality": "山形市",
+  "lat": 38.21875,
+  "lon": 140.334375,
+  "source_school": "滝山小学校区"
+ },
+ {
+  "id": "d19",
+  "name": "第一地区",
+  "kana": "だいいち",
+  "municipality": "山形市",
+  "lat": 38.252083,
+  "lon": 140.334375,
+  "source_school": "第一小学校区"
+ },
+ {
+  "id": "d20",
+  "name": "第七地区",
+  "kana": "だいなな",
+  "municipality": "山形市",
+  "lat": 38.272917,
+  "lon": 140.334375,
+  "source_school": "第七小学校区"
+ },
+ {
+  "id": "d21",
+  "name": "第三地区",
+  "kana": "だいさん",
+  "municipality": "山形市",
+  "lat": 38.26875,
+  "lon": 140.340625,
+  "source_school": "第三小学校区"
+ },
+ {
+  "id": "d22",
+  "name": "第九地区",
+  "kana": "だいく",
+  "municipality": "山形市",
+  "lat": 38.289583,
+  "lon": 140.321875,
+  "source_school": "第九小学校区"
+ },
+ {
+  "id": "d23",
+  "name": "第二地区",
+  "kana": "だいに",
+  "municipality": "山形市",
+  "lat": 38.24375,
+  "lon": 140.328125,
+  "source_school": "第二小学校区"
+ },
+ {
+  "id": "d24",
+  "name": "第五地区",
+  "kana": "だいご",
+  "municipality": "山形市",
+  "lat": 38.247917,
+  "lon": 140.340625,
+  "source_school": "第五小学校区"
+ },
+ {
+  "id": "d25",
+  "name": "第八地区",
+  "kana": "だいはち",
+  "municipality": "山形市",
+  "lat": 38.247917,
+  "lon": 140.353125,
+  "source_school": "第八小学校区"
+ },
+ {
+  "id": "d26",
+  "name": "第六地区",
+  "kana": "だいろく",
+  "municipality": "山形市",
+  "lat": 38.239583,
+  "lon": 140.340625,
+  "source_school": "第六小学校区"
+ },
+ {
+  "id": "d27",
+  "name": "第十地区",
+  "kana": "だいじゅう",
+  "municipality": "山形市",
+  "lat": 38.247917,
+  "lon": 140.315625,
+  "source_school": "第十小学校区"
+ },
+ {
+  "id": "d28",
+  "name": "第四地区",
+  "kana": "だいよん",
+  "municipality": "山形市",
+  "lat": 38.260417,
+  "lon": 140.334375,
+  "source_school": "第四小学校区"
+ },
+ {
+  "id": "d29",
+  "name": "蔵王第一地区",
+  "kana": "ざおうだいいち",
+  "municipality": "山形市",
+  "lat": 38.214583,
+  "lon": 140.328125,
+  "source_school": "蔵王第一小学校区"
+ },
+ {
+  "id": "d30",
+  "name": "蔵王第三地区",
+  "kana": "ざおうだいさん",
+  "municipality": "山形市",
+  "lat": 38.16875,
+  "lon": 140.396875,
+  "source_school": "蔵王第三小学校区"
+ },
+ {
+  "id": "d31",
+  "name": "蔵王第二地区",
+  "kana": "ざおうだいに",
+  "municipality": "山形市",
+  "lat": 38.185417,
+  "lon": 140.315625,
+  "source_school": "蔵王第二小学校区"
+ },
+ {
+  "id": "d32",
+  "name": "西地区",
+  "kana": "にし",
+  "municipality": "山形市",
+  "lat": 38.264583,
+  "lon": 140.321875,
+  "source_school": "西小学校区"
+ },
+ {
+  "id": "d33",
+  "name": "西山形地区",
+  "kana": "にしやまがた",
+  "municipality": "山形市",
+  "lat": 38.235417,
+  "lon": 140.265625,
+  "source_school": "西山形小学校区"
+ },
+ {
+  "id": "d34",
+  "name": "金井地区",
+  "kana": "かない",
+  "municipality": "山形市",
+  "lat": 38.277083,
+  "lon": 140.321875,
+  "source_school": "金井小学校区"
+ },
+ {
+  "id": "d35",
+  "name": "鈴川地区",
+  "kana": "すずかわ",
+  "municipality": "山形市",
+  "lat": 38.26875,
+  "lon": 140.353125,
+  "source_school": "鈴川小学校区"
+ },
+ {
+  "id": "d36",
+  "name": "高瀬地区",
+  "kana": "たかせ",
+  "municipality": "山形市",
+  "lat": 38.30625,
+  "lon": 140.390625,
+  "source_school": "高瀬小学校区"
+ },
+ {
+  "id": "d37",
+  "name": "上山地区",
+  "kana": "かみのやま",
+  "municipality": "上山市",
+  "lat": 38.16875,
+  "lon": 140.284375,
+  "source_school": "上山小学校区"
+ },
+ {
+  "id": "d38",
+  "name": "中川地区",
+  "kana": "なかがわ",
+  "municipality": "上山市",
+  "lat": 38.160417,
+  "lon": 140.315625,
+  "source_school": "中川小学校区"
+ },
+ {
+  "id": "d39",
+  "name": "南地区",
+  "kana": "みなみ",
+  "municipality": "上山市",
+  "lat": 38.139583,
+  "lon": 140.284375,
+  "source_school": "南小学校区"
+ },
+ {
+  "id": "d40",
+  "name": "宮川地区",
+  "kana": "みやがわ",
+  "municipality": "上山市",
+  "lat": 38.11875,
+  "lon": 140.315625,
+  "source_school": "宮川小学校区"
+ },
+ {
+  "id": "d41",
+  "name": "西郷第一地区",
+  "kana": "にしごうだいいち",
+  "municipality": "上山市",
+  "lat": 38.122917,
+  "lon": 140.215625,
+  "source_school": "西郷第一小学校区"
+ }
+]
