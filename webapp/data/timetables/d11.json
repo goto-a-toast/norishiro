@@ -23,12 +23,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -37,12 +39,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -51,12 +55,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -65,12 +71,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 53,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -79,12 +87,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -93,12 +103,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -107,12 +119,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -121,12 +135,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 53,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -137,12 +153,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -151,12 +169,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -165,12 +185,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -179,12 +201,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -193,12 +217,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -207,12 +233,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -221,12 +249,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 43,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -235,12 +265,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 61,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -283,12 +315,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -297,12 +331,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -311,12 +347,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -325,12 +363,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 58,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -339,12 +379,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -353,12 +395,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -367,12 +411,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -381,12 +427,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 58,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -397,12 +445,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -411,12 +461,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -425,12 +477,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -439,12 +493,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -453,12 +509,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -467,12 +525,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -481,12 +541,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 48,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -495,12 +557,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 66,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -522,12 +586,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -536,12 +602,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -550,12 +618,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -564,12 +634,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 64,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -578,12 +650,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -592,12 +666,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -606,12 +682,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -620,12 +698,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 64,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -636,12 +716,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -650,12 +732,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -664,12 +748,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -678,12 +764,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -692,12 +780,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -706,12 +796,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -720,12 +812,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 54,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -734,12 +828,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 72,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -767,12 +863,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -781,12 +879,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -795,12 +895,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -809,12 +911,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 41,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -823,12 +927,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -837,12 +943,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -851,12 +959,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -865,12 +975,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 41,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -881,12 +993,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -895,12 +1009,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -909,12 +1025,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -923,12 +1041,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -937,12 +1057,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -951,12 +1073,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -965,12 +1089,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 31,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -979,12 +1105,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -1063,12 +1191,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1077,12 +1207,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1091,12 +1223,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1105,12 +1239,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1119,12 +1255,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1133,12 +1271,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1147,12 +1287,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1161,12 +1303,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 49,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -1177,12 +1321,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1191,12 +1337,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1205,12 +1353,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1219,12 +1369,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1233,12 +1385,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1247,12 +1401,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1261,12 +1417,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 39,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1275,12 +1433,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 57,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -1294,11 +1454,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 55,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1308,11 +1470,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 10,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1322,11 +1486,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 53,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 1,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1336,11 +1502,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1350,11 +1518,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1364,11 +1534,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 95,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1378,11 +1550,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 35,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1392,11 +1566,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 53,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 16,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1406,11 +1582,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1420,11 +1598,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      }
@@ -1436,11 +1616,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 53,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 1,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1450,11 +1632,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 45,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1464,11 +1648,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 35,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1478,11 +1664,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1492,11 +1680,13 @@
       "board": "山形市役所",
       "platform": "１",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 71,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      }
@@ -1514,12 +1704,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 58,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1528,12 +1720,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 19,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1542,12 +1736,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1556,12 +1752,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 60,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1570,12 +1768,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1584,12 +1784,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 34,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1598,12 +1800,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 33,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1612,12 +1816,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 60,
       "transfer": {
        "at": "長崎元町",
        "wait_min": 2,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -1628,12 +1834,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 103,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1642,12 +1850,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 64,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1656,12 +1866,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 48,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1670,12 +1882,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 9,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1684,12 +1898,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 13,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1698,12 +1914,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 94,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1712,12 +1930,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "向新田(観音前)",
       "route": "町営バス",
       "ride_min": 50,
       "transfer": {
        "at": "新田町",
        "wait_min": 68,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      },
      {
@@ -1726,12 +1946,14 @@
       "board": "文新田南",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "保健福祉センター",
       "route": "町営バス",
       "ride_min": 68,
       "transfer": {
        "at": "長崎桜町",
        "wait_min": 29,
-       "route2": "Ｊ６０・Ｃ１"
+       "headsign2": "山形駅前",
+       "route2": "J60・C1"
       }
      }
     ],
@@ -1745,11 +1967,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 55,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1759,11 +1983,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 10,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1773,11 +1999,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 61,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 1,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1787,11 +2015,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1801,11 +2031,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1815,11 +2047,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 95,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1829,11 +2063,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 35,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1843,11 +2079,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 61,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 16,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1857,11 +2095,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1871,11 +2111,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      }
@@ -1887,11 +2129,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 61,
       "transfer": {
        "at": "向新田（観音前）",
        "wait_min": 1,
+       "headsign2": "保健福祉センター",
        "route2": "町営バス"
       }
      },
@@ -1901,11 +2145,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 45,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1915,11 +2161,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 35,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1929,11 +2177,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 60,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      },
@@ -1943,11 +2193,13 @@
       "board": "山形駅",
       "platform": "４",
       "alight": "明治地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "寒河江駅前",
+      "route": "J60・C1",
       "ride_min": 79,
       "transfer": {
        "at": "あおば（しぶや歯科医院前）",
        "wait_min": 0,
+       "headsign2": "向新田(観音前)",
        "route2": "町営バス"
       }
      }

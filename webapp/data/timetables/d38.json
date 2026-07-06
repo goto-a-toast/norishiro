@@ -11,7 +11,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 6,
       "transfer": null
      },
@@ -21,7 +22,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 6,
       "transfer": null
      },
@@ -31,7 +33,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 6,
       "transfer": null
      },
@@ -41,7 +44,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 6,
       "transfer": null
      }
@@ -57,12 +61,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 259,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -71,12 +77,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８１",
+      "headsign": "高松葉山温泉",
+      "route": "Z81",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 216,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 2
      },
@@ -86,12 +94,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -100,12 +110,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 29,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 114,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -114,12 +126,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 82,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -128,12 +142,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -142,7 +158,8 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 7,
       "transfer": null
      },
@@ -152,12 +169,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 29,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -166,12 +185,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 55,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -180,7 +201,8 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 7,
       "transfer": null
      },
@@ -190,12 +212,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 31,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 48,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -204,7 +228,8 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 7,
       "transfer": null
      }
@@ -226,12 +251,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 32,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -240,12 +267,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 49,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -254,12 +283,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 46,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -268,12 +299,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 49,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "Ｚ８０・Ｃ６"
+       "headsign2": "山形市役所前",
+       "route2": "Z80・C6"
       }
      }
     ],
@@ -299,12 +332,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 43,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -313,12 +348,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 59,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -327,12 +364,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 56,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -341,12 +380,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 47,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -361,12 +402,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 62,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 259,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -376,12 +419,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８１",
+      "headsign": "高松葉山温泉",
+      "route": "Z81",
       "ride_min": 65,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 216,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -391,12 +436,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 61,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 190,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -405,12 +452,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -420,12 +469,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 114,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -434,12 +485,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 82,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -449,12 +502,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -464,12 +519,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 130,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -479,12 +536,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -493,12 +552,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 55,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -507,12 +568,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 62,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -521,12 +584,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 62,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 0,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -536,12 +601,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 48,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -551,12 +618,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      }
@@ -578,12 +647,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -592,12 +663,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 70,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 78,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -606,12 +679,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 70,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      }
     ],
@@ -626,12 +701,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 74,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 114,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -640,12 +717,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 74,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -654,12 +733,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 76,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      }
     ],
@@ -677,7 +758,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 26,
       "transfer": null
      },
@@ -687,7 +769,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 26,
       "transfer": null
      },
@@ -697,7 +780,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 26,
       "transfer": null
      },
@@ -707,7 +791,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 26,
       "transfer": null
      }
@@ -723,12 +808,14 @@
       "board": "山形県立総合療育訓練センター",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "県立中央病院",
+      "route": "Z84・N14",
       "ride_min": 25,
       "transfer": {
        "at": "旭町西",
        "wait_min": 267,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -737,12 +824,14 @@
       "board": "山形県立総合療育訓練センター",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "県立中央病院",
+      "route": "Z84・N14",
       "ride_min": 25,
       "transfer": {
        "at": "旭町西",
        "wait_min": 97,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -751,12 +840,14 @@
       "board": "山形県立総合療育訓練センター",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "県立中央病院",
+      "route": "Z84・N14",
       "ride_min": 25,
       "transfer": {
        "at": "旭町西",
        "wait_min": 60,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      }
     ],
@@ -777,12 +868,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 43,
       "transfer": {
        "at": "めんごりあ角",
        "wait_min": 1,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -791,12 +884,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 50,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 23,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -805,12 +900,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 50,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 13,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -819,12 +916,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 30,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -847,7 +946,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 20,
       "transfer": null
      },
@@ -857,7 +957,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 20,
       "transfer": null
      },
@@ -867,7 +968,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 20,
       "transfer": null
      },
@@ -877,7 +979,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 20,
       "transfer": null
      }
@@ -893,12 +996,14 @@
       "board": "（医）二本松会上山病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C6",
       "ride_min": 33,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 242,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -907,12 +1012,14 @@
       "board": "（医）二本松会上山病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C6",
       "ride_min": 33,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -921,12 +1028,14 @@
       "board": "（医）二本松会上山病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 33,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 79,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -935,12 +1044,14 @@
       "board": "（医）二本松会上山病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 33,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -949,12 +1060,14 @@
       "board": "（医）二本松会上山病院",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 33,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 43,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      }
     ],
@@ -972,12 +1085,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -986,12 +1101,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 73,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -1000,12 +1117,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 70,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1014,12 +1133,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 61,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1042,12 +1163,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 51,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1056,12 +1179,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 67,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -1070,12 +1195,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 64,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1084,12 +1211,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 50,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1112,12 +1241,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 44,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1126,12 +1257,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 60,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -1140,12 +1273,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1154,12 +1289,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 48,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1182,12 +1319,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 67,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1196,12 +1335,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 80,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 78,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1210,12 +1351,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 80,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      }
     ],
@@ -1247,12 +1390,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 48,
       "transfer": {
        "at": "めんごりあ角",
        "wait_min": 1,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1261,12 +1406,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 55,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 23,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1275,12 +1422,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 55,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 13,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1289,12 +1438,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 35,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1320,12 +1471,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 33,
       "transfer": {
        "at": "めんごりあ角",
        "wait_min": 1,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1334,12 +1487,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 41,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 23,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1348,12 +1503,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 41,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 13,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1362,12 +1519,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1390,7 +1549,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -1400,7 +1560,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -1410,7 +1571,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -1420,7 +1582,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      }
@@ -1436,12 +1599,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 25,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 274,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1450,12 +1615,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 25,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 214,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1464,12 +1631,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 25,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 124,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -1479,12 +1648,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 25,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 64,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1493,7 +1664,8 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -1503,12 +1675,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 22,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1517,12 +1691,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 25,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 37,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1531,7 +1707,8 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -1541,7 +1718,8 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      }
@@ -1569,12 +1747,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 29,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1583,12 +1763,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 46,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -1597,12 +1779,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 43,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -1611,12 +1795,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 46,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "Ｚ８０・Ｃ６"
+       "headsign2": "山形市役所前",
+       "route2": "Z80・C6"
       }
      }
     ],
@@ -1631,12 +1817,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 43,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 259,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -1646,12 +1834,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８１",
+      "headsign": "高松葉山温泉",
+      "route": "Z81",
       "ride_min": 43,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 216,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1660,12 +1850,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 42,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 190,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1674,12 +1866,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C6",
       "ride_min": 45,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1688,12 +1882,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 40,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 114,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1702,12 +1898,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 45,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 79,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1716,12 +1914,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 42,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1730,12 +1930,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 42,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 130,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1744,12 +1946,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 40,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1758,12 +1962,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 45,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1772,12 +1978,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 37,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 0,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1786,12 +1994,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 45,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 43,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -1800,12 +2010,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 40,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      }
     ],
@@ -1823,12 +2035,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 68,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 218,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1837,12 +2051,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 68,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 138,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1851,12 +2067,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 68,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 33,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1865,12 +2083,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 68,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 88,
-       "route2": "上山～仙台線"
+       "headsign2": "仙台駅前",
+       "route2": "上山~仙台線"
       }
      }
     ],
@@ -1893,12 +2113,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 218,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1907,12 +2129,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 138,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1921,12 +2145,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 33,
-       "route2": "上山～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "上山~仙台線"
       }
      },
      {
@@ -1935,12 +2161,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 88,
-       "route2": "上山～仙台線"
+       "headsign2": "仙台駅前",
+       "route2": "上山~仙台線"
       }
      }
     ],
@@ -1969,12 +2197,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヨークタウン上山",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": {
        "at": "こだま橋",
        "wait_min": 19,
-       "route2": "Ｚ８３・Ｃ６"
+       "headsign2": "高松葉山温泉",
+       "route2": "Z83・C6"
       }
      },
      {
@@ -1983,12 +2213,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヨークタウン上山",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 22,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -1997,12 +2229,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヨークタウン上山",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 45,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 6,
-       "route2": "上山市市営バス　市内循環線"
+       "headsign2": "かみのやま温泉駅前",
+       "route2": "上山市市営バス 市内循環線"
       }
      },
      {
@@ -2011,12 +2245,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "ヨークタウン上山",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": {
        "at": "こだま橋",
        "wait_min": 4,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "高松葉山温泉",
+       "route2": "Z83・C9"
       }
      }
     ],
@@ -2031,12 +2267,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 274,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2045,12 +2283,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C6",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 242,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2059,12 +2299,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 214,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2073,12 +2315,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "千歳公園待合所",
+      "route": "Z83・C9",
       "ride_min": 15,
       "transfer": {
        "at": "こだま橋",
        "wait_min": 180,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2088,12 +2332,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 124,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2102,12 +2348,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 79,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2117,12 +2365,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 4,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2131,12 +2381,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "千歳公園待合所",
+      "route": "Z83・C9",
       "ride_min": 15,
       "transfer": {
        "at": "こだま橋",
        "wait_min": 0,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2145,12 +2397,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 37,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2159,12 +2413,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2174,12 +2430,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 90,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2188,12 +2446,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 43,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2202,12 +2462,14 @@
       "board": "ヨークタウン上山",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 34,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 0,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      }
     ],
@@ -2228,7 +2490,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "関食品",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": null
      },
@@ -2238,7 +2501,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "関食品",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": null
      },
@@ -2248,7 +2512,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "関食品",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": null
      },
@@ -2258,7 +2523,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "関食品",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 11,
       "transfer": null
      }
@@ -2274,12 +2540,14 @@
       "board": "関食品",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～久保手線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~久保手線",
       "ride_min": 32,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 257,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2288,12 +2556,14 @@
       "board": "関食品",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～久保手線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~久保手線",
       "ride_min": 32,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 92,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2302,7 +2572,8 @@
       "board": "関食品",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 9,
       "transfer": null
      },
@@ -2312,7 +2583,8 @@
       "board": "関食品",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 9,
       "transfer": null
      },
@@ -2322,7 +2594,8 @@
       "board": "関食品",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 9,
       "transfer": null
      }
@@ -2341,7 +2614,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2351,7 +2625,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2361,7 +2636,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2371,7 +2647,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      }
@@ -2387,12 +2664,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 274,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2401,12 +2680,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 24,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 260,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 4
      },
@@ -2416,12 +2697,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｚ８１",
+      "headsign": "高松葉山温泉",
+      "route": "Z81",
       "ride_min": 24,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 216,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 3
      },
@@ -2431,12 +2714,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 124,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2446,12 +2731,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 64,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 4
      },
@@ -2461,12 +2748,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 4,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2475,7 +2764,8 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2485,12 +2775,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 24,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 83,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 3
      },
@@ -2500,7 +2792,8 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2510,12 +2803,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 24,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 48,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 4
      },
@@ -2525,7 +2820,8 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      }
@@ -2544,7 +2840,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山城",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 10,
       "transfer": null
      },
@@ -2554,7 +2851,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山城",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 10,
       "transfer": null
      },
@@ -2564,7 +2862,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山城",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 10,
       "transfer": null
      },
@@ -2574,7 +2873,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山城",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 10,
       "transfer": null
      }
@@ -2590,12 +2890,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 30,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 274,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 3
      },
@@ -2605,12 +2907,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 30,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 214,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 4
      },
@@ -2620,12 +2924,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2634,12 +2940,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 30,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 124,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2648,12 +2956,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～久保手線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~久保手線",
       "ride_min": 28,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 92,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 2
      },
@@ -2663,12 +2973,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2678,7 +2990,8 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2688,12 +3001,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 28,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 83,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2702,12 +3017,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 55,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2717,7 +3034,8 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      },
@@ -2727,12 +3045,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 27,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 48,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2742,7 +3062,8 @@
       "board": "上山城",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 16,
       "transfer": null
      }
@@ -2761,7 +3082,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 18,
       "transfer": null
      },
@@ -2771,7 +3093,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 18,
       "transfer": null
      },
@@ -2781,7 +3104,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 18,
       "transfer": null
      },
@@ -2791,7 +3115,8 @@
       "board": "高野口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 18,
       "transfer": null
      }
@@ -2807,12 +3132,14 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 29,
       "transfer": {
        "at": "上山市役所前",
        "wait_min": 268,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2821,12 +3148,14 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 29,
       "transfer": {
        "at": "上山市役所前",
        "wait_min": 208,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2835,12 +3164,14 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 29,
       "transfer": {
        "at": "上山市役所前",
        "wait_min": 118,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2849,12 +3180,14 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 29,
       "transfer": {
        "at": "上山市役所前",
        "wait_min": 58,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2863,7 +3196,8 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -2873,12 +3207,14 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "上山市市営バス　市内循環線",
+      "headsign": "かみのやま温泉駅前",
+      "route": "上山市市営バス 市内循環線",
       "ride_min": 29,
       "transfer": {
        "at": "上山市役所前",
        "wait_min": 31,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -2887,7 +3223,8 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      },
@@ -2897,7 +3234,8 @@
       "board": "上山市役所",
       "platform": null,
       "alight": "中川地区",
-      "route": "高松葉山～棚木線",
+      "headsign": "棚木公民館前",
+      "route": "高松葉山~棚木線",
       "ride_min": 21,
       "transfer": null
      }
@@ -2916,12 +3254,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 44,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -2930,12 +3270,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 59,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -2944,12 +3286,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 57,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 18,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -2958,12 +3302,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 47,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -2978,12 +3324,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 64,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 259,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -2993,12 +3341,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８１",
+      "headsign": "高松葉山温泉",
+      "route": "Z81",
       "ride_min": 67,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 216,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3008,12 +3358,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 63,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 190,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -3022,12 +3374,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 69,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 157,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3037,12 +3391,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 114,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -3051,12 +3407,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 69,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 82,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3066,12 +3424,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 69,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3081,12 +3441,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８０・Ｃ６",
+      "headsign": "高松葉山温泉",
+      "route": "Z80・C6",
       "ride_min": 61,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 130,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3096,12 +3458,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 87,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -3110,12 +3474,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 69,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 55,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -3124,12 +3490,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８３・Ｃ９",
+      "headsign": "高松葉山温泉",
+      "route": "Z83・C9",
       "ride_min": 64,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 22,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       }
      },
      {
@@ -3138,12 +3506,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 64,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 0,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3153,12 +3523,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "高松葉山温泉",
+      "route": "S85・C7",
       "ride_min": 69,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 48,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      },
@@ -3168,12 +3540,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "中川地区",
-      "route": "Ｚ８４・Ｎ１４",
+      "headsign": "高松葉山温泉",
+      "route": "Z84・N14",
       "ride_min": 61,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 3,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      }
@@ -3192,12 +3566,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 42,
       "transfer": {
        "at": "弁天南",
        "wait_min": 2,
-       "route2": "Ｚ８４・Ｎ１４"
+       "headsign2": "県立中央病院",
+       "route2": "Z84・N14"
       }
      },
      {
@@ -3206,12 +3582,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 58,
       "transfer": {
        "at": "かみのやま温泉駅前",
        "wait_min": 3,
-       "route2": "Ｚ８３・Ｃ９"
+       "headsign2": "千歳公園待合所",
+       "route2": "Z83・C9"
       }
      },
      {
@@ -3220,12 +3598,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 59,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 13,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      },
      {
@@ -3234,12 +3614,14 @@
       "board": "高野口",
       "platform": null,
       "alight": "山形駅",
-      "route": "高松葉山～棚木線",
+      "headsign": "高松葉山温泉",
+      "route": "高松葉山~棚木線",
       "ride_min": 39,
       "transfer": {
        "at": "みゆき会病院前",
        "wait_min": 3,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "千歳公園待合所",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -3254,12 +3636,14 @@
       "board": "山形駅",
       "platform": "１",
       "alight": "中川地区",
-      "route": "山形～新潟線",
+      "headsign": "万代シティバスセンター",
+      "route": "山形~新潟線",
       "ride_min": 52,
       "transfer": {
        "at": "高松葉山温泉",
        "wait_min": 207,
-       "route2": "高松葉山～棚木線"
+       "headsign2": "棚木公民館前",
+       "route2": "高松葉山~棚木線"
       },
       "alt_routes": 1
      }

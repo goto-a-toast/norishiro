@@ -11,12 +11,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -25,12 +27,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -39,12 +43,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -53,12 +59,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "みゆき会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -73,12 +81,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -87,12 +97,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 32,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -101,12 +113,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 45,
       "transfer": {
        "at": "西部公民館口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -115,12 +129,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -129,12 +145,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -143,12 +161,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -157,12 +177,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -171,12 +193,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 214,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -185,12 +209,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 154,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -199,12 +225,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -213,12 +241,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -227,12 +257,14 @@
       "board": "みゆき会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 33,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -250,12 +282,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "公立学校（共済）東北中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "若葉町",
        "wait_min": 14,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "沼の辺",
+       "route2": "U19・C13"
       }
      },
      {
@@ -264,12 +298,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "公立学校（共済）東北中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "若葉町",
        "wait_min": 24,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "沼の辺",
+       "route2": "U19・C13"
       }
      },
      {
@@ -278,12 +314,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "公立学校（共済）東北中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "若葉町",
        "wait_min": 24,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "沼の辺",
+       "route2": "U19・C13"
       }
      },
      {
@@ -292,12 +330,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "公立学校（共済）東北中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "若葉町",
        "wait_min": 24,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "沼の辺",
+       "route2": "U19・C13"
       }
      }
     ],
@@ -312,12 +352,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -326,12 +368,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 18,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 4
      },
@@ -341,12 +385,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 55,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -356,12 +402,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -370,12 +418,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -384,12 +434,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -398,12 +450,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "紅花バス（山形市コミュニティバス高瀬線）",
+      "headsign": "山形駅前",
+      "route": "紅花バス(山形市コミュニティバス高瀬線)",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -413,12 +467,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -427,12 +483,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 225,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -441,12 +499,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 195,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -455,12 +515,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 165,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -469,12 +531,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 135,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -483,12 +547,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -497,12 +563,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -511,12 +579,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -525,12 +595,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -539,12 +611,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -553,12 +627,14 @@
       "board": "公立学校（共済）東北中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 14,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -576,12 +652,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 41,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 30,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      },
      {
@@ -590,12 +668,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 41,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      },
      {
@@ -604,12 +684,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 41,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      },
      {
@@ -618,12 +700,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "国立大学法人山形大学医学部附属病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 41,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      }
     ],
@@ -638,12 +722,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 43,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 54,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 4
      },
@@ -653,12 +739,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 110,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 4
      },
@@ -668,12 +756,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 0,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -682,12 +772,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 80,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -696,12 +788,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -710,12 +804,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -724,12 +820,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 230,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -738,12 +836,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 200,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -752,12 +852,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 170,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -766,12 +868,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 140,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -780,12 +884,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 110,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -794,12 +900,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 80,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -808,12 +916,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -822,12 +932,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 42,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -836,12 +948,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 43,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -850,12 +964,14 @@
       "board": "国立大学法人山形大学医学部附属病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "沼の辺",
+      "route": "U19・C13",
       "ride_min": 43,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -873,12 +989,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形厚生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 59,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W771・C8"
       }
      },
      {
@@ -887,12 +1005,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形厚生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 86,
-       "route2": "Ｓ８８・Ｃ５"
+       "headsign2": "道の駅川のみなと長井",
+       "route2": "S88・C5"
       }
      },
      {
@@ -901,12 +1021,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形厚生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 46,
-       "route2": "Ｓ８８・Ｃ５"
+       "headsign2": "道の駅川のみなと長井",
+       "route2": "S88・C5"
       }
      },
      {
@@ -915,12 +1037,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形厚生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 46,
-       "route2": "Ｓ８８・Ｃ５"
+       "headsign2": "道の駅川のみなと長井",
+       "route2": "S88・C5"
       }
      }
     ],
@@ -935,12 +1059,14 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W77・C8",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 59,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -949,12 +1075,14 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W77・C8",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -963,12 +1091,14 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -977,12 +1107,14 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 215,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -991,12 +1123,14 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 35,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -1014,12 +1148,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1028,12 +1164,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1042,12 +1180,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1056,12 +1196,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市立病院済生館",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -1076,12 +1218,14 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 34,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 81,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 116
      }
@@ -1100,12 +1244,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形徳洲会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 32,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 14,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "下原",
+       "route2": "W71・C8"
       }
      },
      {
@@ -1114,12 +1260,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形徳洲会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 5,
-       "route2": "ベニちゃんバス西くるりん　上町先回りコース"
+       "headsign2": "山形駅前",
+       "route2": "ベニちゃんバス西くるりん 上町先回りコース"
       }
      },
      {
@@ -1128,12 +1276,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形徳洲会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 5,
-       "route2": "ベニちゃんバス西くるりん　上町先回りコース"
+       "headsign2": "山形駅前",
+       "route2": "ベニちゃんバス西くるりん 上町先回りコース"
       }
      },
      {
@@ -1142,12 +1292,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形徳洲会病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 5,
-       "route2": "ベニちゃんバス西くるりん　上町先回りコース"
+       "headsign2": "山形駅前",
+       "route2": "ベニちゃんバス西くるりん 上町先回りコース"
       }
      }
     ],
@@ -1162,12 +1314,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W71・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 48,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1176,12 +1330,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 18,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1190,12 +1346,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 98,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1204,12 +1362,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W71・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 69,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1218,12 +1378,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W71・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 99,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1232,12 +1394,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 9,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1246,12 +1410,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 189,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1260,12 +1426,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 69,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1274,12 +1442,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W71・C8",
       "ride_min": 31,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 9,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1288,12 +1458,14 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W70・C8",
       "ride_min": 32,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 9,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -1311,12 +1483,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 14,
-       "route2": "Ｔ２０・Ｄ１５"
+       "headsign2": "県立中央病院",
+       "route2": "T20・D15"
       }
      },
      {
@@ -1325,12 +1499,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 62,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -1339,12 +1515,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 62,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -1353,12 +1531,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立中央病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 62,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      }
     ],
@@ -1373,12 +1553,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 62,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -1388,12 +1570,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 65,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 132,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1402,12 +1586,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 101,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -1417,12 +1603,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 57,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1431,12 +1619,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 117,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1445,12 +1635,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 57,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1459,12 +1651,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 237,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1473,12 +1667,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 216,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1487,12 +1683,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 177,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1501,12 +1699,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 117,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1515,12 +1715,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 57,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1529,12 +1731,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 57,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1543,12 +1747,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 36,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1557,12 +1763,14 @@
       "board": "山形県立中央病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "ヒルズサンピア",
+      "route": "T20・D15",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 12,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -1580,12 +1788,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1594,12 +1804,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1608,12 +1820,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -1622,12 +1836,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形県立総合療育訓練センター",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -1650,12 +1866,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "矢吹病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1664,12 +1882,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "矢吹病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1678,12 +1898,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "矢吹病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -1692,12 +1914,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "矢吹病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -1712,12 +1936,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1726,12 +1952,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 23,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -1741,12 +1969,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 84,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1755,12 +1985,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1769,12 +2001,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1783,12 +2017,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1797,12 +2033,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 209,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1811,12 +2049,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 149,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1825,12 +2065,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1839,12 +2081,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1853,12 +2097,14 @@
       "board": "矢吹病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -1876,12 +2122,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 23,
       "transfer": {
        "at": "みはらしの丘小学校前",
        "wait_min": 42,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "山形駅西口",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1890,7 +2138,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1900,7 +2149,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1910,7 +2160,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1920,7 +2171,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "若宮病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      }
@@ -1936,7 +2188,8 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1946,12 +2199,14 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1960,7 +2215,8 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1970,12 +2226,14 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -1984,7 +2242,8 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -1994,12 +2253,14 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 176,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2008,12 +2269,14 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2022,7 +2285,8 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      },
@@ -2032,7 +2296,8 @@
       "board": "若宮病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 13,
       "transfer": null
      }
@@ -2051,12 +2316,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -2065,12 +2332,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -2079,12 +2348,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -2093,12 +2364,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）二本松会上山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -2121,12 +2394,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -2135,12 +2410,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "山形～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "山形~仙台線"
       }
      },
      {
@@ -2149,12 +2426,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -2163,12 +2442,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -2191,12 +2472,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 46,
       "transfer": {
        "at": "みはらしの丘小学校前",
        "wait_min": 42,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "山形駅西口",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2205,7 +2488,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": null
      },
@@ -2215,7 +2499,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": null
      },
@@ -2225,7 +2510,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": null
      },
@@ -2235,7 +2521,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 36,
       "transfer": null
      }
@@ -2251,12 +2538,14 @@
       "board": "（医）松柏会至誠堂総合病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "ベニちゃんバス西くるりん　上町先回りコース",
+      "headsign": "山形駅前",
+      "route": "ベニちゃんバス西くるりん 上町先回りコース",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 39
      }
@@ -2275,12 +2564,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -2289,12 +2580,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -2303,12 +2596,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -2317,12 +2612,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -2337,12 +2634,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｃ２",
+      "headsign": "山形駅前",
+      "route": "C2",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 52,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2351,12 +2650,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 35,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 27,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 3
      },
@@ -2366,12 +2667,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 41,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 122,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2380,12 +2683,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "ベニちゃんバス東くるりん　小荷駄町先回りコース",
+      "headsign": "山形駅前",
+      "route": "ベニちゃんバス東くるりん 小荷駄町先回りコース",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 85,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 3
      },
@@ -2395,12 +2700,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "ベニちゃんバス東くるりん　小荷駄町先回りコース",
+      "headsign": "山形駅前",
+      "route": "ベニちゃんバス東くるりん 小荷駄町先回りコース",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 25,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2410,12 +2717,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 111,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2425,12 +2734,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 51,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2440,12 +2751,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 231,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2455,12 +2768,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 171,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2470,12 +2785,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 111,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2485,12 +2802,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 51,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -2500,12 +2819,14 @@
       "board": "（医）横山厚生会横山病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      }
@@ -2524,12 +2845,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -2538,12 +2861,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -2552,12 +2877,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -2566,12 +2893,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会千歳篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      }
     ],
@@ -2586,12 +2915,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 47,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 64,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2600,12 +2931,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 35,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2614,12 +2947,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2628,12 +2963,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 125,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2642,12 +2979,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 101,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2656,12 +2995,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2670,12 +3011,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 28,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2684,12 +3027,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2698,12 +3043,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2712,12 +3059,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2726,12 +3075,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 216,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2740,12 +3091,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 188,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2754,12 +3107,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 165,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2768,12 +3123,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2782,12 +3139,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2796,12 +3155,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 58,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -2811,12 +3172,14 @@
       "board": "（医）篠田好生会千歳篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -2834,12 +3197,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会天童温泉篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      },
      {
@@ -2848,12 +3213,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会天童温泉篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      },
      {
@@ -2862,12 +3229,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会天童温泉篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 78,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -2876,12 +3245,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（医）篠田好生会天童温泉篠田病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 69,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      }
     ],
@@ -2896,12 +3267,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 73,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 64,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -2911,12 +3284,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 86,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2925,12 +3300,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 125,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -2940,12 +3317,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2954,12 +3333,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2968,12 +3349,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2982,12 +3365,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -2996,12 +3381,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 91,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 216,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3010,12 +3397,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 165,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3024,12 +3413,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3038,12 +3429,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 82,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3052,12 +3445,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 92,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 36,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3066,12 +3461,14 @@
       "board": "（医）篠田好生会天童温泉篠田病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 83,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -3089,12 +3486,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -3103,12 +3502,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -3117,12 +3518,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -3131,12 +3534,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（独）国立病院機構山形病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -3151,12 +3556,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3165,12 +3572,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｊ１７・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J17・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 26,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3180,12 +3589,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 84,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3195,12 +3606,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3210,12 +3623,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3224,12 +3639,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3238,12 +3655,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 209,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3253,12 +3672,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 149,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3267,12 +3688,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3282,12 +3705,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3296,12 +3721,14 @@
       "board": "（独）国立病院機構山形病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      }
@@ -3320,12 +3747,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（福）恩賜財団済生会山形済生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -3334,12 +3763,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（福）恩賜財団済生会山形済生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -3348,12 +3779,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（福）恩賜財団済生会山形済生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -3362,12 +3795,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "（福）恩賜財団済生会山形済生病院",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      }
     ],
@@ -3382,12 +3817,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 46,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 64,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3396,12 +3833,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 35,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3410,12 +3849,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3424,12 +3865,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 125,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3438,12 +3881,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 101,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3452,12 +3897,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3466,12 +3913,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 28,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3480,12 +3929,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3494,12 +3945,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3508,12 +3961,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3522,12 +3977,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５２・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N52・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 216,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3536,12 +3993,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 188,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3550,12 +4009,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 165,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3564,12 +4025,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3578,12 +4041,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3592,12 +4057,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 58,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -3607,12 +4074,14 @@
       "board": "（福）恩賜財団済生会山形済生病院",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -3630,12 +4099,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 19,
       "transfer": {
        "at": "みはらしの丘小学校前",
        "wait_min": 42,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "山形駅西口",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3644,7 +4115,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 9,
       "transfer": null
      },
@@ -3654,7 +4126,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 9,
       "transfer": null
      },
@@ -3664,7 +4137,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 9,
       "transfer": null
      },
@@ -3674,7 +4148,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "イオンモール山形南",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 9,
       "transfer": null
      }
@@ -3690,7 +4165,8 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3700,12 +4176,14 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3714,7 +4192,8 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3724,12 +4203,14 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3738,7 +4219,8 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3748,12 +4230,14 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 176,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3762,12 +4246,14 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -3776,7 +4262,8 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3786,7 +4273,8 @@
       "board": "イオンモール山形南",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      }
@@ -3805,7 +4293,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3815,7 +4304,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 17,
       "transfer": null
      },
@@ -3825,7 +4315,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3835,7 +4326,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 17,
       "transfer": null
      },
@@ -3845,7 +4337,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3855,7 +4348,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 17,
       "transfer": null
      },
@@ -3865,7 +4359,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 17,
       "transfer": null
      },
@@ -3875,7 +4370,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      },
@@ -3885,7 +4381,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "コストコ上山倉庫店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 11,
       "transfer": null
      }
@@ -3901,7 +4398,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 15,
       "transfer": null
      },
@@ -3911,7 +4409,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 7,
       "transfer": null
      },
@@ -3921,7 +4420,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 15,
       "transfer": null
      },
@@ -3931,7 +4431,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 7,
       "transfer": null
      },
@@ -3941,7 +4442,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 15,
       "transfer": null
      },
@@ -3951,7 +4453,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 7,
       "transfer": null
      },
@@ -3961,7 +4464,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 7,
       "transfer": null
      },
@@ -3971,7 +4475,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 15,
       "transfer": null
      },
@@ -3981,7 +4486,8 @@
       "board": "コストコ上山倉庫店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 15,
       "transfer": null
      }
@@ -4000,7 +4506,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 10,
       "transfer": null
      },
@@ -4010,7 +4517,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 2,
       "transfer": null
      },
@@ -4020,7 +4528,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 10,
       "transfer": null
      },
@@ -4030,7 +4539,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 2,
       "transfer": null
      },
@@ -4040,7 +4550,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 10,
       "transfer": null
      },
@@ -4050,7 +4561,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 2,
       "transfer": null
      },
@@ -4060,7 +4572,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 2,
       "transfer": null
      },
@@ -4070,7 +4583,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 10,
       "transfer": null
      },
@@ -4080,7 +4594,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(みはらしの丘)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 10,
       "transfer": null
      }
@@ -4096,7 +4611,8 @@
       "board": "セブンイレブン(みはらしの丘)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 4,
       "transfer": null
      },
@@ -4106,7 +4622,8 @@
       "board": "セブンイレブン(みはらしの丘)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 4,
       "transfer": null
      },
@@ -4116,7 +4633,8 @@
       "board": "セブンイレブン(みはらしの丘)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 4,
       "transfer": null
      },
@@ -4126,7 +4644,8 @@
       "board": "セブンイレブン(みはらしの丘)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 4,
       "transfer": null
      },
@@ -4136,7 +4655,8 @@
       "board": "セブンイレブン(みはらしの丘)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 4,
       "transfer": null
      }
@@ -4156,12 +4676,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -4170,12 +4692,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -4184,12 +4708,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -4198,12 +4724,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "セブンイレブン(上山河崎)",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -4218,12 +4746,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4232,12 +4762,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 65,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 32,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4246,12 +4778,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 56,
       "transfer": {
        "at": "西部公民館口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4260,12 +4794,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4274,12 +4810,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4288,12 +4826,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4302,12 +4842,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4316,12 +4858,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 214,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4330,12 +4874,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 154,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4344,12 +4890,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4358,12 +4906,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 63,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4372,12 +4922,14 @@
       "board": "セブンイレブン(上山河崎)",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 65,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 33,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -4395,12 +4947,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ベル 山辺店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 148,
-       "route2": "Ｗ７６・Ｃ５"
+       "headsign2": "山辺駅前",
+       "route2": "W76・C5"
       }
      },
      {
@@ -4409,12 +4963,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ベル 山辺店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 28,
-       "route2": "Ｗ７６・Ｃ５"
+       "headsign2": "山辺駅前",
+       "route2": "W76・C5"
       }
      },
      {
@@ -4423,12 +4979,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ベル 山辺店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 153,
-       "route2": "Ｗ７６・Ｃ５"
+       "headsign2": "山辺駅前",
+       "route2": "W76・C5"
       }
      },
      {
@@ -4437,12 +4995,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ベル 山辺店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 33,
-       "route2": "Ｗ７６・Ｃ５"
+       "headsign2": "山辺駅前",
+       "route2": "W76・C5"
       }
      }
     ],
@@ -4457,12 +5017,14 @@
       "board": "ベル 山辺店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７６・Ｃ５",
+      "headsign": "山形市役所前",
+      "route": "W76・C5",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 37,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4471,12 +5033,14 @@
       "board": "ベル 山辺店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７６・Ｃ５",
+      "headsign": "山形市役所前",
+      "route": "W76・C5",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4485,12 +5049,14 @@
       "board": "ベル 山辺店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７６・Ｃ５",
+      "headsign": "山形市役所前",
+      "route": "W76・C5",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 187,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -4508,12 +5074,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ長岡店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 68,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4522,12 +5090,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ長岡店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 68,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4536,12 +5106,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ長岡店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 68,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4550,12 +5122,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ長岡店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 68,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      }
     ],
@@ -4570,12 +5144,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 64,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4584,12 +5160,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 35,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4598,12 +5176,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 68,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4612,12 +5192,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 125,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4626,12 +5208,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4640,12 +5224,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4654,12 +5240,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 75,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4668,12 +5256,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 15,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4682,12 +5272,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 165,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4696,12 +5288,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 105,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4710,12 +5304,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 64,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 45,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4724,12 +5320,14 @@
       "board": "ヤマザワ長岡店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N50・C2",
       "ride_min": 65,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -4747,12 +5345,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ漆山店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4761,12 +5361,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ漆山店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4775,12 +5377,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ漆山店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      },
      {
@@ -4789,12 +5393,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ漆山店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｎ５０・Ｃ２"
+       "headsign2": "わくわくランド",
+       "route2": "N50・C2"
       }
      }
     ],
@@ -4809,12 +5415,14 @@
       "board": "ヤマザワ漆山店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 28,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4823,12 +5431,14 @@
       "board": "ヤマザワ漆山店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 188,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4837,12 +5447,14 @@
       "board": "ヤマザワ漆山店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｎ５８・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "N58・C2",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 58,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -4860,12 +5472,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 49,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 32,
-       "route2": "Ｚ９０・Ｃ２"
+       "headsign2": "蔵王温泉バスターミナル",
+       "route2": "Z90・C2"
       }
      },
      {
@@ -4874,12 +5488,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      },
      {
@@ -4888,12 +5504,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      },
      {
@@ -4902,12 +5520,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ 成沢店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 51,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｕ１９・Ｃ１３"
+       "headsign2": "東海大山形高",
+       "route2": "U19・C13"
       }
      }
     ],
@@ -4922,12 +5542,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 17,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4936,12 +5558,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 122,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4950,12 +5574,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4964,12 +5590,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 7,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4978,12 +5606,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 87,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -4992,12 +5622,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 27,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5006,12 +5638,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 207,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5020,12 +5654,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 147,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5034,12 +5670,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 87,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5048,12 +5686,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 52,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 27,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5062,12 +5702,14 @@
       "board": "ヤマザワ 成沢店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｚ９０・Ｃ２",
+      "headsign": "山形駅前",
+      "route": "Z90・C2",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 27,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -5085,12 +5727,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 45,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 23,
-       "route2": "Ｋ１０・Ｃ２"
+       "headsign2": "県庁北口",
+       "route2": "K10・C2"
       }
      },
      {
@@ -5099,12 +5743,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "山形～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "山形~仙台線"
       }
      },
      {
@@ -5113,12 +5759,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "山形～仙台線"
+       "headsign2": "県庁市役所前[宮城県]",
+       "route2": "山形~仙台線"
       }
      },
      {
@@ -5127,12 +5775,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワあさひ町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 45,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 23,
-       "route2": "Ｋ１０・Ｃ２"
+       "headsign2": "県庁北口",
+       "route2": "K10・C2"
       }
      }
     ],
@@ -5155,12 +5805,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 20,
-       "route2": "ベニちゃんバス東くるりん　東原町先回りコース"
+       "headsign2": "山形駅前",
+       "route2": "ベニちゃんバス東くるりん 東原町先回りコース"
       }
      },
      {
@@ -5169,12 +5821,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 15,
-       "route2": "Ｔ２１・Ｃ５"
+       "headsign2": "芸術工科大学前",
+       "route2": "T21・C5"
       }
      },
      {
@@ -5183,12 +5837,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｔ２１・Ｃ５"
+       "headsign2": "芸術工科大学前",
+       "route2": "T21・C5"
       }
      },
      {
@@ -5197,12 +5853,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヤマザワ松見町店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｔ２１・Ｃ５"
+       "headsign2": "芸術工科大学前",
+       "route2": "T21・C5"
       }
      }
     ],
@@ -5217,12 +5875,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｃ２",
+      "headsign": "山形駅前",
+      "route": "C2",
       "ride_min": 43,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 52,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5231,12 +5891,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 45,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 27,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5245,12 +5907,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 46,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 5,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5259,12 +5923,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 101,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -5274,12 +5940,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 31,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5288,12 +5956,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 111,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5302,12 +5972,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 51,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5316,12 +5988,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 231,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5330,12 +6004,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 171,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5344,12 +6020,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 111,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5358,12 +6036,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 44,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 51,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5372,12 +6052,14 @@
       "board": "ヤマザワ松見町店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｔ２０・Ｄ１５",
+      "headsign": "県立中央病院",
+      "route": "T20・D15",
       "ride_min": 45,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 50,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -5395,12 +6077,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル山形嶋店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -5409,12 +6093,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル山形嶋店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -5423,12 +6109,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル山形嶋店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -5437,12 +6125,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル山形嶋店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -5457,12 +6147,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 53,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5471,12 +6163,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 23,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      },
@@ -5486,12 +6180,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 84,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5500,12 +6196,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5514,12 +6212,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5528,12 +6228,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5542,12 +6244,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 209,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5556,12 +6260,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 149,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5570,12 +6276,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5584,12 +6292,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5598,12 +6308,14 @@
       "board": "ヨークベニマル山形嶋店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 56,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 29,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -5621,12 +6333,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル南館店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 38,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 59,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W771・C8"
       }
      },
      {
@@ -5635,12 +6349,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル南館店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 86,
-       "route2": "Ｓ８８・Ｃ５"
+       "headsign2": "道の駅川のみなと長井",
+       "route2": "S88・C5"
       }
      },
      {
@@ -5649,12 +6365,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル南館店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 48,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 46,
-       "route2": "Ｓ８８・Ｃ５"
+       "headsign2": "道の駅川のみなと長井",
+       "route2": "S88・C5"
       }
      },
      {
@@ -5663,12 +6381,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "ヨークベニマル南館店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 32,
       "transfer": {
        "at": "南館",
        "wait_min": 12,
-       "route2": "Ｓ８７・Ｃ５"
+       "headsign2": "長谷堂南",
+       "route2": "S87・C5"
       }
      }
     ],
@@ -5683,12 +6403,14 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 65,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5697,12 +6419,14 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 215,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5711,12 +6435,14 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 38,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 35,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -5737,12 +6463,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "業務スーパー大野目店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      },
      {
@@ -5751,12 +6479,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "業務スーパー大野目店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      },
      {
@@ -5765,12 +6495,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "業務スーパー大野目店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 40,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      },
      {
@@ -5779,12 +6511,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "業務スーパー大野目店",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 50,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 10,
-       "route2": "Ｄ５５・Ｃ４"
+       "headsign2": "天童駅前",
+       "route2": "D55・C4"
       }
      }
     ],
@@ -5807,12 +6541,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "関食品",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5821,12 +6557,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "関食品",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5835,12 +6573,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "関食品",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5849,12 +6589,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "関食品",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -5877,12 +6619,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5891,12 +6635,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5905,12 +6651,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -5919,12 +6667,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "かみのやま温泉駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -5939,12 +6689,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 55,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5953,12 +6705,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 32,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5967,12 +6721,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 51,
       "transfer": {
        "at": "西部公民館口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5981,12 +6737,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -5995,12 +6753,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6009,12 +6769,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6023,12 +6785,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6037,12 +6801,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 214,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6051,12 +6817,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 154,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6065,12 +6833,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6079,12 +6849,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6093,12 +6865,14 @@
       "board": "かみのやま温泉駅",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 60,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 33,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -6116,12 +6890,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山城",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6130,12 +6906,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山城",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6144,12 +6922,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山城",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6158,12 +6938,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山城",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -6178,12 +6960,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 54,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 67,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6192,12 +6976,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 32,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6206,12 +6992,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 50,
       "transfer": {
        "at": "西部公民館口",
        "wait_min": 1,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6220,12 +7008,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6234,12 +7024,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6248,12 +7040,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6262,12 +7056,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6276,12 +7072,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 214,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6290,12 +7088,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 154,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6304,12 +7104,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 94,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6318,12 +7120,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 57,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 34,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6332,12 +7136,14 @@
       "board": "上山城",
       "platform": null,
       "alight": "みはらしの丘地区",
-      "route": "Ｓ８５・Ｃ７",
+      "headsign": "千歳公園待合所",
+      "route": "S85・C7",
       "ride_min": 59,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 33,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      }
     ],
@@ -6355,12 +7161,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6369,12 +7177,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6383,12 +7193,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      },
      {
@@ -6397,12 +7209,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "上山市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 61,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 20,
-       "route2": "Ｓ８５・Ｃ７"
+       "headsign2": "高松葉山温泉",
+       "route2": "S85・C7"
       }
      }
     ],
@@ -6425,12 +7239,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -6439,12 +7255,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -6453,12 +7271,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      },
      {
@@ -6467,12 +7287,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形市役所",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅前",
        "wait_min": 0,
-       "route2": "Ｈ１６・Ｃ１"
+       "headsign2": "山形病院",
+       "route2": "H16・C1"
       }
      }
     ],
@@ -6487,12 +7309,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 36,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 81,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6501,12 +7325,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｈ１６・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "H16・C1",
       "ride_min": 37,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 56,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 18
      },
@@ -6516,12 +7342,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 89,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 8
      },
@@ -6531,12 +7359,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 44,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 18
      },
@@ -6546,12 +7376,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 44,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 19
      },
@@ -6561,12 +7393,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 164,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 5
      },
@@ -6576,12 +7410,14 @@
       "board": "山形市役所",
       "platform": "６",
       "alight": "みはらしの丘地区",
-      "route": "Ｊ６０・Ｃ１",
+      "headsign": "山形駅前",
+      "route": "J60・C1",
       "ride_min": 39,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 104,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 23
      },
@@ -6591,12 +7427,14 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "みはらしの丘地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "下原",
+      "route": "W71・C8",
       "ride_min": 34,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 12,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 14
      }
@@ -6615,12 +7453,14 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "みはらしの丘小学校前",
+      "route": "S86・C3",
       "ride_min": 35,
       "transfer": {
        "at": "みはらしの丘小学校前",
        "wait_min": 42,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "山形駅西口",
+       "route2": "S86・C3"
       }
      },
      {
@@ -6629,7 +7469,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 25,
       "transfer": null
      },
@@ -6639,7 +7480,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 25,
       "transfer": null
      },
@@ -6649,7 +7491,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 25,
       "transfer": null
      },
@@ -6659,7 +7502,8 @@
       "board": "ふれあいセンター口",
       "platform": null,
       "alight": "山形駅",
-      "route": "Ｓ８６・Ｃ３",
+      "headsign": "山形駅西口",
+      "route": "S86・C3",
       "ride_min": 25,
       "transfer": null
      }
@@ -6675,12 +7519,14 @@
       "board": "山形駅",
       "platform": "2",
       "alight": "みはらしの丘地区",
-      "route": "ベニちゃんバス西くるりん　上町先回りコース",
+      "headsign": "山形駅前",
+      "route": "ベニちゃんバス西くるりん 上町先回りコース",
       "ride_min": 58,
       "transfer": {
        "at": "山形駅西口",
        "wait_min": 44,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 3
      },
@@ -6690,12 +7536,14 @@
       "board": "山形駅",
       "platform": "５",
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 32,
       "transfer": {
        "at": "篭田",
        "wait_min": 16,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 15
      },
@@ -6705,12 +7553,14 @@
       "board": "山形駅",
       "platform": "５",
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 32,
       "transfer": {
        "at": "篭田",
        "wait_min": 53,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 2
      },
@@ -6720,12 +7570,14 @@
       "board": "山形駅",
       "platform": "５",
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 32,
       "transfer": {
        "at": "篭田",
        "wait_min": 13,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 49
      },
@@ -6735,12 +7587,14 @@
       "board": "山形駅",
       "platform": "５",
       "alight": "みはらしの丘地区",
-      "route": "Ｕ１９・Ｃ１３",
+      "headsign": "東海大山形高",
+      "route": "U19・C13",
       "ride_min": 33,
       "transfer": {
        "at": "篭田",
        "wait_min": 12,
-       "route2": "Ｓ８６・Ｃ３"
+       "headsign2": "みはらしの丘小学校前",
+       "route2": "S86・C3"
       },
       "alt_routes": 1
      }

@@ -20,12 +20,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形厚生病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 69,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 16,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W771・C8"
       }
      },
      {
@@ -34,12 +36,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形厚生病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 60,
       "transfer": {
        "at": "沼木口",
        "wait_min": 259,
-       "route2": "Ｗ７７・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W77・C8"
       }
      },
      {
@@ -48,12 +52,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形厚生病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 60,
       "transfer": {
        "at": "沼木口",
        "wait_min": 199,
-       "route2": "Ｗ７７・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W77・C8"
       }
      },
      {
@@ -62,12 +68,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形厚生病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 60,
       "transfer": {
        "at": "沼木口",
        "wait_min": 79,
-       "route2": "Ｗ７７・Ｃ８"
+       "headsign2": "すげさわの丘",
+       "route2": "W77・C8"
       }
      }
     ],
@@ -82,11 +90,13 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W77・C8",
       "ride_min": 30,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 170,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -96,11 +106,13 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W77・C8",
       "ride_min": 30,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 145,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -110,11 +122,13 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 30,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 30,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -124,11 +138,13 @@
       "board": "山形厚生病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "千歳公園待合所",
+      "route": "W771・C8",
       "ride_min": 40,
       "transfer": {
        "at": "ヨークベニマル南館店前",
        "wait_min": 50,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      }
@@ -147,12 +163,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -161,12 +179,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -175,12 +195,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 61,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -189,12 +211,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市立病院済生館",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -209,11 +233,13 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１：南アンダー経由",
+      "headsign": "すげさわの丘",
+      "route": "W771:南アンダー経由",
       "ride_min": 44,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 88,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -223,11 +249,13 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "すげさわの丘",
+      "route": "W771・C8",
       "ride_min": 42,
       "transfer": {
        "at": "ヨークベニマル南館店前",
        "wait_min": 45,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -237,11 +265,13 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 51,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 71,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -251,11 +281,13 @@
       "board": "山形市立病院済生館",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 51,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 11,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      }
@@ -274,12 +306,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形徳洲会病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 29,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -288,12 +322,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形徳洲会病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 29,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -302,12 +338,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形徳洲会病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 29,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -316,12 +354,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形徳洲会病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 29,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -336,11 +376,13 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７０：南アンダー経由",
+      "headsign": "さわやか荘前",
+      "route": "W70:南アンダー経由",
       "ride_min": 36,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 271,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -350,11 +392,13 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７１・Ｃ８",
+      "headsign": "下原",
+      "route": "W71・C8",
       "ride_min": 36,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 161,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -364,11 +408,13 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 36,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 71,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -378,11 +424,13 @@
       "board": "山形徳洲会病院",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 36,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 11,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      }
@@ -416,12 +464,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 54,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -430,12 +480,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 54,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -444,12 +496,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 75,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -458,12 +512,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）小白川至誠堂病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 54,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -486,12 +542,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 42,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -500,12 +558,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 42,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -514,12 +574,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 63,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -528,12 +590,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）松柏会至誠堂総合病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 42,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -556,12 +620,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 49,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -570,12 +636,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 49,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -584,12 +652,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 70,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -598,12 +668,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "（医）横山厚生会横山病院",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 49,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -671,6 +743,7 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "ヨークベニマル南館店",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 34,
       "transfer": null
@@ -681,6 +754,7 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "ヨークベニマル南館店",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 34,
       "transfer": null
@@ -691,6 +765,7 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "ヨークベニマル南館店",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 34,
       "transfer": null
@@ -701,6 +776,7 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "ヨークベニマル南館店",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 14,
       "transfer": null
@@ -711,6 +787,7 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "ヨークベニマル南館店",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 34,
       "transfer": null
@@ -727,11 +804,13 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１：南アンダー経由",
+      "headsign": "すげさわの丘",
+      "route": "W771:南アンダー経由",
       "ride_min": 22,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 88,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -741,6 +820,7 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 15,
       "transfer": null
@@ -751,11 +831,13 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "すげさわの丘",
+      "route": "W771・C8",
       "ride_min": 22,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 43,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -765,6 +847,7 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 15,
       "transfer": null
@@ -775,6 +858,7 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 35,
       "transfer": null
@@ -785,6 +869,7 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 15,
       "transfer": null
@@ -795,6 +880,7 @@
       "board": "ヨークベニマル南館店",
       "platform": null,
       "alight": "村木沢地区",
+      "headsign": "光円寺前",
       "route": "あじさいバス",
       "ride_min": 15,
       "transfer": null
@@ -832,12 +918,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -846,12 +934,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -860,12 +950,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 61,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -874,12 +966,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形市役所",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 40,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
@@ -894,11 +988,13 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "村木沢地区",
-      "route": "Ｗ７７１：南アンダー経由",
+      "headsign": "すげさわの丘",
+      "route": "W771:南アンダー経由",
       "ride_min": 46,
       "transfer": {
        "at": "西公園入口",
        "wait_min": 88,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -908,11 +1004,13 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "村木沢地区",
-      "route": "Ｗ７７１・Ｃ８",
+      "headsign": "すげさわの丘",
+      "route": "W771・C8",
       "ride_min": 44,
       "transfer": {
        "at": "ヨークベニマル南館店前",
        "wait_min": 45,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -922,11 +1020,13 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 53,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 71,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      },
@@ -936,11 +1036,13 @@
       "board": "山形市役所",
       "platform": "５",
       "alight": "村木沢地区",
-      "route": "Ｗ７０・Ｃ８",
+      "headsign": "さわやか荘前",
+      "route": "W70・C8",
       "ride_min": 53,
       "transfer": {
        "at": "飯塚コミュニティセンター",
        "wait_min": 11,
+       "headsign2": "ヨークベニマル南館店前",
        "route2": "あじさいバス"
       }
      }
@@ -959,12 +1061,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 36,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 28,
-       "route2": "Ｗ７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W71・C8"
       }
      },
      {
@@ -973,12 +1077,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 36,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      },
      {
@@ -987,12 +1093,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 57,
       "transfer": {
        "at": "南沼原コミュニティセンター前",
        "wait_min": 11,
-       "route2": "Ｗ７７１・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W771・C8"
       }
      },
      {
@@ -1001,12 +1109,14 @@
       "board": "金沢児童遊園前",
       "platform": null,
       "alight": "山形駅",
+      "headsign": "ヨークベニマル南館店前",
       "route": "あじさいバス",
       "ride_min": 36,
       "transfer": {
        "at": "さわやか荘前",
        "wait_min": 58,
-       "route2": "Ｗ７０・Ｃ８"
+       "headsign2": "千歳公園待合所",
+       "route2": "W70・C8"
       }
      }
     ],
