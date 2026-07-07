@@ -143,6 +143,60 @@ function showScreen(n) {
 // ===============================================================
 // 画面1: 地区をえらぶ
 // ===============================================================
+// ---------------- GPSで近い地区をさがす(画面1) ----------------
+// 地区の「代表点」(districts.json の lat/lon = 人口最大メッシュの中心)との
+// 直線距離で近い順に3地区を候補として出し、利用者に選んでもらう。
+// 代表点方式なので地区境界の近くでは隣の地区が上に来ることがある——
+// だから自動で決めず、必ず「候補から選ぶ」形にする(誤判定への保険)。
+// ※これは表示のための距離の並べ替えだけで、経路の計算はしない(設計原則の範囲内)
+
+// 2点間のおおよその距離(m)。ヒュベニではなく簡易式で十分(候補の並べ替え用)
+function distanceM(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const x = (lon2 - lon1) * Math.PI / 180 * Math.cos(((lat1 + lat2) / 2) * Math.PI / 180);
+  const y = (lat2 - lat1) * Math.PI / 180;
+  return Math.round(R * Math.sqrt(x * x + y * y));
+}
+
+function distanceWord(m) {
+  return m < 950 ? `約${Math.round(m / 100) * 100}m` : `約${(m / 1000).toFixed(1)}km`;
+}
+
+function setupGeoButton() {
+  const btn = document.getElementById("geo-btn");
+  const result = document.getElementById("geo-result");
+  if (!("geolocation" in navigator)) {
+    btn.hidden = true;   // 使えない端末ではボタンごと出さない(一覧選択で完結)
+    return;
+  }
+  btn.addEventListener("click", () => {
+    result.textContent = "位置をしらべています…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const near = districts
+          .map((d) => ({ d, dist: distanceM(latitude, longitude, d.lat, d.lon) }))
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 3);
+        result.innerHTML = '<p class="geo-note">ちかい じゅんに ならべました。おすまいの地区をえらんでください</p>';
+        near.forEach(({ d, dist }) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "district-btn geo-candidate";
+          b.innerHTML =
+            `${escapeHtml(d.name)}<span class="kana">${escapeHtml(d.kana)} ・ ${escapeHtml(distanceWord(dist))}</span>`;
+          b.addEventListener("click", () => { location.hash = d.id; });
+          result.appendChild(b);
+        });
+      },
+      () => {
+        result.textContent = "位置情報が つかえませんでした。下の一覧から えらんでください";
+      },
+      { timeout: 10000, maximumAge: 60000 }
+    );
+  });
+}
+
 // 市タブの見た目を state.city に合わせる(画面3から「もどる」で戻ったとき、
 // 表示中だった地区の市に自動で合わせるため。plan_f4_ui.md §3 画面1)
 function syncCityTabs() {
@@ -710,6 +764,7 @@ async function init() {
   ]);
   document.getElementById("app").hidden = false;
   wireStaticHandlers();
+  setupGeoButton();
   window.addEventListener("hashchange", route);
   await route();
 }

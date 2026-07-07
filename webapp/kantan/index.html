@@ -25,6 +25,12 @@
   <main id="screen1" class="screen">
     <h1>バスの時刻表を<br>つくります</h1>
     <p class="instruction">① おすまいの地区をえらんでください</p>
+    <!-- GPSで近い地区の候補を出す(2026-07-07 開発者要望。使えない環境では一覧だけで完結する) -->
+    <div class="geo-row">
+      <button id="geo-btn" class="geo-btn" type="button">📍 いまいる場所から さがす</button>
+      <div id="geo-result" class="geo-result" aria-live="polite"></div>
+    </div>
+
     <div class="city-tabs" role="tablist" aria-label="市をえらぶ">
       <button class="city-tab" type="button" role="tab" data-city="山形市" aria-selected="true">山形市</button>
       <button class="city-tab" type="button" role="tab" data-city="上山市" aria-selected="false">上山市</button>

@@ -114,6 +114,46 @@ function fillSelectors() {
   document.getElementById("print-btn").addEventListener("click", () => window.print());
 }
 
+// GPSで近い地区の候補を3つ出す(かんたんモード画面1と同じ考え方。
+// 代表点との距離での並べ替えだけで、経路の計算はしない。
+// 境界近くの誤判定に備えて自動で決めず候補から選んでもらう)
+function distanceM(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const x = (lon2 - lon1) * Math.PI / 180 * Math.cos(((lat1 + lat2) / 2) * Math.PI / 180);
+  const y = (lat2 - lat1) * Math.PI / 180;
+  return Math.round(R * Math.sqrt(x * x + y * y));
+}
+
+function setupGeoButton() {
+  const btn = document.getElementById("geo-btn");
+  const result = document.getElementById("geo-result");
+  if (!("geolocation" in navigator)) { btn.hidden = true; return; }
+  btn.addEventListener("click", () => {
+    result.textContent = "位置をしらべています…";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const near = districts
+          .map((d) => ({ d, dist: distanceM(latitude, longitude, d.lat, d.lon) }))
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 3);
+        result.innerHTML = "";
+        near.forEach(({ d, dist }) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "board-chip";
+          const km = dist < 950 ? `約${Math.round(dist / 100) * 100}m` : `約${(dist / 1000).toFixed(1)}km`;
+          b.textContent = `${d.name}(${km})`;
+          b.addEventListener("click", () => { location.hash = `${d.id}/${state.fid}`; });
+          result.appendChild(b);
+        });
+      },
+      () => { result.textContent = "位置情報がつかえませんでした。プルダウンからえらんでください"; },
+      { timeout: 10000, maximumAge: 60000 }
+    );
+  });
+}
+
 function syncDayTypeTabs() {
   document.querySelectorAll(".dt-tab").forEach((t) => {
     t.setAttribute("aria-selected", String(t.dataset.dt === state.dayType));
@@ -329,6 +369,7 @@ async function init() {
   state.dayType = meta.date_table[todayKey()] || "weekday";
   document.getElementById("app").hidden = false;
   fillSelectors();
+  setupGeoButton();
   window.addEventListener("hashchange", route);
   await route();
 }

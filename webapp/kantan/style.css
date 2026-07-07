@@ -114,6 +114,23 @@ h1 {
   word-break: break-word;
 }
 
+/* ---------------- GPSで近い地区(画面1) ---------------- */
+.geo-row { margin-bottom: 16px; }
+.geo-btn {
+  width: 100%;
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--color-text);
+  background: #fdf6e3;
+  border: 3px solid var(--color-border);
+  border-radius: 14px;
+}
+.geo-result { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 22px; text-align: center; }
+.geo-note { font-size: 20px; color: #444444; margin: 4px 0 0; }
+.geo-candidate { background: #fffdf5; }
+
 /* ---------------- タブ(市・カテゴリ) ---------------- */
 .city-tabs, .category-tabs {
   display: flex;
