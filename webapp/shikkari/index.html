@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>バスの時刻表 - しっかりモード</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript>この機能にはJavaScriptが必要です</noscript>
+
+<div id="app" hidden>
+  <header id="page-header">
+    <h1>バスの時刻表 <span class="mode-badge">しっかりモード</span></h1>
+    <p class="mode-note">
+      家族・支援者向けの詳しい表示です(全便の到着時刻・のりば・のりつぎ・別経路の本数)。
+      <a href="../kantan/">かんたんモードにもどる</a>
+    </p>
+  </header>
+
+  <!-- 地区・行き先の選択(かんたんモードと違い、一覧でなくプルダウンで素早く) -->
+  <div class="selector-row no-print">
+    <label class="selector">
+      <span class="selector-label">地区(出発)</span>
+      <select id="district-select"></select>
+    </label>
+    <label class="selector">
+      <span class="selector-label">行き先</span>
+      <select id="facility-select"></select>
+    </label>
+    <button id="geo-btn" class="geo-btn" type="button">📍 近くの地区をさがす</button>
+  </div>
+  <div id="geo-result" class="geo-result no-print" aria-live="polite"></div>
+
+  <!-- ダイヤ種別の切り替え(かんたんモードは今日の自動判定のみ。こちらは選べる) -->
+  <div class="daytype-tabs no-print" role="tablist" aria-label="ダイヤの種類">
+    <button class="dt-tab" type="button" role="tab" data-dt="weekday" aria-selected="false">平日</button>
+    <button class="dt-tab" type="button" role="tab" data-dt="saturday" aria-selected="false">土曜</button>
+    <button class="dt-tab" type="button" role="tab" data-dt="sunday_holiday" aria-selected="false">日曜・祝日</button>
+  </div>
+
+  <h2 id="pair-title" class="pair-title"></h2>
+  <p id="daytype-note" class="daytype-note"></p>
+
+  <div id="content"></div>
+
+  <div class="action-row no-print">
+    <button id="print-btn" class="action-btn" type="button">🖨 この時刻表を印刷する</button>
+  </div>
+
+  <p id="validity-note" class="validity-note"></p>
+  <div id="phone-box" class="phone-box"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

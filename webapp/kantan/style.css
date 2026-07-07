@@ -114,6 +114,23 @@ h1 {
   word-break: break-word;
 }
 
+/* ---------------- GPSで近い地区(画面1) ---------------- */
+.geo-row { margin-bottom: 16px; }
+.geo-btn {
+  width: 100%;
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--color-text);
+  background: #fdf6e3;
+  border: 3px solid var(--color-border);
+  border-radius: 14px;
+}
+.geo-result { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 22px; text-align: center; }
+.geo-note { font-size: 20px; color: #444444; margin: 4px 0 0; }
+.geo-candidate { background: #fffdf5; }
+
 /* ---------------- タブ(市・カテゴリ) ---------------- */
 .city-tabs, .category-tabs {
   display: flex;
@@ -194,11 +211,24 @@ h1 {
 }
 
 .facility-btn .facility-name { flex: 1; }
+.facility-btn .facility-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
 .facility-btn .facility-time {
   font-size: 20px;
   font-weight: normal;
   white-space: nowrap;
 }
+.facility-btn .facility-transfer {
+  font-size: 18px;
+  font-weight: normal;
+  color: #555555;
+  white-space: nowrap;
+}
+.facility-btn .facility-transfer.has-transfer { color: #8a5a00; } /* 乗換=橙系。文字でも併記済み */
 
 .facility-btn.disabled {
   color: var(--color-disabled);
@@ -213,28 +243,92 @@ h1 {
   padding: 24px 0;
 }
 
-/* ---------------- 時計モード(画面3) ---------------- */
-.clock-box {
+/* ---------------- のりかたカード(画面3。時計モード一体) ----------------
+   文字サイズの基準は docs/plan_f4_ui.md §3 の表のとおり。
+   「(かくにん)」等の脇役20pxは、24px原則の明記済み例外 */
+.ride-card {
   border: 3px solid var(--color-outbound);
   background: var(--bg-outbound);
   border-radius: 14px;
   padding: 16px;
-  text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
-.clock-box .clock-main {
-  font-size: 30px;
+.ride-card .card-main {
+  font-size: 28px;
   font-weight: bold;
+  text-align: center;
 }
-.clock-box .clock-sub {
-  font-size: 22px;
+.ride-card .card-time {
+  font-size: 40px;           /* つぎのバスの時刻 = 画面3の最重要情報 */
+  color: var(--color-outbound);
+  letter-spacing: -0.02em;
+  white-space: nowrap;       /* 「ごぜん9:38」を途中で改行させない */
+}
+.no-wrap { white-space: nowrap; }
+.ride-card .card-wait { margin-left: 8px; white-space: nowrap; } /* 「あと8分」も途中で切らない */
+.ride-card .card-sub {
+  font-size: 24px;
+  text-align: center;
   margin-top: 4px;
 }
 
-.board-walk-note {
-  font-size: 22px;
+.ride-steps {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  border-top: 2px solid var(--color-outbound);
+}
+.ride-steps li {
+  display: flex;
+  gap: 10px;
+  font-size: 28px;           /* カード本文・バス停名 */
+  line-height: 1.45;
+  padding: 10px 0;
+  border-bottom: 1px dashed #99b4c9;
+}
+.ride-steps li:last-child { border-bottom: none; }
+.ride-steps .step-mark {
+  font-weight: bold;
+  color: var(--color-outbound);
+  flex-shrink: 0;
+}
+.ride-steps .step-body { flex: 1; }
+
+.ride-card .headsign {       /* 『◯◯行き』= R1の主役 */
+  font-weight: bold;
+  color: var(--color-outbound);
+}
+.ride-card .walk-note { font-size: 24px; }
+.ride-card .ride-note, .ride-card .arr-note {
+  font-size: 20px;
+  color: #444444;
+  /* 注: nowrapにすると狭い画面で「(バスにのるのは 合計約◯分)」が
+     横にはみ出すので、ここは折り返しを許す */
+}
+.ride-card .confirm-note {   /* (かくにん) バスの番号 = R2の脇役。あえて小さく */
+  display: block;
+  font-size: 20px;
+  font-weight: normal;
+  color: #444444;
+  margin-top: 2px;
+}
+.ride-card .platform-badge {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-text);
+  border-radius: 8px;
+  padding: 2px 10px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.chip-hint {
+  font-size: 20px;
+  color: #555555;
   text-align: center;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
 }
 
 /* ---------------- 行き/帰りブロック ---------------- */
@@ -247,7 +341,13 @@ h1 {
 .direction-block.outbound { border-color: var(--color-outbound); background: var(--bg-outbound); }
 .direction-block.return   { border-color: var(--color-return);   background: var(--bg-return); }
 
-.direction-header { margin-bottom: 8px; }
+.direction-header {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 .direction-label {
   display: inline-block;
   font-size: 24px;
@@ -259,57 +359,85 @@ h1 {
 .outbound .direction-label { background: var(--color-outbound); }
 .return   .direction-label { background: var(--color-return); }
 
-.time-table { display: flex; flex-direction: column; gap: 8px; }
+.od-pair {
+  font-size: 22px;
+  font-weight: bold;
+  word-break: break-word;
+}
 
-.time-row {
+.headsign-note {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+.headsign-note:empty { display: none; }
+
+/* ---------------- 段組の時刻チップ(ごぜん/ひる/ごご/よる) ---------------- */
+.dan-table { display: flex; flex-direction: column; gap: 8px; }
+
+.dan-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.dan-label {
+  flex-shrink: 0;
+  width: 84px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  padding: 14px 0;
+}
+
+.chips {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.time-chip {
+  min-width: 60px;            /* タップ領域60×60px以上(plan_f4_ui.md §3) */
+  min-height: 60px;
+  padding: 4px 10px;
+  font-size: 26px;
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--color-text);
   background: #ffffff;
   border: 2px solid var(--color-border);
   border-radius: 10px;
-  padding: 8px 12px;
-}
-
-.time-row .time-main {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+}
+.outbound .time-chip .chip-time { color: var(--color-outbound); }
+.return   .time-chip .chip-time { color: var(--color-return); }
+
+/* 選択中の便 = 太い枠で強調(初期選択はつぎの便) */
+.time-chip.selected {
+  border: 4px solid var(--color-text);
+  background: #fff7d9;
 }
 
-.time-row .dep-time {
-  font-size: 30px;
-  font-weight: bold;
-  letter-spacing: -0.02em;
-}
-.outbound .time-row .dep-time { color: var(--color-outbound); }
-.return   .time-row .dep-time { color: var(--color-return); }
-
-.time-row .arr-time { font-size: 18px; color: #555555; }
-.time-row .route-name { font-size: 16px; color: #555555; }
-
-.time-row .stop-line {
+.time-chip .chip-mark {       /* 乗換1回の印。色+「※」記号の併記 */
   font-size: 18px;
-  margin-top: 4px;
-}
-.time-row .platform-badge {
-  font-size: 14px;
   font-weight: bold;
-  color: #ffffff;
-  background: var(--color-text);
-  border-radius: 6px;
-  padding: 1px 6px;
-  margin-left: 4px;
+  color: #8a5a00;
 }
-.time-row .transfer-badge {
-  display: inline-block;
+.time-chip .chip-headsign {   /* headsign混在時だけ小さく添える */
   font-size: 14px;
-  font-weight: bold;
-  color: #ffffff;
-  background: #8a5a00;
-  border-radius: 6px;
-  padding: 1px 6px;
-  margin-left: 4px;
+  font-weight: normal;
+  color: #444444;
 }
-.time-row .alt-note { font-size: 14px; color: #777777; margin-top: 2px; }
+
+.chip-legend {
+  font-size: 20px;
+  color: #555555;
+  margin: 8px 0 0;
+}
 
 .no-service-note {
   font-size: 20px;
@@ -337,13 +465,91 @@ h1 {
 }
 
 .day-type-note, .validity-note {
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
   color: #555555;
   margin: 4px 0;
 }
 
-/* 印刷時はページ送りやボタン類を省く程度の最小対応(しっかりモードF5で本格対応) */
+/* ---------------- 電話番号欄(画面3の末尾) ---------------- */
+.phone-box {
+  border-top: 2px solid var(--color-border);
+  margin-top: 16px;
+  padding-top: 4px;
+}
+.phone-box:empty { display: none; }
+.phone-line {
+  padding: 10px 0;
+  border-bottom: 1px dashed #bbbbbb;
+  text-align: center;
+}
+.phone-line:last-child { border-bottom: none; }
+.phone-box .phone-label {
+  display: block;
+  font-size: 18px;
+  color: #555555;
+}
+.phone-box .phone-name {
+  display: block;
+  font-size: 22px;
+  font-weight: bold;
+  word-break: break-word;
+}
+.phone-box .phone-tel {
+  display: inline-block;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--color-outbound);
+  margin-top: 2px;
+  padding: 6px 16px;   /* スマホでタップしやすいように広めに */
+}
+
+/* キーボード操作でも今どこにいるか分かるように(色だけに頼らない太枠) */
+:focus-visible {
+  outline: 4px solid var(--color-outbound);
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   簡易印刷CSS(F4-4): 画面3をA4たて1枚に収める最小対応。
+   本格的な印刷レイアウト(段組の最適化など)はF5しっかりモードで行う。
+   方針: 操作用の要素(もどる・ボタン・タップ案内)を消し、文字と余白を
+   ひとまわり縮める。色が出ない印刷でも読めるよう、枠線と記号(※)は残る
+   ===================================================================== */
 @media print {
-  #app-header, .action-row { display: none; }
+  #app-header, .action-row, .chip-hint { display: none; }
+
+  body { font-size: 18px; }
+  /* 便数が多いペア(例: 全便乗換で行き23本)でも1枚に収まるよう全体を少し縮める。
+     zoomはChrome/Edge/Safariの印刷で有効。効かない環境でも2枚になるだけで実害なし */
+  #app { max-width: none; padding: 0; zoom: 0.78; }
+
+  /* のりかたカード: 途中で改ページさせない */
+  .ride-card { break-inside: avoid; padding: 10px; margin-bottom: 6px; }
+  .ride-card .card-main { font-size: 20px; }
+  .ride-card .card-time { font-size: 26px; }
+  .ride-card .card-sub { font-size: 18px; }
+  .ride-steps li { font-size: 18px; padding: 5px 0; gap: 6px; }
+  .ride-card .walk-note { font-size: 16px; }
+  .ride-card .confirm-note, .ride-card .ride-note, .ride-card .arr-note { font-size: 14px; }
+  .ride-card .platform-badge { font-size: 14px; padding: 1px 6px; }
+
+  /* 段組: 行の途中で改ページさせない(段と段の間では改ページしてよい) */
+  .direction-block { padding: 8px; margin-bottom: 8px; }
+  .direction-label { font-size: 18px; padding: 2px 10px; }
+  .od-pair { font-size: 16px; }
+  .headsign-note { font-size: 16px; margin-bottom: 4px; }
+  .dan-row { break-inside: avoid; gap: 4px; }
+  .dan-label { font-size: 15px; width: 56px; padding: 8px 0; }
+  .chips { gap: 4px; }
+  .time-chip { min-width: 44px; min-height: 40px; font-size: 17px; padding: 2px 5px; border-width: 1px; }
+  .time-chip.selected { border-width: 3px; }
+  .time-chip .chip-mark { font-size: 12px; }
+  .time-chip .chip-headsign { font-size: 10px; }
+  .chip-legend { font-size: 14px; margin-top: 4px; }
+
+  .day-type-note, .validity-note { font-size: 14px; margin: 2px 0; }
+  .phone-box { margin-top: 8px; padding-top: 6px; }
+  .phone-box .phone-name { font-size: 16px; }
+  .phone-box .phone-tel { font-size: 20px; padding: 2px 8px; color: var(--color-text); text-decoration: none; }
 }
