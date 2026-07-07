@@ -482,7 +482,46 @@ h1 {
   outline-offset: 2px;
 }
 
-/* 印刷時はページ送りやボタン類を省く程度の最小対応(しっかりモードF5で本格対応) */
+/* =====================================================================
+   簡易印刷CSS(F4-4): 画面3をA4たて1枚に収める最小対応。
+   本格的な印刷レイアウト(段組の最適化など)はF5しっかりモードで行う。
+   方針: 操作用の要素(もどる・ボタン・タップ案内)を消し、文字と余白を
+   ひとまわり縮める。色が出ない印刷でも読めるよう、枠線と記号(※)は残る
+   ===================================================================== */
 @media print {
   #app-header, .action-row, .chip-hint { display: none; }
+
+  body { font-size: 18px; }
+  /* 便数が多いペア(例: 全便乗換で行き23本)でも1枚に収まるよう全体を少し縮める。
+     zoomはChrome/Edge/Safariの印刷で有効。効かない環境でも2枚になるだけで実害なし */
+  #app { max-width: none; padding: 0; zoom: 0.78; }
+
+  /* のりかたカード: 途中で改ページさせない */
+  .ride-card { break-inside: avoid; padding: 10px; margin-bottom: 6px; }
+  .ride-card .card-main { font-size: 20px; }
+  .ride-card .card-time { font-size: 26px; }
+  .ride-card .card-sub { font-size: 18px; }
+  .ride-steps li { font-size: 18px; padding: 5px 0; gap: 6px; }
+  .ride-card .walk-note { font-size: 16px; }
+  .ride-card .confirm-note, .ride-card .ride-note, .ride-card .arr-note { font-size: 14px; }
+  .ride-card .platform-badge { font-size: 14px; padding: 1px 6px; }
+
+  /* 段組: 行の途中で改ページさせない(段と段の間では改ページしてよい) */
+  .direction-block { padding: 8px; margin-bottom: 8px; }
+  .direction-label { font-size: 18px; padding: 2px 10px; }
+  .od-pair { font-size: 16px; }
+  .headsign-note { font-size: 16px; margin-bottom: 4px; }
+  .dan-row { break-inside: avoid; gap: 4px; }
+  .dan-label { font-size: 15px; width: 56px; padding: 8px 0; }
+  .chips { gap: 4px; }
+  .time-chip { min-width: 44px; min-height: 40px; font-size: 17px; padding: 2px 5px; border-width: 1px; }
+  .time-chip.selected { border-width: 3px; }
+  .time-chip .chip-mark { font-size: 12px; }
+  .time-chip .chip-headsign { font-size: 10px; }
+  .chip-legend { font-size: 14px; margin-top: 4px; }
+
+  .day-type-note, .validity-note { font-size: 14px; margin: 2px 0; }
+  .phone-box { margin-top: 8px; padding-top: 6px; }
+  .phone-box .phone-name { font-size: 16px; }
+  .phone-box .phone-tel { font-size: 20px; padding: 2px 8px; color: var(--color-text); text-decoration: none; }
 }
