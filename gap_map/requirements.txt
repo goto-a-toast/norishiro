@@ -1,0 +1,6 @@
+# かんたんモード/しっかりモードのデータ工場(export_web_data.py)と
+# F10見積り(estimate_stop_level.py)の実行に必要な外部パッケージ。
+# インストール: pip install -r gap_map/requirements.txt
+pandas
+numpy
+jpholiday

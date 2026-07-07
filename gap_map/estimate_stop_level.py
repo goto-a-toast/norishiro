@@ -2,14 +2,24 @@
 """F10-1: 停留所単位の事前計算(docs/plan_f10_stop_select.md 案A)の実測見積り。
 
 ★このスクリプトは読み取り専用(何も生成・変更しない)。
-★GTFSフィードと data/mesh_districts.csv が必要なので、実行は開発機(Mac)で:
+★GTFSフィード(gap_map/download_gtfs.py で取得)が必要。実行方法:
     python3 gap_map/estimate_stop_level.py
+
+地区の空間的な広がりの元データについて、2通りの精度で動く:
+  (A) data/mesh_districts.csv がある(make_districts.py を実行済みの環境)
+      → 地区の全メッシュ中心から徒歩圏を測る、本来の精度
+  (B) 無い(mesh_districts.csvはgitignore対象でクローン直後には存在しない)
+      → webapp/data/districts.json の代表点(1地区1点)だけで代用する簡易版。
+        代表点1つぶんの徒歩圏しか見ないため停留所数を**過小に**見積もる
+        (=判断基準に対して安全側に倒れるわけではない点に注意。
+        (B)で基準を超えたら着工不可、基準内でも(A)で改めて実測すること)
 
 出力: 地区ごとの「徒歩圏内の停留所数(名前で統合)」と、
 現行の地区JSON実サイズからの外挿による追加データ総量・生成時間の目安。
 docs/plan_f10_stop_select.md §3 の判断基準(150MB・2時間)と突き合わせて
 着工可否を判断する材料にする。
 """
+import json
 from pathlib import Path
 
 import numpy as np
@@ -17,11 +27,34 @@ import pandas as pd
 
 import config
 from compute_access import haversine_m_vec
-from meshcode import meshcode_to_center
 
 PROJECT_ROOT = Path(__file__).parent.parent
-MESH_DISTRICTS_CSV = config.DATA_DIR / "mesh_districts.csv"   # make_districts.py の出力
+MESH_DISTRICTS_CSV = config.DATA_DIR / "mesh_districts.csv"   # make_districts.py の出力(あれば使う)
+DISTRICTS_JSON = PROJECT_ROOT / "webapp" / "data" / "districts.json"  # 無ければこちらで代用
 TIMETABLES_DIR = PROJECT_ROOT / "webapp" / "data" / "timetables"
+
+
+def load_district_points() -> pd.DataFrame:
+    """地区ごとの代表点(複数可)を返す。mesh_districts.csvがあれば全メッシュ中心
+    (精度A)、無ければdistricts.jsonの1地区1点(精度B・簡易版)"""
+    if MESH_DISTRICTS_CSV.exists():
+        from meshcode import meshcode_to_center
+        mesh = pd.read_csv(MESH_DISTRICTS_CSV, dtype={"meshcode": str})
+        need_cols = {"meshcode", "district_id"}
+        assert need_cols <= set(mesh.columns), f"mesh_districts.csv の列が想定外: {list(mesh.columns)}"
+        centers = mesh["meshcode"].map(meshcode_to_center)
+        mesh["lat"] = centers.map(lambda t: t[0])
+        mesh["lon"] = centers.map(lambda t: t[1])
+        print("精度A(data/mesh_districts.csv の全メッシュ中心)で計算します")
+        return mesh[["district_id", "lat", "lon"]]
+
+    print("※ data/mesh_districts.csv が無いため、webapp/data/districts.json の"
+          "代表点1点/地区で代用します(簡易版。停留所数を過小に見積もる点に注意。"
+          "make_districts.py を実行できる環境があれば精度Aで測り直すこと)")
+    districts = json.loads(DISTRICTS_JSON.read_text(encoding="utf-8"))
+    return pd.DataFrame([
+        {"district_id": d["id"], "lat": d["lat"], "lon": d["lon"]} for d in districts
+    ])
 
 # 判断基準(docs/plan_f10_stop_select.md §3)
 LIMIT_TOTAL_MB = 150
@@ -48,13 +81,7 @@ def load_all_stops() -> pd.DataFrame:
 
 
 def main():
-    mesh = pd.read_csv(MESH_DISTRICTS_CSV, dtype={"meshcode": str})
-    need_cols = {"meshcode", "district_id"}
-    assert need_cols <= set(mesh.columns), f"mesh_districts.csv の列が想定外: {list(mesh.columns)}"
-    centers = mesh["meshcode"].map(meshcode_to_center)
-    mesh["lat"] = centers.map(lambda t: t[0])
-    mesh["lon"] = centers.map(lambda t: t[1])
-
+    mesh = load_district_points()
     stops = load_all_stops()
     stop_lats = stops["stop_lat"].to_numpy()
     stop_lons = stops["stop_lon"].to_numpy()
