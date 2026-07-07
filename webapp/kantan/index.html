@@ -43,21 +43,30 @@
     <div id="facility-list" class="facility-list"></div>
   </main>
 
-  <!-- 画面3: 時刻表 -->
+  <!-- 画面3: 時刻表(F4-2で全面改訂。設計= docs/plan_f4_ui.md §3) -->
   <main id="screen3" class="screen" hidden>
     <p class="breadcrumb"><span id="s3-district-name"></span> → <span id="s3-facility-name"></span></p>
 
-    <div id="clock-box" class="clock-box" aria-live="polite"></div>
-    <p id="board-walk-note" class="board-walk-note"></p>
+    <!-- のりかたカード: 「つぎのバス」の時計と、①歩く→②乗る→③降りるの案内を1枚に -->
+    <div id="ride-card" class="ride-card" aria-live="polite"></div>
+    <p id="chip-hint" class="chip-hint">(下の時刻をおすと、上の「のりかた」がその便にかわります)</p>
 
     <section class="direction-block outbound">
-      <div class="direction-header"><span class="direction-label">行き</span></div>
-      <div id="outbound-table" class="time-table"></div>
+      <div class="direction-header">
+        <span class="direction-label">行き</span>
+        <span id="outbound-odpair" class="od-pair"></span>
+      </div>
+      <p id="outbound-headsign-note" class="headsign-note"></p>
+      <div id="outbound-table" class="dan-table"></div>
     </section>
 
     <section class="direction-block return">
-      <div class="direction-header"><span class="direction-label">帰り</span></div>
-      <div id="inbound-table" class="time-table"></div>
+      <div class="direction-header">
+        <span class="direction-label">帰り</span>
+        <span id="inbound-odpair" class="od-pair"></span>
+      </div>
+      <p id="inbound-headsign-note" class="headsign-note"></p>
+      <div id="inbound-table" class="dan-table"></div>
     </section>
 
     <div class="action-row">
@@ -67,6 +76,7 @@
 
     <p id="day-type-note" class="day-type-note"></p>
     <p id="validity-note" class="validity-note"></p>
+    <div id="phone-box" class="phone-box"></div>
   </main>
 </div>
 
