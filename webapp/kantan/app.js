@@ -340,7 +340,7 @@ async function renderScreen3(did, fid) {
   document.getElementById("validity-note").textContent =
     `この時刻表は ${dateJa(meta.valid_until)} まで有効です`;
 
-  renderPhoneBox(district);
+  renderPhoneBox(district, collectOperators());
   setupSpeakButton();
 
   // 時計モード: 1分ごとに「あと◯分」を更新する。
@@ -536,27 +536,69 @@ function updateChipSelection() {
 }
 
 // ---------------- 電話番号欄 ----------------
-// meta.json の demand_phone を地区名で引く。該当地区(デマンド交通のある地区)なら
-// 予約電話を、それ以外はその市の相談窓口を出す(plan_f4_ui.md §3-7)
-function renderPhoneBox(district) {
+// 3種類の連絡先を出し分ける(2026-07-07 開発者指示による改訂):
+//  1. この時刻表のバスの運行主体(便レコードの op / op2 → meta.operators。
+//     山交バスの便に市役所の番号だけが出る不自然さを防ぐ。電話が確認済みの
+//     運行主体のみ表示。opがまだ無い古いデータでは自動的に出ない=後方互換)
+//  2. よやくして のるバス(デマンド交通。対象地区のみ)
+//  3. 市のバス相談窓口(常に出す。ただし同じ番号が上に出ていれば重複させない)
+
+// 表示中の時刻表(行き・帰りの全ダイヤ種別)に出てくる運行主体を集める
+function collectOperators() {
+  if (!Array.isArray(meta.operators)) return [];
+  const idx = new Set();
+  for (const dir of ["outbound", "inbound"]) {
+    for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
+      for (const r of (s3.entry && s3.entry[dir] && s3.entry[dir][dt]) || []) {
+        if (Number.isInteger(r.op)) idx.add(r.op);
+        if (r.transfer && Number.isInteger(r.transfer.op2)) idx.add(r.transfer.op2);
+      }
+    }
+  }
+  return [...idx].sort((a, b) => a - b).map((i) => meta.operators[i]).filter(Boolean);
+}
+
+function renderPhoneBox(district, operators = []) {
   const box = document.getElementById("phone-box");
   box.innerHTML = "";
   if (!district || !Array.isArray(meta.demand_phone)) return;
 
-  let entry = meta.demand_phone.find(
+  const lines = [];
+  const seenTel = new Set();
+
+  // 1. 運行主体(電話が確認済みのものだけ。同じ番号は1回)
+  for (const op of operators) {
+    if (!op || !op.tel || seenTel.has(op.tel)) continue;
+    seenTel.add(op.tel);
+    const name = op.desk ? `${op.name}(${op.desk})` : op.name;
+    lines.push({ label: "この時刻表のバス", name, tel: op.tel });
+  }
+
+  // 2. デマンド交通(対象地区のみ)
+  const demand = meta.demand_phone.find(
     (p) => Array.isArray(p.districts) && p.districts.includes(district.name)
   );
-  if (!entry) {
-    // 「山形市のその他全地区」のような市単位の窓口にフォールバック
-    entry = meta.demand_phone.find(
-      (p) => typeof p.districts === "string" && p.districts.startsWith(district.municipality)
-    );
+  if (demand) {
+    seenTel.add(demand.tel);
+    lines.push({ label: "よやくして のるバス", name: demand.name, tel: demand.tel });
   }
-  if (!entry) return;
 
-  box.innerHTML =
-    `<div class="phone-name">${escapeHtml(entry.name)}</div>` +
-    `<a class="phone-tel" href="tel:${escapeHtml(entry.tel)}">☎ ${escapeHtml(entry.tel)}</a>`;
+  // 3. 市の相談窓口(同じ番号がまだ出ていなければ)
+  const cityDesk = meta.demand_phone.find(
+    (p) => typeof p.districts === "string" && p.districts.startsWith(district.municipality)
+  );
+  if (cityDesk && !seenTel.has(cityDesk.tel)) {
+    lines.push({ label: "バス全般の相談", name: cityDesk.name, tel: cityDesk.tel });
+  }
+
+  box.innerHTML = lines
+    .map(
+      (l) =>
+        `<div class="phone-line"><span class="phone-label">${escapeHtml(l.label)}</span>` +
+        `<span class="phone-name">${escapeHtml(l.name)}</span>` +
+        `<a class="phone-tel" href="tel:${escapeHtml(l.tel)}">☎ ${escapeHtml(l.tel)}</a></div>`
+    )
+    .join("");
 }
 
 // ---------------- 音声 ----------------

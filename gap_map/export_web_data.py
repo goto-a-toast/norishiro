@@ -124,6 +124,68 @@ DEMAND_PHONE = [
      "districts": "上山市のその他全地区"},
 ]
 
+# 運行主体の連絡先(2026-07-07 追加。かんたんモード/しっかりモードの
+# 「バスの相談窓口」欄に、実際にその画面に出ているバスの運行主体を出すため)。
+# キーはフィード名(= trip_id の「◯◯:」接頭辞。gtfs_◯◯ ディレクトリ名から)。
+# ★tel は市・事業者の公式ページで人間が確認してから記入すること
+# (None のままなら画面には運行主体の名前だけ出て、電話番号は出ない)。
+# agency.txt の記載は生成時にログへ出すので、記入内容と突き合わせて確認する
+OPERATOR_CONTACT = {
+    # 2026-07-07 Web調査(検索結果スニペット経由。★印は公開前に公式ページを
+    # 人の目で開いて最終確認すること — 特に山交・天童・南陽)
+    # ★山交バス案内センター: 複数ソース一致だが公式ページの直接閲覧は未実施
+    "山形交通": {"name": "山交バス", "desk": "案内センター", "tel": "023-632-7272"},
+    # 上山市公式 soshiki/3/shieibasu20231002.html(市政戦略課が市営バス所管)
+    "上山市":   {"name": "上山市営バス", "desk": "上山市 市政戦略課", "tel": "023-672-1111"},
+    # 山形市公式 kurashi/kotsu/…/1002674.html(べにちゃんバス=公共交通課)
+    "山形市":   {"name": "べにちゃんバス(山形市)", "desk": "山形市 公共交通課", "tel": "023-641-1212"},
+    # ★天童市: 担当課の直通番号が未確認のため未記入(代表023-654-1111も未確認)。
+    #   確認後に記入する
+    "天童市":   {"name": "天童市営バス", "desk": "天童市役所", "tel": None},
+    # 山辺町公式 soshiki/4/otoiawase2024.html(町民生活課 生活環境係)
+    "山辺町":   {"name": "山辺町営バス", "desk": "山辺町 町民生活課", "tel": "023-667-1109"},
+    # 中山町公式 soshiki/3/choebus2.html(総合政策課)
+    "中山町":   {"name": "中山町営バス(中山ふれあい号)", "desk": "中山町 総合政策課", "tel": "023-662-4271"},
+    # 東根市公式 section008/shiminbus/(生活環境課。代表番号+内線2171)
+    "東根市":   {"name": "東根市営バス", "desk": "東根市 生活環境課", "tel": "0237-42-1111"},
+    # ★南陽市: 0238-40-8992(社会教育課)と代表0238-40-3211の2情報が交錯。
+    #   公式ページで確認できるまで未記入
+    "南陽市":   {"name": "南陽市営バス", "desk": "南陽市役所", "tel": None},
+    # 寒河江市公式 kurashi/koutsu/(企画戦略課)
+    "寒河江市": {"name": "寒河江市営バス", "desk": "寒河江市 企画戦略課", "tel": "0237-85-1413"},
+}
+
+# フィード名 → operators配列の添字(便レコードの "op"/"op2" はこの添字で運行主体を指す。
+# 文字列を毎行に持たせるよりJSONが小さく済む)。順序は config.GTFS_FEED_DIRS で固定
+FEED_NAMES = [d.name.removeprefix("gtfs_") for d in config.GTFS_FEED_DIRS]
+FEED_INDEX = {name: i for i, name in enumerate(FEED_NAMES)}
+
+
+def operator_index(trip_id: str):
+    """trip_id(「フィード名:元trip_id」形式)から運行主体の添字を返す。
+    未知の接頭辞なら None(将来フィード構成が変わったときに黙って誤表示しないため)"""
+    feed = trip_id.split(":", 1)[0]
+    return FEED_INDEX.get(feed)
+
+
+def build_operators() -> list:
+    """meta.json の operators 配列を作る。表示名・窓口・電話は OPERATOR_CONTACT
+    (人間が確認して記入)を正とし、agency.txt の正式名称・電話はログに出して
+    突き合わせ確認の材料にする"""
+    operators = []
+    for feed_dir, feed in zip(config.GTFS_FEED_DIRS, FEED_NAMES):
+        contact = OPERATOR_CONTACT.get(feed, {"name": feed, "desk": None, "tel": None})
+        agency_path = feed_dir / "agency.txt"
+        if agency_path.exists():
+            ag = pd.read_csv(agency_path, dtype=str)
+            names = "、".join(ag.get("agency_name", pd.Series(dtype=str)).dropna())
+            phones = "、".join(ag.get("agency_phone", pd.Series(dtype=str)).dropna()) or "(記載なし)"
+            print(f"  [agency.txt照合] {feed}: 正式名称={names} / 電話={phones}"
+                  f" → 表示={contact['name']} / 記入電話={contact['tel'] or '未記入'}")
+        operators.append({"feed": feed, "name": contact["name"],
+                          "desk": contact["desk"], "tel": contact["tel"]})
+    return operators
+
 
 # ===============================================================
 # 日付→ダイヤ種別(date_table)
@@ -267,6 +329,7 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
             "wait_min": round(second.depart - arrive_at_transfer),
             "headsign2": headsigns[second.trip_id],   # のりかえ後の便の行き先表示(R4)
             "route2": normalize_text(second.route_name),
+            "op2": operator_index(second.trip_id),    # のりかえ後の便の運行主体(meta.operatorsの添字)
         }
 
     total_min = final_arrival - dep
@@ -286,6 +349,7 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         "alight": alight_name,
         "headsign": headsigns[first.trip_id],   # バス前面の行き先表示(R1の主役)
         "route": normalize_text(first.route_name),
+        "op": operator_index(first.trip_id),    # 運行主体(meta.operatorsの添字)
         "ride_min": ride_min,
         "transfer": transfer,
     }
@@ -592,6 +656,7 @@ def main():
         "day_types": DAY_TYPE_LABELS,
         "date_table": date_table,
         "demand_phone": DEMAND_PHONE,
+        "operators": build_operators(),
     }
     WEBAPP_DATA_DIR.mkdir(parents=True, exist_ok=True)
     META_JSON.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")

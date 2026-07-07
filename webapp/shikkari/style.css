@@ -1,0 +1,205 @@
+/* =====================================================================
+   しっかりモード(F5)のデザイン設定
+   -------------------------------------------------------------------
+   色・書体は第1部PDF/かんたんモードと同じ系統(行き=青・帰り=橙、
+   BIZ UDPゴシック)。対象は家族・支援者なので、かんたんモードより
+   情報密度を上げる(基本18〜20px)。印刷は第1部の紙面の流儀に寄せた
+   A4縦(白黒でも行き帰りが区別できること=F5完成条件)
+   ===================================================================== */
+
+:root {
+  --color-text:      #1a1a1a;
+  --color-outbound:  #00518e;
+  --color-return:    #a83200;
+  --bg-outbound:     #eff5fb;
+  --bg-return:       #f0d9c2;
+  --color-border:    #444444;
+  --color-bg:        #ffffff;
+  --color-disabled:  #999999;
+  --color-disabled-bg: #eeeeee;
+}
+
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; overflow-x: hidden; }
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text);
+  font-size: 18px;
+  line-height: 1.5;
+  background: var(--color-bg);
+}
+noscript { display: block; font-size: 24px; font-weight: bold; text-align: center; padding: 40px 16px; }
+
+#app { max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
+
+#page-header h1 { font-size: 26px; margin: 12px 0 4px; }
+.mode-badge {
+  font-size: 16px;
+  color: #ffffff;
+  background: var(--color-outbound);
+  border-radius: 8px;
+  padding: 2px 10px;
+  vertical-align: middle;
+}
+.mode-note { font-size: 16px; color: #444444; margin: 0 0 12px; }
+.mode-note a { color: var(--color-outbound); }
+
+/* ---------------- 選択(プルダウン)とダイヤ種別タブ ---------------- */
+.selector-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.selector { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 220px; }
+.selector-label { font-size: 15px; font-weight: bold; color: #444444; }
+.selector select {
+  font-family: inherit;
+  font-size: 18px;
+  padding: 8px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.daytype-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.dt-tab {
+  flex: 1;
+  min-height: 44px;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-disabled-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+}
+.dt-tab[aria-selected="true"] {
+  color: #ffffff;
+  background: var(--color-outbound);
+  border-color: var(--color-outbound);
+}
+
+.pair-title { font-size: 22px; margin: 8px 0 2px; word-break: break-word; }
+.daytype-note { font-size: 16px; color: #444444; margin: 0 0 12px; }
+
+/* ---------------- 方向ブロックと絞り込みチップ ---------------- */
+.direction-block { border: 3px solid var(--color-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 16px; }
+.direction-block.outbound { border-color: var(--color-outbound); background: var(--bg-outbound); }
+.direction-block.return   { border-color: var(--color-return);   background: var(--bg-return); }
+.direction-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.direction-label {
+  font-size: 18px; font-weight: bold; color: #ffffff;
+  padding: 3px 14px; border-radius: 8px;
+}
+.outbound .direction-label { background: var(--color-outbound); }
+.return   .direction-label { background: var(--color-return); }
+.direction-sub { font-size: 16px; font-weight: bold; }
+
+.board-filter { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
+.board-filter-label { font-size: 15px; color: #444444; }
+.board-chip {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 6px 10px;
+  min-height: 36px;
+  border: 2px solid var(--color-border);
+  border-radius: 18px;
+  background: #ffffff;
+}
+.board-chip[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--color-text);
+  border-color: var(--color-text);
+  font-weight: bold;
+}
+
+/* ---------------- 時刻表テーブル ---------------- */
+.tt-wrap { overflow-x: auto; }   /* 表が狭い画面からはみ出す場合は表の中だけ横スクロール */
+table.tt {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 16px;
+}
+.tt th, .tt td {
+  border: 1px solid #888888;
+  padding: 5px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+.tt th {
+  font-size: 14px;
+  background: #f2f2f2;
+  white-space: nowrap;
+}
+.tt td.dep, .tt td.arr { font-weight: bold; white-space: nowrap; font-size: 17px; }
+.outbound .tt td.dep { color: var(--color-outbound); }
+.return   .tt td.dep { color: var(--color-return); }
+.tt td.num { white-space: nowrap; }
+.tt .sub { font-size: 13px; color: #555555; }
+.tt td.note { font-size: 14px; color: #444444; }
+.no-service-note { font-size: 16px; color: #555555; text-align: center; padding: 10px 0; }
+.unreachable-note {
+  font-size: 20px; font-weight: bold; text-align: center;
+  border: 3px solid var(--color-border); border-radius: 12px; padding: 24px 12px;
+}
+
+/* ---------------- ボタン・注記・電話 ---------------- */
+.action-row { display: flex; gap: 8px; margin: 14px 0; }
+.action-btn {
+  flex: 1; min-height: 52px;
+  font-family: inherit; font-size: 18px; font-weight: bold;
+  color: var(--color-text);
+  background: var(--color-disabled-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+}
+.validity-note { font-size: 15px; color: #555555; text-align: center; margin: 4px 0; }
+
+.phone-box { border-top: 2px solid var(--color-border); margin-top: 12px; padding-top: 2px; }
+.phone-box:empty { display: none; }
+.phone-line { padding: 8px 0; border-bottom: 1px dashed #bbbbbb; }
+.phone-line:last-child { border-bottom: none; }
+.phone-label { display: inline-block; font-size: 14px; color: #555555; margin-right: 8px; }
+.phone-name { font-size: 17px; font-weight: bold; word-break: break-word; }
+.phone-tel { font-size: 20px; font-weight: bold; color: var(--color-outbound); white-space: nowrap; margin-left: 8px; }
+
+:focus-visible { outline: 4px solid var(--color-outbound); outline-offset: 2px; }
+
+/* =====================================================================
+   印刷(F5完成条件: 第1部PDFの紙面と見比べて遜色ない/白黒で行き帰りが
+   区別できる)。白黒対策: 行き=実線の太枠、帰り=二重線の枠+ラベル文字
+   ===================================================================== */
+@media print {
+  .no-print, #page-header .mode-note a { display: none; }
+  body { font-size: 15px; }
+  /* 詳細表は縦に長いので、全体を縮めてA4で2枚以内を目安にする
+     (かんたんモードの印刷と同じ手法。zoom非対応環境でも枚数が増えるだけ) */
+  #app { max-width: none; padding: 0; zoom: 0.72; }
+  #page-header h1 { font-size: 20px; margin: 0 0 2px; }
+  .mode-badge { border: 1px solid #000; color: #000; background: none; }
+  .pair-title { font-size: 20px; margin: 2px 0; }
+  .daytype-note { display: block; font-size: 14px; margin-bottom: 6px; }
+
+  .direction-block { background: none !important; break-inside: avoid-page; padding: 6px 8px; margin-bottom: 10px; }
+  .direction-block.outbound { border: 3px solid #000; }
+  .direction-block.return   { border: 3px double #000; border-width: 5px; }
+  .direction-label { color: #000; background: none !important; padding: 0; font-size: 16px; }
+  .outbound .direction-label::before { content: "■ "; }
+  .return   .direction-label::before { content: "□ "; }
+
+  table.tt { font-size: 13px; }
+  .tt th, .tt td { padding: 3px 5px; }
+  .tt td.dep, .tt td.arr { color: #000 !important; font-size: 14px; }
+  .tt tr { break-inside: avoid; }
+
+  .phone-box { break-inside: avoid; }
+  .phone-tel { color: #000; }
+}

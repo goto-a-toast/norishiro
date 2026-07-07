@@ -458,11 +458,22 @@ h1 {
 .phone-box {
   border-top: 2px solid var(--color-border);
   margin-top: 16px;
-  padding-top: 12px;
-  text-align: center;
+  padding-top: 4px;
 }
 .phone-box:empty { display: none; }
+.phone-line {
+  padding: 10px 0;
+  border-bottom: 1px dashed #bbbbbb;
+  text-align: center;
+}
+.phone-line:last-child { border-bottom: none; }
+.phone-box .phone-label {
+  display: block;
+  font-size: 18px;
+  color: #555555;
+}
 .phone-box .phone-name {
+  display: block;
   font-size: 22px;
   font-weight: bold;
   word-break: break-word;
@@ -472,8 +483,8 @@ h1 {
   font-size: 30px;
   font-weight: bold;
   color: var(--color-outbound);
-  margin-top: 4px;
-  padding: 8px 16px;   /* スマホでタップしやすいように広めに */
+  margin-top: 2px;
+  padding: 6px 16px;   /* スマホでタップしやすいように広めに */
 }
 
 /* キーボード操作でも今どこにいるか分かるように(色だけに頼らない太枠) */
