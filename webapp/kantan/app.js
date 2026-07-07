@@ -233,12 +233,19 @@ async function renderScreen2(did) {
   renderFacilityList(timetable);
 }
 
+// かんたんモードが「行き」で実際に見せる便(=一番いい乗り場 kantan_board の便)だけを返す。
+// 画面2の所要時間・のりかえ判定も、画面3で見せる停とそろえるためにこれを使う
+function kantanOutbound(entry, dt) {
+  const rows = (entry.outbound && entry.outbound[dt]) || [];
+  return entry.kantan_board ? rows.filter((r) => r.board === entry.kantan_board) : rows;
+}
+
 function bestOutboundMinutes(entry) {
   // 施設一覧の並べ替え用に、平日の直通・乗換をあわせた最短所要時間(分)を求める。
   // 平日に便が無ければ土曜・日祝も見る(表示用の目安なので曜日はこだわらない)
   let best = Infinity;
   for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
-    const rows = entry.outbound[dt] || [];
+    const rows = kantanOutbound(entry, dt);
     for (const r of rows) {
       const t = hmToMin(r.arr) - hmToMin(r.dep);
       if (t < best) best = t;
@@ -253,7 +260,7 @@ function bestOutboundMinutes(entry) {
 // 全便乗換なら「のりかえ1回」。判定といっても JSON を見るだけで計算はしない
 function transferNoteOf(entry) {
   for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
-    const rows = entry.outbound[dt] || [];
+    const rows = kantanOutbound(entry, dt);
     if (rows.length === 0) continue;
     return rows.some((r) => !r.transfer) ? "のりかえなし" : "のりかえ1回";
   }
@@ -320,8 +327,20 @@ const s3 = {
   timer: null,       // 1分ごとの時計更新タイマー
 };
 
+// かんたんモードは行き先ごとに「一番いい乗り場」1つだけを見せる(見慣れないバス停を
+// 混ぜない。設計C)。データ工場が entry.kantan_board にその停名を入れているので、
+// 行き(outbound)はその停の便だけに絞る。帰り(inbound)は乗り場欄が施設名で統一
+// されているので絞り込まない。kantan_board が無い古いデータでは全便を出す(後方互換)
+function rowsFor(dir, showType) {
+  let rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  if (dir === "outbound" && s3.entry && s3.entry.kantan_board) {
+    rows = rows.filter((r) => r.board === s3.entry.kantan_board);
+  }
+  return rows;
+}
+
 function s3Rows(dir) {
-  return (s3.entry && s3.entry[dir] && s3.entry[dir][s3.showType]) || [];
+  return rowsFor(dir, s3.showType);
 }
 
 // 「つぎの便」= きょうのダイヤで、いまから乗れる最初の行きの便
@@ -421,7 +440,7 @@ function renderRideCard(now) {
     // 本日の便はすべて終わった。あしたの始発を date_table から引くだけで案内する
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const tType = dayTypeOf(tomorrow);
-    const tRows = tType ? (s3.entry.outbound[tType] || []) : [];
+    const tRows = tType ? rowsFor("outbound", tType) : [];
     head =
       `<div class="card-main">本日の便は おわりました</div>` +
       (tRows.length
@@ -454,10 +473,12 @@ function rideStepsHtml(r, dir) {
   const steps = [];
 
   // ① バス停まで歩く。徒歩分数は行き(自宅側)のときだけデータがある。
-  // 0分(バス停がすぐそこ)のときは「約0分」という変な表示をしない
+  // 0分(バス停がすぐそこ)のときは「約0分」という変な表示をしない。
+  // r.board_walk_min はこの便が実際に使う乗車停留所までの徒歩分(便によって
+  // 乗る停留所が変わることがあるため、地区共通の値ではなく便ごとの値を使う)
   let walk = "";
-  if (dir === "outbound" && s3.entry.board_walk_min >= 1) {
-    walk = ` <span class="walk-note">あるいて約${s3.entry.board_walk_min}分</span>`;
+  if (dir === "outbound" && r.board_walk_min >= 1) {
+    walk = ` <span class="walk-note">あるいて約${r.board_walk_min}分</span>`;
   }
   const platform = r.platform
     ? ` <span class="platform-badge">${escapeHtml(platformText(r.platform))}番のりば</span>`
@@ -603,7 +624,8 @@ function collectOperators() {
   const idx = new Set();
   for (const dir of ["outbound", "inbound"]) {
     for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
-      for (const r of (s3.entry && s3.entry[dir] && s3.entry[dir][dt]) || []) {
+      // 行きは かんたんモードが実際に見せる停の便だけを見る(見せない停の運行主体は出さない)
+      for (const r of rowsFor(dir, dt)) {
         if (Number.isInteger(r.op)) idx.add(r.op);
         if (r.transfer && Number.isInteger(r.transfer.op2)) idx.add(r.transfer.op2);
       }
@@ -681,8 +703,8 @@ function setupSpeakButton() {
       }
       const hsWord = String(ride.headsign).replace(/(行き|ゆき)$/, "");
       parts.push(`${ride.board}バス停から、${hsWord}行きに、のってください。`);
-      if (s3.sel.dir === "outbound" && s3.entry.board_walk_min >= 1) {
-        parts.push(`バス停までは、あるいて約${s3.entry.board_walk_min}分です。`);
+      if (s3.sel.dir === "outbound" && ride.board_walk_min >= 1) {
+        parts.push(`バス停までは、あるいて約${ride.board_walk_min}分です。`);
       }
       if (ride.transfer) {
         const hs2Word = String(ride.transfer.headsign2).replace(/(行き|ゆき)$/, "");
