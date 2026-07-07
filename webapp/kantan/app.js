@@ -143,8 +143,17 @@ function showScreen(n) {
 // ===============================================================
 // 画面1: 地区をえらぶ
 // ===============================================================
+// 市タブの見た目を state.city に合わせる(画面3から「もどる」で戻ったとき、
+// 表示中だった地区の市に自動で合わせるため。plan_f4_ui.md §3 画面1)
+function syncCityTabs() {
+  document.querySelectorAll(".city-tab").forEach((t) => {
+    t.setAttribute("aria-selected", String(t.dataset.city === state.city));
+  });
+}
+
 function renderScreen1() {
   showScreen(1);
+  syncCityTabs();
   const grid = document.getElementById("district-grid");
   grid.innerHTML = "";
   districts
@@ -185,6 +194,18 @@ function bestOutboundMinutes(entry) {
   return best;
 }
 
+// 「のりかえなし/のりかえ1回」の判定(plan_f4_ui.md §3 画面2)。
+// 代表ダイヤ(平日→無ければ土曜→日祝)に直通の便が1本でもあれば「のりかえなし」、
+// 全便乗換なら「のりかえ1回」。判定といっても JSON を見るだけで計算はしない
+function transferNoteOf(entry) {
+  for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
+    const rows = entry.outbound[dt] || [];
+    if (rows.length === 0) continue;
+    return rows.some((r) => !r.transfer) ? "のりかえなし" : "のりかえ1回";
+  }
+  return "";
+}
+
 function renderFacilityList(timetable) {
   const list = document.getElementById("facility-list");
   list.innerHTML = "";
@@ -209,12 +230,18 @@ function renderFacilityList(timetable) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "facility-btn" + (reachable ? "" : " disabled");
-    btn.innerHTML =
-      `<span class="facility-name">${escapeHtml(f.name)}</span>` +
-      `<span class="facility-time">${reachable ? "バスで約" + minMin + "分" : "バスでは行けません"}</span>`;
     if (reachable) {
+      const note = transferNoteOf(timetable.to[f.id]);
+      btn.innerHTML =
+        `<span class="facility-name">${escapeHtml(f.name)}</span>` +
+        `<span class="facility-meta"><span class="facility-time">バスで約${minMin}分</span>` +
+        (note ? `<span class="facility-transfer${note === "のりかえ1回" ? " has-transfer" : ""}">${note}</span>` : "") +
+        `</span>`;
       btn.addEventListener("click", () => { location.hash = `${state.did}/${f.id}`; });
     } else {
+      btn.innerHTML =
+        `<span class="facility-name">${escapeHtml(f.name)}</span>` +
+        `<span class="facility-meta"><span class="facility-time">バスでは行けません</span></span>`;
       btn.disabled = true;
     }
     list.appendChild(btn);
@@ -588,6 +615,12 @@ async function route() {
   const { did, fid } = parseHash();
   state.did = did;
   state.fid = fid;
+  // 表示する地区の市を state.city に反映しておく
+  // (画面1に戻ったとき、市タブがその地区の市になるように)
+  if (did) {
+    const d = districts.find((x) => x.id === did);
+    if (d) state.city = d.municipality;
+  }
   // 画面3を離れるときは時計モードのタイマーを止める
   if (!(did && fid) && s3.timer) { clearInterval(s3.timer); s3.timer = null; }
   if (did && fid) {
@@ -606,8 +639,7 @@ function wireStaticHandlers() {
   document.querySelectorAll(".city-tab").forEach((tab) => {
     tab.addEventListener("click", () => {
       state.city = tab.dataset.city;
-      document.querySelectorAll(".city-tab").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
-      renderScreen1();
+      renderScreen1(); // タブの見た目は renderScreen1 内の syncCityTabs() が合わせる
     });
   });
 

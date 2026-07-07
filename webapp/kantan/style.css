@@ -194,11 +194,24 @@ h1 {
 }
 
 .facility-btn .facility-name { flex: 1; }
+.facility-btn .facility-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
 .facility-btn .facility-time {
   font-size: 20px;
   font-weight: normal;
   white-space: nowrap;
 }
+.facility-btn .facility-transfer {
+  font-size: 18px;
+  font-weight: normal;
+  color: #555555;
+  white-space: nowrap;
+}
+.facility-btn .facility-transfer.has-transfer { color: #8a5a00; } /* 乗換=橙系。文字でも併記済み */
 
 .facility-btn.disabled {
   color: var(--color-disabled);

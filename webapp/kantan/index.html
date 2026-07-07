@@ -25,9 +25,9 @@
   <main id="screen1" class="screen">
     <h1>バスの時刻表を<br>つくります</h1>
     <p class="instruction">① おすまいの地区をえらんでください</p>
-    <div class="city-tabs" role="tablist">
-      <button class="city-tab" type="button" data-city="山形市" aria-selected="true">山形市</button>
-      <button class="city-tab" type="button" data-city="上山市" aria-selected="false">上山市</button>
+    <div class="city-tabs" role="tablist" aria-label="市をえらぶ">
+      <button class="city-tab" type="button" role="tab" data-city="山形市" aria-selected="true">山形市</button>
+      <button class="city-tab" type="button" role="tab" data-city="上山市" aria-selected="false">上山市</button>
     </div>
     <div id="district-grid" class="grid-2col"></div>
   </main>
@@ -35,10 +35,10 @@
   <!-- 画面2: いきたい場所をえらぶ -->
   <main id="screen2" class="screen" hidden>
     <p class="breadcrumb">① <span id="s2-district-name"></span> → ② いきたい場所</p>
-    <div class="category-tabs" role="tablist">
-      <button class="cat-tab" type="button" data-cat="hospital" aria-selected="true">🏥 病院</button>
-      <button class="cat-tab" type="button" data-cat="supermarket" aria-selected="false">🛒 スーパー</button>
-      <button class="cat-tab" type="button" data-cat="town" aria-selected="false">🏛 まちなか</button>
+    <div class="category-tabs" role="tablist" aria-label="いきたい場所のしゅるい">
+      <button class="cat-tab" type="button" role="tab" data-cat="hospital" aria-selected="true">🏥 病院</button>
+      <button class="cat-tab" type="button" role="tab" data-cat="supermarket" aria-selected="false">🛒 スーパー</button>
+      <button class="cat-tab" type="button" role="tab" data-cat="town" aria-selected="false">🏛 まちなか</button>
     </div>
     <div id="facility-list" class="facility-list"></div>
   </main>
