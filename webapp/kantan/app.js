@@ -483,7 +483,21 @@ function rideStepsHtml(r, dir) {
   const platform = r.platform
     ? ` <span class="platform-badge">${escapeHtml(platformText(r.platform))}番のりば</span>`
     : "";
-  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}`);
+  // 同じバスが通る、家の近くの別の停を①の補足として併記(A案。2026-07-08 開発者指摘
+  // 「地区内に停が多いとき、同じバスが近くの停にも停まるのに1停しか出ないのは違和感」)。
+  // r.board(主停)以外の board_options を「同じバス」として発車時刻つきで添える。
+  // 行き(自宅側)のみ・近い順に最大3件。番号は振らず①の中の小さな注記にする
+  let siblingNote = "";
+  if (dir === "outbound" && Array.isArray(r.board_options)) {
+    const others = r.board_options.filter((o) => o.stop !== r.board).slice(0, 3);
+    if (others.length) {
+      const list = others.map((o) => `${escapeHtml(o.stop)}(${o.dep}発)`).join("・");
+      siblingNote =
+        `<div class="sibling-note">同じバスは ${list} にも とまります。` +
+        `ちかいバス停で のってください</div>`;
+    }
+  }
+  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}`);
 
   // ② 正面表示(headsign)が主役。系統番号は小さな「かくにん」(R1・R2)
   steps.push(

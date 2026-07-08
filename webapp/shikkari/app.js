@@ -37,6 +37,11 @@ function timeWord(hm) {
   return `よる${h - 12}:${m}`;
 }
 
+function hmToMin(hm) {
+  const [h, m] = hm.split(":");
+  return Number(h) * 60 + Number(m);
+}
+
 function platformText(p) {
   return String(p ?? "").normalize("NFKC").trim();
 }
@@ -220,14 +225,21 @@ function directionSection(dir, label, entry, district, facility) {
     return sec;
   }
 
-  // 乗車バス停での絞り込み(乗車停が2種類以上あるときだけチップを出す)
-  const boards = [...new Set(rows.map((r) => r.board))];
+  // 乗車バス停での絞り込み。行き(outbound)は board_options(同じバスが通る家の近くの
+  // 実在の停)から実際の停を選べる(2026-07-08 開発者要望「具体的な停留所を選択したい」)。
+  // 帰り(inbound)は乗り場が施設で1つなので従来どおり board で絞る。
+  const isOutbound = dir === "outbound";
+  const boardList = isOutbound
+    ? [...new Set(rows.flatMap((r) =>
+        (r.board_options && r.board_options.length ? r.board_options : [{ stop: r.board }])
+          .map((o) => o.stop)))]
+    : [...new Set(rows.map((r) => r.board))];
   const active = state.boardFilter[dir];
-  if (boards.length > 1) {
+  if (boardList.length > 1) {
     const bf = document.createElement("div");
     bf.className = "board-filter no-print";
     bf.innerHTML = '<span class="board-filter-label">のるバス停で絞り込み:</span>';
-    const chips = [["すべて", null], ...boards.map((b) => [b, b])];
+    const chips = [["すべて", null], ...boardList.map((b) => [b, b])];
     chips.forEach(([text, value]) => {
       const chip = document.createElement("button");
       chip.type = "button";
@@ -243,7 +255,24 @@ function directionSection(dir, label, entry, district, facility) {
     sec.appendChild(bf);
   }
 
-  const shown = active ? rows.filter((r) => r.board === active) : rows;
+  // 選択に応じて表示行を作る。行きで実在停を選んだときは、その停の発車時刻・徒歩分に
+  // つけ替える(同じバスなので到着は不変。乗車時間だけ計算し直す)
+  let shown;
+  if (active && isOutbound) {
+    shown = [];
+    for (const r of rows) {
+      const opt = (r.board_options || []).find((o) => o.stop === active);
+      if (!opt) continue;
+      const wait = r.transfer ? r.transfer.wait_min : 0;
+      shown.push({ ...r, board: active, dep: opt.dep, board_walk_min: opt.walk_min,
+                   ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait });
+    }
+    shown.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
+  } else if (active) {
+    shown = rows.filter((r) => r.board === active);
+  } else {
+    shown = rows;
+  }
 
   // 詳細テーブル本体
   const hasPlatform = shown.some((r) => r.platform);

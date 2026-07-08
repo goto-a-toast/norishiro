@@ -17,6 +17,7 @@ from export_web_data import (
     StopIndex, boardable_routes, build_origins,
     frontier_rows, keep_useful_boards, pick_kantan_board,
     make_itinerary, build_entry,
+    board_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
 )
 
 R_EARTH_M = 6371000
@@ -250,3 +251,53 @@ def test_build_entry_slims_outbound_to_kantan_board():
     # 行きは fast の便だけ(near便は落ちる)。帰りは空のまま
     assert [r["board"] for r in entry["outbound"]["weekday"]] == ["fast", "fast"]
     assert entry["outbound"]["saturday"] == []
+
+
+# ===============================================================
+# board_options(2026-07-08 開発者指摘「同じバスが近くの停にも停まる」)
+# ===============================================================
+def test_board_options_for_lists_near_stops_sorted_by_walk():
+    """降車位置より前で、家の徒歩圏内にある停を、発車時刻つき・徒歩が近い順に返す"""
+    stops = {s: {"name": s.upper(), "lat": 0.0, "lon": 0.0} for s in ("a", "b", "c", "z")}
+    net = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    pat = Pattern(stop_ids=("a", "b", "c", "z"), trips=[])
+    trip = Trip(trip_id="t", route_name="R", arrivals=[0, 5, 8, 20], departures=[0, 5, 8, 20])
+    near = {"a": 10, "b": 3, "c": 6}   # z は徒歩圏外
+    opts = board_options_for(net, pat, trip, up_to_pos=3, near_home=near)  # 位置3(z)は対象外
+    assert [o["stop"] for o in opts] == ["B", "C", "A"]   # 徒歩が近い順
+    assert opts[0]["dep"] == "00:05"                       # Bは位置1=departures[1]=5分
+    assert opts[0]["walk_min"] == 3
+
+
+def test_board_options_for_capped():
+    """近隣停が多い都心を想定し、近い順に MAX_BOARD_OPTIONS 件までに絞る"""
+    n = MAX_BOARD_OPTIONS + 4
+    ids = [f"s{i}" for i in range(n)] + ["z"]
+    stops = {s: {"name": s, "lat": 0.0, "lon": 0.0} for s in ids}
+    net = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    pat = Pattern(stop_ids=tuple(ids), trips=[])
+    trip = Trip(trip_id="t", route_name="R",
+                arrivals=list(range(n + 1)), departures=list(range(n + 1)))
+    near = {f"s{i}": i + 1 for i in range(n)}
+    opts = board_options_for(net, pat, trip, up_to_pos=n, near_home=near)
+    assert len(opts) == MAX_BOARD_OPTIONS
+
+
+def test_slim_to_board_reprojects_dep_to_featured_stop():
+    """featured停(kantan_board)を通る便を残し、その便の発車時刻・徒歩分を featured停に
+    つけ替える。主停が別でも board_options に featured停があれば拾う"""
+    rows = [
+        {"board": "far", "dep": "08:02", "arr": "08:30", "board_walk_min": 9,
+         "ride_min": 28, "transfer": None,
+         "board_options": [{"stop": "far", "dep": "08:02", "walk_min": 9},
+                           {"stop": "near", "dep": "08:05", "walk_min": 3}]},
+        {"board": "x", "dep": "09:00", "arr": "09:20", "board_walk_min": 1,
+         "ride_min": 20, "transfer": None,
+         "board_options": [{"stop": "x", "dep": "09:00", "walk_min": 1}]},  # near無し→落ちる
+    ]
+    kept = _slim_to_board(rows, "near")
+    assert len(kept) == 1
+    assert kept[0]["board"] == "near"
+    assert kept[0]["dep"] == "08:05"          # featured停の発車時刻につけ替え
+    assert kept[0]["board_walk_min"] == 3
+    assert kept[0]["ride_min"] == 25          # 到着08:30 − 発車08:05
