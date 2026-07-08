@@ -144,3 +144,38 @@ districts + destinations
 4. まず `output/gap_map.html` を今の端末で見たい場合は、G2/G3を待たず、
    **分析データ(data/ 各フォルダ + output/access_mesh.csv)をこの端末にコピー**すれば
    `python gap_map/make_map.py` で地図を出せる(応急策)。
+
+---
+
+## 7. Mac環境での続き(第2層の実データ化)★次にやること
+
+2026-07-08のWindowsセッションで、第2層の**コードは実装・テスト済み**(G4スクリプト+
+しっかりモードのG5パネル)。ただし**実データ生成は分析成果物が要る**ため未完。SSDのある
+Mac環境で以下を行えば完成する。
+
+**状況(このブランチ `claude/plan-pipeline` の到達点):**
+- ✅ `gap_map/make_district_gap.py`(G4)+ 単体テスト(全31件パス)
+- ✅ しっかりモードの「この地区の交通状況」パネル(G5)。かんたんには出さない
+- ⚠️ `webapp/data/district_gap.json` は**Windows側の見た目確認用サンプル(仮値・未コミット)**。
+  Macには存在しない。**本物を生成して置き換える**こと
+- ⬜ 空白マップ本体 `webapp/gap_map.html` も未配置(F6の `map.html` から参照)
+
+**Macでの手順:**
+1. `git fetch && git checkout <このブランチ or マージ後のmain> && git pull`
+2. 分析成果物が揃っているか確認(無ければ分析を再実行 or SSDから復元):
+   - `data/mesh_districts.csv`(make_districts.py)
+   - `output/access_mesh.csv`(compute_access.py)
+   - `data/target_meshes.csv`(prepare_meshes.py)
+3. **G4 実データ生成**: `python gap_map/make_district_gap.py`
+   → `webapp/data/district_gap.json`。**検算**: 空白人口合計=15,418人・隠れ空白=571人と
+   一致するか(標準出力に出る。[[handover]] §4.1)
+4. **空白マップ生成・配置**: `python gap_map/make_map.py` → `output/gap_map.html` を
+   `webapp/gap_map.html` にコピー(F6の `map.html` がここを iframe 参照する)
+5. **確認**: しっかりモードで各地区を開き、実数のパネルが出るか(隠れ空白の地区で赤の一言)。
+   `webapp/map.html` に地図が出るか
+6. **コミット**: `webapp/data/district_gap.json` と `webapp/gap_map.html` を追加
+   (どちらも「生成物だがコミットする」webapp例外)。push
+7. 余力があれば第1層(G1〜G3: data_sources.md・取得半自動化・run_pipeline.py)へ
+
+**注意:** かんたんモードには空白を出さない(開発者方針)。指標定義は compute_access の
+結果をそのまま使い、新しい判定を作らない([[plan_gap_map]] の is_gap・指標①②)。
