@@ -504,7 +504,16 @@ function rideStepsHtml(r, dir) {
   const rideNote = r.transfer
     ? `(バスにのるのは 合計約${r.ride_min}分)`
     : `(のること約${r.ride_min}分)`;
-  steps.push(`「${escapeHtml(r.alight)}」で おりる <span class="ride-note">${rideNote}</span>` +
+  // r.alight は実際に降りるバス停名(標識・車内アナウンスと照合できる)。
+  // r.alight_place(施設名/地区名)まで歩く分を添えて「どこで降りればよいか」を明示する。
+  // alight_walk_min が無い/0の古いデータでは目的地名だけ添える(後方互換)
+  let placeNote = "";
+  if (r.alight_place) {
+    placeNote = r.alight_walk_min >= 1
+      ? ` <span class="walk-note">(${escapeHtml(r.alight_place)}まで あるいて約${r.alight_walk_min}分)</span>`
+      : ` <span class="walk-note">(${escapeHtml(r.alight_place)}のすぐ近く)</span>`;
+  }
+  steps.push(`「${escapeHtml(r.alight)}」で おりる${placeNote} <span class="ride-note">${rideNote}</span>` +
     ` <span class="arr-note">${timeWord(r.arr)} 着</span>`);
 
   const lis = steps
@@ -528,11 +537,13 @@ function renderDirection(dir) {
     return;
   }
 
-  // 乗る停留所・降りる停留所が全便で同じなら「◯◯ → ◯◯」を見出しに添える
+  // 乗る停留所 → 目的地 を見出しに添える。降車側は「目的地(施設名/地区名)」を出す
+  // (実際の降車停 r.alight は便ごとに変わりうるので、見出しは安定した目的地名を使い、
+  //  どの停で降りるかは各便のステップ③で実停名を見せる)
   const boards = [...new Set(rows.map((r) => r.board))];
-  const alights = [...new Set(rows.map((r) => r.alight))];
-  if (boards.length === 1 && alights.length === 1) {
-    odpair.textContent = `${boards[0]} → ${alights[0]}`;
+  const places = [...new Set(rows.map((r) => r.alight_place || r.alight))];
+  if (boards.length === 1 && places.length === 1) {
+    odpair.textContent = `${boards[0]} → ${places[0]}`;
   }
 
   // headsignの一括表記(plan_f4_ui.md §3): 全便が同じ行き先表示なら一度だけ書き、
@@ -709,6 +720,14 @@ function setupSpeakButton() {
       if (ride.transfer) {
         const hs2Word = String(ride.transfer.headsign2).replace(/(行き|ゆき)$/, "");
         parts.push(`${ride.transfer.at}で おりて、${hs2Word}行きに、のりかえてください。`);
+      }
+      // どこで降りるかを必ず音声でも案内する(実際のバス停名。開発者指摘2026-07-08)。
+      // 目的地まで歩くときは徒歩分も添える
+      if (ride.alight) {
+        parts.push(`${ride.alight}で、おりてください。`);
+        if (ride.alight_place && ride.alight_walk_min >= 1) {
+          parts.push(`そこから、${ride.alight_place}まで、あるいて約${ride.alight_walk_min}分です。`);
+        }
       }
       text = parts.join("");
     }

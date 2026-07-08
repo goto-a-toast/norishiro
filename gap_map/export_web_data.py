@@ -339,14 +339,23 @@ def build_headsign_map(network: transit_core.Network) -> dict:
 
 
 def make_itinerary(path: list, final_arrival: int, network: transit_core.Network,
-                    board_name: str, alight_name: str, headsigns: dict,
-                    board_walk_min: float = None) -> dict:
+                    board_name: str, alight_place: str, headsigns: dict,
+                    board_walk_min: float = None, alight_walk_min: float = None) -> dict:
     """reconstruct_pathで得たLegのリストから、画面表示用の1便ぶんの辞書を作る。
     headsign(バス前面の行き先表示)が主役、系統名(route)は半角に正規化した
     確認情報という位置づけ(翻訳ルール。docs/plan_f4_ui.md §1・§2)。
     board_walk_min: この便が実際に使う乗車停留所までの徒歩分(2026-07-07 追加。
     最寄り停以外から出る便もbuild_originsが候補にするようになったため、
-    「地区に1つ」ではなく便ごとに正しい徒歩分を持たせる)"""
+    「地区に1つ」ではなく便ごとに正しい徒歩分を持たせる)。
+
+    降車の表示について(2026-07-08 開発者指摘「どこで降りるか分からない時刻表は不安」):
+      "alight" には行き先の表示名(施設名/地区名)ではなく、実際に降りる
+      **バス停名**を出す。施設名/地区名は "alight_place" に別に持ち、
+      降車停から目的地までの徒歩分は "alight_walk_min" に持つ。
+      車内アナウンスや停留所標識と照合できる実停名を主役にし、
+      「◯◯まで徒歩N分」で目的地との関係を補う(行きの board_walk_min と対称)。
+    alight_place: 行き先の表示名(施設名/地区名)。
+    alight_walk_min: 降車停から目的地(施設/地区の代表点)までの徒歩分"""
     ride_legs = [leg for leg in path if leg.kind == "ride"]
     first = ride_legs[0]
     dep = first.depart
@@ -375,13 +384,20 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         # stops.txtにplatform_code列が無い/空欄の行はpandasがfloat NaNを返す
         # (json.dumpsするとNaNという不正なJSONトークンになるため、必ずNoneに変換する)
         platform = None
+
+    # 実際に降りるバス停名。最後に乗ったバスの終点(=最終rideのto_stop)で降りる。
+    # network.stopsに無い場合だけ、保険として行き先の表示名(alight_place)を使う
+    alight_stop_id = ride_legs[-1].to_stop
+    alight_stop_name = network.stops.get(alight_stop_id, {}).get("name") or alight_place
     return {
         "dep": fmt_hm(dep),
         "arr": fmt_hm(final_arrival),
         "board": board_name,
         "board_walk_min": round(board_walk_min) if board_walk_min is not None else None,
         "platform": platform,
-        "alight": alight_name,
+        "alight": alight_stop_name,             # 実際に降りるバス停名(R5。標識と照合できる名前)
+        "alight_place": alight_place,           # 目的地(施設/地区)の表示名。徒歩案内の文脈に使う
+        "alight_walk_min": round(alight_walk_min) if alight_walk_min is not None else None,
         "headsign": headsigns[first.trip_id],   # バス前面の行き先表示(R1の主役)
         "route": normalize_text(first.route_name),
         "op": operator_index(first.trip_id),    # 運行主体(meta.operatorsの添字)
@@ -458,11 +474,14 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
                 depart=depart_min, arrive=trip.arrivals[pattern.stop_ids.index(alight_stop, pos + 1)],
                 trip_id=trip.trip_id, route_name=trip.route_name, prev=None)
             stops_with_walk = targets[tid]
-            alight_name = next(name for sid, _, name in stops_with_walk if sid == alight_stop)
+            # 降車停の「実徒歩分」と「行き先の表示名」を取り出す(実停名はmake_itinerary側で引く)
+            alight_walk, alight_place = next(
+                (w, name) for sid, w, name in stops_with_walk if sid == alight_stop)
             board_name = board_name_override or network.stops[origin_stop]["name"]
             direct_rows[tid].append(
-                (depart_min, make_itinerary([leg], arrival, network, board_name, alight_name,
-                                            headsigns, board_walk_min=origin_walk_min[origin_stop])))
+                (depart_min, make_itinerary([leg], arrival, network, board_name, alight_place,
+                                            headsigns, board_walk_min=origin_walk_min[origin_stop],
+                                            alight_walk_min=alight_walk)))
 
         # (b) 乗換あり(最大1回): この便で直通しない行き先だけRAPTORで調べる。
         #     直通がすでにある行き先まで毎回調べると計算・出力とも無駄が大きい
@@ -493,11 +512,13 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
                 continue
             transfer_seen[tid].add(key)
 
-            alight_name = next(name for sid, _, name in stops_with_walk if sid == alight_stop)
+            alight_walk, alight_place = next(
+                (w, name) for sid, w, name in stops_with_walk if sid == alight_stop)
             board_name = board_name_override or network.stops[path[0].from_stop]["name"]
             transfer_rows[tid].append(
-                (depart_min, make_itinerary(path, arrival, network, board_name, alight_name,
-                                            headsigns, board_walk_min=origin_walk_min[origin_stop])))
+                (depart_min, make_itinerary(path, arrival, network, board_name, alight_place,
+                                            headsigns, board_walk_min=origin_walk_min[origin_stop],
+                                            alight_walk_min=alight_walk)))
 
     result_by_target = {}
     for tid in targets:

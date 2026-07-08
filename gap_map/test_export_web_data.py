@@ -12,10 +12,11 @@ GTFSを介さない、手作りの小さなネットワークで検証する(tes
 実行方法: `python3 -m pytest gap_map/test_export_web_data.py -v`
 """
 
-from transit_core import Network, Pattern, Trip
+from transit_core import Network, Pattern, Trip, Leg
 from export_web_data import (
     StopIndex, boardable_routes, build_origins,
     frontier_rows, keep_useful_boards, pick_kantan_board,
+    make_itinerary,
 )
 
 R_EARTH_M = 6371000
@@ -181,3 +182,41 @@ def test_pick_kantan_board_stays_near_when_gain_is_marginal():
 
 def test_pick_kantan_board_none_when_no_outbound():
     assert pick_kantan_board({"weekday": [], "saturday": [], "sunday_holiday": []}) is None
+
+
+# ===============================================================
+# 降車の表示(2026-07-08 開発者指摘「どこで降りるか分からない時刻表は不安」)
+# ===============================================================
+def _alight_network() -> Network:
+    """降車停の実名を引くための最小ネットワーク(乗る停Oと降りる停A)"""
+    stops = {
+        "O": {"name": "八日町一丁目", "lat": 0.0, "lon": 0.0, "platform_code": None},
+        "A": {"name": "済生館前", "lat": 0.0, "lon": 0.0, "platform_code": None},
+    }
+    return Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+
+
+def test_make_itinerary_uses_real_stop_name_not_place_name_for_alight():
+    """降車は行き先の表示名(施設名/地区名)ではなく、実際に降りるバス停名を出す。
+    施設名/地区名と徒歩分は alight_place / alight_walk_min に別に持つ"""
+    network = _alight_network()
+    leg = Leg(kind="ride", from_stop="O", to_stop="A", depart=390, arrive=398,
+              trip_id="山形交通:t1", route_name="N52")
+    headsigns = {"山形交通:t1": "県立中央病院ゆき"}
+    it = make_itinerary([leg], 398, network, "八日町一丁目", "山形市立病院済生館",
+                        headsigns, board_walk_min=2, alight_walk_min=3)
+    assert it["alight"] == "済生館前"              # 実際に降りるバス停名(標識と照合できる)
+    assert it["alight_place"] == "山形市立病院済生館"  # 目的地の表示名は別フィールド
+    assert it["alight_walk_min"] == 3
+    assert it["board"] == "八日町一丁目"
+
+
+def test_make_itinerary_alight_falls_back_to_place_when_stop_unknown():
+    """降車stop_idがnetwork.stopsに無い保険ケースでは、行き先の表示名にフォールバックする"""
+    network = _alight_network()
+    leg = Leg(kind="ride", from_stop="O", to_stop="UNKNOWN", depart=390, arrive=398,
+              trip_id="山形交通:t1", route_name="N52")
+    headsigns = {"山形交通:t1": "県立中央病院ゆき"}
+    it = make_itinerary([leg], 398, network, "八日町一丁目", "みゆき会病院",
+                        headsigns, alight_walk_min=0)
+    assert it["alight"] == "みゆき会病院"
