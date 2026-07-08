@@ -16,7 +16,7 @@ from transit_core import Network, Pattern, Trip, Leg
 from export_web_data import (
     StopIndex, boardable_routes, build_origins,
     frontier_rows, keep_useful_boards, pick_kantan_board,
-    make_itinerary,
+    make_itinerary, build_entry,
 )
 
 R_EARTH_M = 6371000
@@ -220,3 +220,33 @@ def test_make_itinerary_alight_falls_back_to_place_when_stop_unknown():
     it = make_itinerary([leg], 398, network, "八日町一丁目", "みゆき会病院",
                         headsigns, alight_walk_min=0)
     assert it["alight"] == "みゆき会病院"
+
+
+# ===============================================================
+# slim方式(2026-07-08 開発者決定): 行きは「一番いい乗り場」1停の便だけを保存する
+# ===============================================================
+def test_build_entry_slims_outbound_to_kantan_board():
+    """build_entry は行き(outbound)を pick_kantan_board が選んだ1停の便だけに絞る。
+    帰り(inbound)は触らない。かんたん・しっかり とも同じ1停の時刻表を見せる"""
+    district = {"id": "d01", "lat": 0.0, "lon": 0.0}
+    facility = {"id": "f01", "lat": 10.0, "lon": 10.0}   # 遠方=直接徒歩(direct_walk)は付かない
+    out_rows = [
+        row("08:00", "08:50", "near", 3),    # door-to-door 53分
+        row("08:02", "08:30", "fast", 10),   # 38分(明確に速い→fastが選ばれる)
+        row("09:02", "09:30", "fast", 10),
+    ]
+    empty = {"district_board": {}, "outbound": {}, "inbound": {}}
+    per_daytype = {
+        "weekday": {
+            "district_board": {"d01": ("near", 3)},
+            "outbound": {"d01": {"f01": out_rows}},
+            "inbound": {},
+        },
+        "saturday": empty,
+        "sunday_holiday": empty,
+    }
+    entry = build_entry(district, facility, per_daytype)
+    assert entry["kantan_board"] == "fast"
+    # 行きは fast の便だけ(near便は落ちる)。帰りは空のまま
+    assert [r["board"] for r in entry["outbound"]["weekday"]] == ["fast", "fast"]
+    assert entry["outbound"]["saturday"] == []

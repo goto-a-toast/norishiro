@@ -130,27 +130,30 @@
       | **slim+compact** ★推奨 | **~20MB** | ~1.5MB | ✕(最良1停のみ) |
       | arrival+compact | ~24MB | ~1.8MB | △(停ごとに欠けが出る) |
       (従来受け入れた基準は25.72MB。JSONを`indent=1`→コンパクトにするだけで無害に約2割減)
-    - **開発者への推奨と、その回答待ち**: 「slim方式」=行き先ごとに`kantan_board`の
-      1停だけ保存する案を推奨中(最寄り≠最短は完全解決・約20MB・1停の完全時刻表)。
-      トレードオフは「しっかりの複数停選択を諦める」こと(複数停は将来F10のオンデマンドで)。
-      **開発者はまだ slim/arrival を選んでいない**(「commitして」と指示した段階)。
-    - **slimを採用する場合の実装手順**(次の環境がやること):
-      1. `build_entry` で outbound を `kantan_board` の便だけに絞る(1停化)。
-         `scan_from_origin` の `keep_useful_boards` 呼び出しは不要になるので撤去してよい。
-         `build_origins(expand_by_route=True)` と `pick_kantan_board` はそのまま使う
-         (「最寄りでなく最良の1停」を選ぶために必要)。
-      2. inbound(帰り)は arrival フロンティア(=より遅く出て早く着く便があれば落とす)で
-         重複便を間引く。
-      3. `export_web_data.py` の `json.dumps(..., indent=1)` を**コンパクト**に変更
-         (`json.dumps(ent, ensure_ascii=False, separators=(",", ":"))`。meta.jsonも)。
-      4. `webapp/kantan/app.js` は変更不要(既に `rowsFor()` が kantan_board に絞る。
-         slimデータでは実質no-op)。`webapp/shikkari` も1停表示になるだけで動作は正常。
-      5. Macで `python3 gap_map/export_web_data.py` を再生成 →
-         **検証**: `kantan_board`が全ファイルに入っているか / 合計~20MB・最大~1.5MB /
-         検算1(d23→県立中央病院がPDFと一致) / d19・d23の kantan_board を目視。
+    - **2026-07-08 決定: slim方式を採用(実装済み・要Mac再生成)**。行き先ごとに
+      `kantan_board` の1停だけ保存する(最寄り≠最短は完全解決・約20MB・1停の完全時刻表)。
+      トレードオフは「しっかりの複数停選択を当面は諦める」こと(複数停は将来F10の
+      オンデマンドで)。開発者は「まず slim で触ってみて決める。後で arrival に変えられる
+      なら先に slim で」との意向 → **slim⇄arrivalは生成時の選択で可逆**(再生成し直すだけ)
+      であることを確認のうえ着手。ブランチ `claude/alight-real-stop-name`。
+    - **実装内容(コミット済み。反映はMac再生成後)**:
+      1. ✅ `build_entry` で outbound を `kantan_board` の便だけに絞った(1停化)。
+         `keep_useful_boards` はフロンティア停を残すだけで最良停は必ず含むため呼び出しは
+         残置(害なし)。`build_origins(expand_by_route=True)`・`pick_kantan_board` は継続使用。
+      2. ⏭ **inbound(帰り)の間引きは意図的に見送り**。帰り便を間引くと帰りの時刻表が
+         薄くなり「どこで降りるか不安」問題(下記)と衝突するため。帰りは施設名で1停に
+         統一済みでサイズ主因ではない。サイズがまだ大きければ後から追加検討。
+      3. ✅ `json.dumps` を `separators=(",", ":")` のコンパクト出力に変更(meta.jsonも)。
+      4. ✅ `webapp/kantan/app.js`・`webapp/shikkari` は変更不要(既存フィルタがslimで
+         実質no-op。ただし降車実名対応で別途改修あり=下記)。
+      5. ⬜ **次のMac作業**: `python3 gap_map/export_web_data.py` を再生成 →
+         **検証**: `kantan_board`が全ファイルに入っているか / 合計サイズ(~20MB前後を確認。
+         もし大きすぎれば step2 の帰り間引きを追加) / 最大1地区サイズ /
+         検算1(d23→県立中央病院がPDFと一致) / d19・d23の kantan_board と
+         **降車 alight が実停名になっているか**を目視。
     - **重要**: 今 git にコミットしてある `webapp/data/` は改修前の旧データ(25.72MB版)。
       開発者がMacで作った52MB版はコミットしていない(却下品のため)。次の環境は
-      slim実装後にMacで再生成し、その結果を webapp/data/ にコミットすること。
+      Macで再生成し、その結果を webapp/data/ にコミットすること。
     - チューニング点: `KANTAN_SWITCH_GAIN_MIN`(=5分。最寄りから遠い停へ切り替える
       door-to-door短縮のしきい値)は実データを見て微調整してよい。
     これはF10(利用者が手動で停を選ぶ機能)とは別——システム側が黙って
