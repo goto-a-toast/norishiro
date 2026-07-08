@@ -81,6 +81,20 @@ noscript {
   border-radius: 12px;
 }
 
+/* 玄関ページへ戻るリンク(F6。ヘッダ右端に控えめに常時表示) */
+.home-link {
+  margin-left: auto;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--color-outbound);
+  border: 2px solid var(--color-outbound);
+  border-radius: 10px;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+.home-link:hover, .home-link:focus-visible { background: var(--bg-outbound); outline: none; }
+
 .steps {
   display: flex;
   align-items: center;

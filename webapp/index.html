@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山形・上山 バスの時刻表と交通空白マップ</title>
+<style>
+/* ==========================================================================
+   玄関ページ(F6)。3つの顔への入口 + 作品概要 + 確定数値。
+   デザインは第1部PDF/かんたんモードを継承(BIZ UDPGothic・行き青/帰り橙)。
+   フレームワーク・ビルド・CDNなし。スマホ幅を第一に、大きなタップ領域で。
+   ========================================================================== */
+:root {
+  --color-text: #1a1a1a;
+  --color-sub: #555555;
+  --blue: #00518e;      /* かんたん(行き=青。PDFと同じ) */
+  --orange: #a83200;    /* 空白マップ(帰り=橙。PDFと同じ) */
+  --green: #1f6b3b;     /* しっかり */
+  --border: #dddddd;
+  --bg: #ffffff;
+  --bg-soft: #f4f7fb;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold;
+  font-display: swap;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text);
+  background: var(--bg);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+
+/* ---- 見出し ---- */
+header { text-align: center; padding: 12px 0 20px; }
+header h1 { font-size: 26px; margin: 0 0 10px; line-height: 1.4; }
+header .lead {
+  font-size: 19px; color: var(--blue); font-weight: bold; margin: 0;
+}
+header .place { font-size: 15px; color: var(--color-sub); margin: 6px 0 0; }
+
+/* ---- 3つの入口カード ---- */
+.entrances { display: grid; gap: 14px; margin: 24px 0 8px; }
+.card {
+  display: flex; align-items: center; gap: 14px;
+  text-decoration: none; color: var(--color-text);
+  background: var(--bg-soft);
+  border: 2px solid var(--border);
+  border-left-width: 10px;
+  border-radius: 12px;
+  padding: 18px 18px;
+  min-height: 96px;
+}
+.card:hover, .card:focus-visible { background: #eaf1f9; outline: none; }
+.card:focus-visible { box-shadow: 0 0 0 4px rgba(0,81,142,0.35); }
+.card .emoji { font-size: 44px; line-height: 1; flex: 0 0 auto; }
+.card .body { flex: 1; }
+.card .title { display: block; font-size: 22px; font-weight: bold; }
+.card .desc { display: block; font-size: 15px; color: var(--color-sub); margin-top: 2px; }
+.card .go { font-size: 26px; color: var(--color-sub); flex: 0 0 auto; }
+.card.kantan { border-left-color: var(--blue); }
+.card.kantan .title { color: var(--blue); }
+.card.shikkari { border-left-color: var(--green); }
+.card.shikkari .title { color: var(--green); }
+.card.map { border-left-color: var(--orange); }
+.card.map .title { color: var(--orange); }
+
+/* ---- 作品概要 ---- */
+.about { margin: 30px 0 0; }
+.about h2 {
+  font-size: 18px; margin: 0 0 8px; padding-left: 10px;
+  border-left: 6px solid var(--blue);
+}
+.about p { margin: 0 0 10px; font-size: 15.5px; }
+
+/* ---- 確定数値 ---- */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin: 22px 0 0;
+}
+.stat {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 8px; text-align: center;
+}
+.stat b { display: block; font-size: 24px; color: var(--orange); line-height: 1.2; }
+.stat span { display: block; font-size: 12.5px; color: var(--color-sub); margin-top: 6px; }
+
+/* ---- 脚注 ---- */
+footer {
+  margin: 30px 0 0; padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 13px; color: var(--color-sub); text-align: center;
+}
+footer a { color: var(--blue); }
+
+@media (max-width: 480px) {
+  header h1 { font-size: 22px; }
+  .stats { grid-template-columns: 1fr; }
+  .stat { display: flex; align-items: baseline; justify-content: center; gap: 10px; padding: 10px; }
+  .stat b { font-size: 22px; }
+  .stat span { margin-top: 0; text-align: left; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>山形・上山<br>バスの時刻表と交通空白マップ</h1>
+    <p class="lead">移動に困る場所ほど、<br>移動が困難な人が住んでいる。</p>
+    <p class="place">山形市・上山市 / 公共交通オープンデータチャレンジ2026 応募作品</p>
+  </header>
+
+  <!-- 3つの顔への入口(大きく・押しやすく) -->
+  <nav class="entrances" aria-label="3つの入口">
+    <a class="card kantan" href="kantan/">
+      <span class="emoji" aria-hidden="true">🚌</span>
+      <span class="body">
+        <span class="title">かんたんモード</span>
+        <span class="desc">3回おすだけで、バスの時刻表。<br>高齢のご本人・窓口の方へ</span>
+      </span>
+      <span class="go" aria-hidden="true">›</span>
+    </a>
+
+    <a class="card shikkari" href="shikkari/">
+      <span class="emoji" aria-hidden="true">📋</span>
+      <span class="body">
+        <span class="title">しっかりモード</span>
+        <span class="desc">全部の便・のりつぎ・印刷まで。<br>ご家族・支援の方へ</span>
+      </span>
+      <span class="go" aria-hidden="true">›</span>
+    </a>
+
+    <a class="card map" href="map.html">
+      <span class="emoji" aria-hidden="true">🗺️</span>
+      <span class="body">
+        <span class="title">交通空白マップ</span>
+        <span class="desc">どこが移動に困るかを地図で。<br>行政・検討の方へ</span>
+      </span>
+      <span class="go" aria-hidden="true">›</span>
+    </a>
+  </nav>
+
+  <!-- 作品概要 -->
+  <section class="about">
+    <h2>この作品について</h2>
+    <p>
+      山形市・上山市で、バスの「空白地帯」に暮らす人と、そこからの通院が成立するかを、
+      1つの自作計算エンジン(GTFS9フィード+国土数値情報+国勢調査メッシュ人口)で
+      可視化しました。同じエンジンから、<b>①高齢者ご本人が3タップで使える時刻表Web</b>・
+      <b>②窓口で配れる大活字の往復ペア時刻表PDF</b>・<b>③政策判断のための交通空白マップ</b>の
+      「3つの顔」を供給しています。
+    </p>
+    <p>
+      サーバー計算を持たない静的サイトなので運用費はかからず、他の自治体もフォークして
+      自分の市で再生成できます。
+    </p>
+  </section>
+
+  <!-- 確定数値(README §分析確定値と一致) -->
+  <section class="stats" aria-label="確定数値">
+    <div class="stat"><b>15,418人</b><span>交通空白地帯に暮らす人(2市人口の5.6%)</span></div>
+    <div class="stat"><b>43.2%</b><span>空白地帯の高齢化率(2市平均30.3%・+12.9pt)</span></div>
+    <div class="stat"><b>571人</b><span>時刻表上は行けても通院が成立しない「隠れ空白」</span></div>
+  </section>
+
+  <footer>
+    分析対象日 2026-06-10 / 対象2市総人口 276,482人・817メッシュ<br>
+    公共交通オープンデータチャレンジ2026 応募作品
+  </footer>
+
+</div>
+</body>
+</html>

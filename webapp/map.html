@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交通空白マップ - 見方</title>
+<style>
+/* ==========================================================================
+   空白マップの「見方」ページ(F6)。凍結済み gap_map.html を iframe で埋め込み、
+   上に読み方の説明を付ける。実マップ本体(webapp/gap_map.html)は分析成果物なので、
+   分析環境で `output/gap_map.html` を webapp/gap_map.html にコピーして配置する。
+   ========================================================================== */
+:root {
+  --color-text: #1a1a1a;
+  --color-sub: #555555;
+  --blue: #00518e;
+  --orange: #a83200;
+  --border: #dddddd;
+  --bg-soft: #f4f7fb;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal; font-display: swap;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold; font-display: swap;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text); line-height: 1.6;
+  display: flex; flex-direction: column; height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
+/* 上部バー(戻る + タイトル) */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-bottom: 1px solid var(--border); flex: 0 0 auto;
+}
+.back {
+  text-decoration: none; color: var(--blue); font-weight: bold; font-size: 17px;
+  border: 2px solid var(--blue); border-radius: 8px; padding: 6px 12px; white-space: nowrap;
+}
+.back:hover, .back:focus-visible { background: #eaf1f9; outline: none; }
+.topbar h1 { font-size: 18px; margin: 0; }
+
+/* 見方パネル */
+.legend { padding: 12px 16px; background: var(--bg-soft); border-bottom: 1px solid var(--border); flex: 0 0 auto; }
+.legend p { margin: 0 0 8px; font-size: 14.5px; }
+.legend ul { margin: 4px 0 0; padding-left: 1.2em; font-size: 14px; }
+.legend li { margin: 3px 0; }
+.legend .swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+  vertical-align: -2px; margin-right: 4px; border: 1px solid #00000030;
+}
+.legend details { margin-top: 6px; }
+.legend summary { cursor: pointer; color: var(--blue); font-size: 14px; }
+
+/* 地図(iframe)。残り全部の高さ */
+.map-area { flex: 1 1 auto; position: relative; min-height: 240px; }
+.map-area iframe { width: 100%; height: 100%; border: 0; display: block; }
+/* 地図が未配置のときのプレースホルダ(iframeの背後に見える) */
+.map-fallback {
+  position: absolute; inset: 0; z-index: -1;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  text-align: center; color: var(--color-sub); font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back" href="index.html">← もどる</a>
+  <h1>交通空白マップ</h1>
+</div>
+
+<section class="legend" aria-label="地図の見方">
+  <p>
+    500m四方の「メッシュ」ごとに、<b>近くのバス停から病院へ通院できるか</b>を色分けしています。
+    色が濃い(赤系)ほど移動に困る地域です。
+  </p>
+  <ul>
+    <li><span class="swatch" style="background:#c0392b"></span><b>交通空白メッシュ</b> … 通院がむずかしい。2市で252メッシュ・15,418人(人口の5.6%)</li>
+    <li><span class="swatch" style="background:#7b241c"></span><b>到達不能メッシュ</b> … 60分以内でどの病院にも着けない</li>
+    <li><span class="swatch" style="background:#f1c40f"></span><b>隠れ空白(太枠)</b> … 時刻表上は行けても、外来受付に間に合わず通院が成立しない。9メッシュ・571人</li>
+    <li><span class="swatch" style="background:#2e86c1"></span><b>施設マーカー</b> … 病院・スーパー</li>
+  </ul>
+  <details>
+    <summary>この地図の数字について</summary>
+    <p style="margin-top:6px">
+      分析対象日 2026-06-10(平日)/ GTFS 9フィード。空白地帯の高齢化率は 43.2% で、
+      2市平均 30.3% より 12.9ポイント高く、「移動に困る場所ほど、移動が困難な人が住んでいる」
+      ことを示します。色や凡例の詳細は地図内の凡例も参照してください。
+    </p>
+  </details>
+</section>
+
+<div class="map-area">
+  <!-- 凍結済みの空白マップ本体。分析環境で output/gap_map.html を
+       webapp/gap_map.html にコピーすると、ここに地図が表示される -->
+  <p class="map-fallback">
+    地図(gap_map.html)を読み込んでいます。<br>
+    表示されない場合は、分析環境で <code>output/gap_map.html</code> を
+    <code>webapp/gap_map.html</code> にコピーして配置してください。
+  </p>
+  <iframe src="gap_map.html" title="交通空白マップ" loading="lazy"></iframe>
+</div>
+
+</body>
+</html>
