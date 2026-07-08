@@ -12,6 +12,9 @@
 let districts = [];
 let destinations = [];
 let meta = null;
+// 地区ごとの交通空白のようす(G5)。webapp/data/district_gap.json(任意)。
+// 無ければ {} のままで、パネルは何も出さない(後方互換)。かんたんモードには出さない
+let districtGap = {};
 const timetableCache = {};
 
 // 表示状態。boardFilter は方向ごとの「このバス停から乗る便だけ表示」(null=すべて)
@@ -181,6 +184,7 @@ async function render() {
   syncDayTypeTabs();
 
   document.getElementById("pair-title").textContent = `${district.name} → ${facility.name}`;
+  renderGapPanel(district);
 
   const timetable = await getTimetable(state.did);
   const entry = timetable.to[state.fid];
@@ -391,6 +395,53 @@ function renderPhoneBox(district, operators) {
 }
 
 // ===============================================================
+// この地区の交通空白のようす(G5)。district_gap.json があるときだけ表示。
+// しっかりモード=家族・支援者・行政向けなので、事実の数値で率直に示す
+// (かんたんモード=高齢ご本人向けには出さない。開発者方針 2026-07-08)
+// ===============================================================
+function renderGapPanel(district) {
+  const el = document.getElementById("gap-panel");
+  if (!el) return;
+  const g = districtGap[district.id];
+  if (!g) { el.innerHTML = ""; el.hidden = true; return; }   // データ未生成なら何も出さない
+  el.hidden = false;
+
+  const pct = (x) => (x == null ? "—" : `${Math.round(x * 1000) / 10}%`);
+  const num = (n) => Number(n).toLocaleString("ja-JP");
+  const items = [
+    `<div class="gap-item"><span class="gap-num">${num(g.population)}人</span>` +
+      `<span class="gap-lbl">この地区の人口</span></div>`,
+  ];
+  if (g.aging_rate != null) {
+    items.push(
+      `<div class="gap-item"><span class="gap-num">${pct(g.aging_rate)}</span>` +
+      `<span class="gap-lbl">高齢化率(65歳以上)</span></div>`);
+  }
+  items.push(
+    `<div class="gap-item"><span class="gap-num">${pct(g.gap_ratio)}</span>` +
+    `<span class="gap-lbl">交通空白の人口割合(${num(g.gap_population)}人)</span></div>`);
+
+  // 状況の一言。隠れ空白 > 空白 > おおむね可 の順で出し分け
+  let cls = "ok";
+  let msg = "この地区は おおむね通院できます";
+  if (g.has_hidden_gap) {
+    cls = "warn";
+    msg = `隠れ空白あり:時刻表上は行けても通院が成立しにくい区画が ${g.hidden_gap_mesh_count} ` +
+          `(${num(g.hidden_gap_population)}人)`;
+  } else if (g.has_gap) {
+    cls = "gap";
+    msg = `交通空白の区画が ${g.gap_mesh_count} あります`;
+  }
+
+  el.innerHTML =
+    `<h3 class="gap-title">この地区の交通状況</h3>` +
+    `<div class="gap-grid">${items.join("")}</div>` +
+    `<p class="gap-badge ${cls}">${escapeHtml(msg)}</p>` +
+    `<p class="gap-src">交通空白マップの分析(分析日 2026-06-10)より。` +
+    `<a href="../map.html">地図で見る</a></p>`;
+}
+
+// ===============================================================
 // ルーティング(#地区ID/施設ID。かんたんモード画面3と同じ形式)
 // ===============================================================
 function parseHash() {
@@ -413,6 +464,10 @@ async function init() {
     fetch("../data/destinations.json").then((r) => r.json()),
     fetch("../data/meta.json").then((r) => r.json()),
   ]);
+  // 交通空白のようす(任意)。ファイルが無い/未生成でも動くよう、失敗は握りつぶす
+  districtGap = await fetch("../data/district_gap.json")
+    .then((r) => (r.ok ? r.json() : {}))
+    .catch(() => ({}));
   // 初期のダイヤ種別 = きょう(有効期間外なら平日)
   state.dayType = meta.date_table[todayKey()] || "weekday";
   document.getElementById("app").hidden = false;
