@@ -299,6 +299,17 @@ h1 {
   color: var(--color-outbound);
 }
 .ride-card .walk-note { font-size: 24px; }
+/* 同じバスが停まる近くの停の併記(A案)。①の下に小さめの補足として出す */
+.ride-card .sibling-note {
+  margin-top: 6px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #555555;
+  background: #f2f6fb;
+  border-left: 4px solid var(--color-outbound);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
 .ride-card .ride-note, .ride-card .arr-note {
   font-size: 20px;
   color: #444444;

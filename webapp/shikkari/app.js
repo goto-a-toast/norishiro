@@ -37,6 +37,15 @@ function timeWord(hm) {
   return `よる${h - 12}:${m}`;
 }
 
+function hmToMin(hm) {
+  const [h, m] = hm.split(":");
+  return Number(h) * 60 + Number(m);
+}
+
+function minToHm(min) {
+  return `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
+}
+
 function platformText(p) {
   return String(p ?? "").normalize("NFKC").trim();
 }
@@ -220,14 +229,21 @@ function directionSection(dir, label, entry, district, facility) {
     return sec;
   }
 
-  // 乗車バス停での絞り込み(乗車停が2種類以上あるときだけチップを出す)
-  const boards = [...new Set(rows.map((r) => r.board))];
+  // バス停での絞り込み(2026-07-08 開発者要望「具体的な停留所を選択したい」)。
+  //  行き(outbound): 乗る停を board_options(同じバスが通る家の近くの実在停)から選ぶ。
+  //  帰り(inbound): 降りる停を alight_options(同じバスが家の近くで降りられる実在停)から選ぶ。
+  const isOutbound = dir === "outbound";
+  const optsKey = isOutbound ? "board_options" : "alight_options";
+  const primaryKey = isOutbound ? "board" : "alight";
+  const filterLabel = isOutbound ? "のるバス停で絞り込み:" : "おりるバス停で絞り込み:";
+  const stopList = [...new Set(rows.flatMap((r) =>
+    (r[optsKey] && r[optsKey].length ? r[optsKey] : [{ stop: r[primaryKey] }]).map((o) => o.stop)))];
   const active = state.boardFilter[dir];
-  if (boards.length > 1) {
+  if (stopList.length > 1) {
     const bf = document.createElement("div");
     bf.className = "board-filter no-print";
-    bf.innerHTML = '<span class="board-filter-label">のるバス停で絞り込み:</span>';
-    const chips = [["すべて", null], ...boards.map((b) => [b, b])];
+    bf.innerHTML = `<span class="board-filter-label">${filterLabel}</span>`;
+    const chips = [["すべて", null], ...stopList.map((b) => [b, b])];
     chips.forEach(([text, value]) => {
       const chip = document.createElement("button");
       chip.type = "button";
@@ -243,7 +259,35 @@ function directionSection(dir, label, entry, district, facility) {
     sec.appendChild(bf);
   }
 
-  const shown = active ? rows.filter((r) => r.board === active) : rows;
+  // 選択に応じて表示行を作る。実在停を選んだら、その停の時刻(行き=発車/帰り=到着)と
+  // 徒歩分につけ替える(同じバスなので反対側は不変。乗車時間だけ計算し直す)
+  let shown;
+  if (active && isOutbound) {
+    shown = [];
+    for (const r of rows) {
+      const opt = (r.board_options || []).find((o) => o.stop === active);
+      if (!opt) continue;
+      const wait = r.transfer ? r.transfer.wait_min : 0;
+      shown.push({ ...r, board: active, dep: opt.dep, board_walk_min: opt.walk_min,
+                   ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait });
+    }
+    shown.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
+  } else if (active) {
+    // 帰り: 降りる停を選択。「着」は既定と同じ基準(=家に着く時刻=バス降車+徒歩)に
+    // そろえる。同じ停を選んでも時刻が変わらないようにするため(o.arrはバス到着なので徒歩を足す)
+    shown = [];
+    for (const r of rows) {
+      const opt = (r.alight_options || []).find((o) => o.stop === active);
+      if (!opt) continue;
+      const wait = r.transfer ? r.transfer.wait_min : 0;
+      const homeArr = hmToMin(opt.arr) + opt.walk_min;
+      shown.push({ ...r, alight: opt.stop, arr: minToHm(homeArr), alight_walk_min: opt.walk_min,
+                   ride_min: homeArr - hmToMin(r.dep) - wait });
+    }
+    shown.sort((a, b) => hmToMin(a.arr) - hmToMin(b.arr));
+  } else {
+    shown = rows;
+  }
 
   // 詳細テーブル本体
   const hasPlatform = shown.some((r) => r.platform);
