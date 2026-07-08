@@ -266,6 +266,10 @@ function directionSection(dir, label, entry, district, facility) {
         (op2 ? ` / ${escapeHtml(op2.name)}` : "") + "</span>";
     }
     const notes = [];
+    // おりるバス停は実停名(列「おりるバス停」)。目的地まで歩くなら補足に徒歩分を出す
+    if (r.alight_walk_min >= 1 && r.alight_place) {
+      notes.push(`${escapeHtml(r.alight_place)}まで徒歩${r.alight_walk_min}分`);
+    }
     if (r.alt_routes) notes.push(`ほかに同時間帯の経路が${r.alt_routes}本`);
     const op = operatorOf(r.op);
     return (
