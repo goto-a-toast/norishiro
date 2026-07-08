@@ -174,11 +174,42 @@ table.tt {
 :focus-visible { outline: 4px solid var(--color-outbound); outline-offset: 2px; }
 
 /* =====================================================================
+   この地区の交通状況パネル(G5)。district_gap.json があるときだけ表示
+   ===================================================================== */
+.gap-panel {
+  border: 2px solid var(--color-outbound);
+  background: var(--bg-outbound);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 4px 0 14px;
+}
+.gap-title { font-size: 16px; margin: 0 0 8px; color: var(--color-outbound); }
+.gap-grid {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.gap-item {
+  flex: 1 1 140px;
+  background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: 8px; padding: 8px 10px;
+}
+.gap-num { display: block; font-size: 22px; font-weight: bold; color: var(--color-return); }
+.gap-lbl { display: block; font-size: 12.5px; color: #444444; margin-top: 2px; }
+.gap-badge {
+  margin: 10px 0 0; font-size: 14px; font-weight: bold;
+  padding: 8px 10px; border-radius: 6px;
+}
+.gap-badge.ok   { color: #14532d; background: #e5f4ea; border: 1px solid #14532d40; }
+.gap-badge.gap  { color: #8a3b00; background: #fdefe3; border: 1px solid #8a3b0040; }
+.gap-badge.warn { color: #7a1212; background: #fdeaea; border: 2px solid #7a1212; }
+.gap-src { font-size: 12px; color: #555555; margin: 8px 0 0; }
+.gap-src a { color: var(--color-outbound); }
+
+/* =====================================================================
    印刷(F5完成条件: 第1部PDFの紙面と見比べて遜色ない/白黒で行き帰りが
    区別できる)。白黒対策: 行き=実線の太枠、帰り=二重線の枠+ラベル文字
    ===================================================================== */
 @media print {
-  .no-print, #page-header .mode-note a { display: none; }
+  .no-print, #page-header .mode-note a, .gap-panel { display: none; }
   body { font-size: 15px; }
   /* 詳細表は縦に長いので、全体を縮めてA4で2枚以内を目安にする
      (かんたんモードの印刷と同じ手法。zoom非対応環境でも枚数が増えるだけ) */
