@@ -1,0 +1,53 @@
+# webapp/ を GitHub Pages に公開するワークフロー(F8)。
+# GitHub Pages はフォルダ指定が root か /docs に限られるため、任意の webapp/ を
+# 公開できる GitHub Actions 方式を採用(リポジトリ構成を変えずに済む)。
+# main への push で webapp/ が変わったとき自動で再公開する。
+#
+# ★事前に一度だけ必要な設定(リポジトリのオーナーが行う):
+#   GitHub → Settings → Pages → Build and deployment → Source を
+#   「GitHub Actions」にする。これを済ませてから main にこのファイルが入ると公開される。
+#
+# 公開URL: https://goto-a-toast.github.io/norishiro/
+
+name: Deploy webapp to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "webapp/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch: {}   # 手動でも実行できるようにする
+
+# Pages 公開に必要な権限(最小限)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時に走らないようにする(公開が競合しないため)
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Pages の設定
+        uses: actions/configure-pages@v5
+
+      - name: webapp/ を公開物としてアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: webapp
+
+      - name: GitHub Pages へ公開
+        id: deployment
+        uses: actions/deploy-pages@v4
