@@ -17,7 +17,7 @@ from export_web_data import (
     StopIndex, boardable_routes, build_origins,
     frontier_rows, keep_useful_boards, pick_kantan_board,
     make_itinerary, build_entry,
-    board_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
+    board_options_for, alight_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
 )
 
 R_EARTH_M = 6371000
@@ -267,6 +267,20 @@ def test_board_options_for_lists_near_stops_sorted_by_walk():
     assert [o["stop"] for o in opts] == ["B", "C", "A"]   # 徒歩が近い順
     assert opts[0]["dep"] == "00:05"                       # Bは位置1=departures[1]=5分
     assert opts[0]["walk_min"] == 3
+
+
+def test_alight_options_for_lists_home_stops_after_boarding():
+    """帰り: 乗車位置より後で、家の徒歩圏内にある停を、到着時刻つき・徒歩が近い順に返す"""
+    stops = {s: {"name": s.upper(), "lat": 0.0, "lon": 0.0} for s in ("f", "x", "y", "z")}
+    net = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    pat = Pattern(stop_ids=("f", "x", "y", "z"), trips=[])
+    trip = Trip(trip_id="t", route_name="R", arrivals=[0, 30, 34, 40], departures=[0, 30, 34, 40])
+    home = {"y": 4, "z": 9}   # x(施設寄り)は家の徒歩圏外
+    # from_pos=0(施設fで乗車)。以降で家の徒歩圏内=y,z
+    opts = alight_options_for(net, pat, trip, from_pos=0, home_walks=home)
+    assert [o["stop"] for o in opts] == ["Y", "Z"]   # 徒歩が近い順
+    assert opts[0]["arr"] == "00:34"                  # Yは位置2=arrivals[2]=34分
+    assert opts[0]["walk_min"] == 4
 
 
 def test_board_options_for_capped():

@@ -527,8 +527,24 @@ function rideStepsHtml(r, dir) {
       ? ` <span class="walk-note">(${escapeHtml(r.alight_place)}まで あるいて約${r.alight_walk_min}分)</span>`
       : ` <span class="walk-note">(${escapeHtml(r.alight_place)}のすぐ近く)</span>`;
   }
+  // 帰り(inbound)は、同じバスが家の近くで降りられる別の停を併記する(行きの
+  // 乗り場併記と対称。2026-07-08 開発者要望)。主停(r.alight)以外を近い順に最大3件
+  let alightSiblingNote = "";
+  if (dir === "inbound" && Array.isArray(r.alight_options)) {
+    // 帰りは乗車中なので「どの停が家に近いか」が要る情報。到着時刻でなく徒歩分で見せる
+    // (featuredの「着」は徒歩後の家の到着時刻。時刻を混ぜると基準がずれて紛らわしい)
+    const others = r.alight_options.filter((o) => o.stop !== r.alight).slice(0, 3);
+    if (others.length) {
+      const list = others
+        .map((o) => (o.walk_min >= 1 ? `${escapeHtml(o.stop)}(あるいて約${o.walk_min}分)` : `${escapeHtml(o.stop)}`))
+        .join("・");
+      alightSiblingNote =
+        `<div class="sibling-note">同じバスは ${list} でも おりられます。` +
+        `ちかいバス停で おりてください</div>`;
+    }
+  }
   steps.push(`「${escapeHtml(r.alight)}」で おりる${placeNote} <span class="ride-note">${rideNote}</span>` +
-    ` <span class="arr-note">${timeWord(r.arr)} 着</span>`);
+    ` <span class="arr-note">${timeWord(r.arr)} 着</span>${alightSiblingNote}`);
 
   const lis = steps
     .map((s, i) => `<li><span class="step-mark">${marks[i]}</span><span class="step-body">${s}</span></li>`)

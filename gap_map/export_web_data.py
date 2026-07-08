@@ -348,7 +348,7 @@ def build_headsign_map(network: transit_core.Network) -> dict:
 def make_itinerary(path: list, final_arrival: int, network: transit_core.Network,
                     board_name: str, alight_place: str, headsigns: dict,
                     board_walk_min: float = None, alight_walk_min: float = None,
-                    board_options: list = None) -> dict:
+                    board_options: list = None, alight_options: list = None) -> dict:
     """reconstruct_pathで得たLegのリストから、画面表示用の1便ぶんの辞書を作る。
     headsign(バス前面の行き先表示)が主役、系統名(route)は半角に正規化した
     確認情報という位置づけ(翻訳ルール。docs/plan_f4_ui.md §1・§2)。
@@ -421,6 +421,9 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         # 同じバスが通る家の近くの停一覧(徒歩が近い順)。board もこの中の1つ。
         # Noneは「候補計算をしていない」= 主停のみ(帰りinboundなど)
         "board_options": board_options,
+        # 帰り(inbound)で、同じバスが通る家の近くで「降りられる」停一覧(到着時刻つき)。
+        # alight もこの中の1つ。行きoutboundはNone(降車=施設で1か所のため)
+        "alight_options": alight_options,
     }
 
 
@@ -453,6 +456,29 @@ def board_options_for(network: transit_core.Network, pattern, trip,
     return opts[:MAX_BOARD_OPTIONS]
 
 
+def alight_options_for(network: transit_core.Network, pattern, trip,
+                       from_pos: int, home_walks: dict) -> list:
+    """帰りの便(pattern/trip)が「乗車位置より後=家に近づいてから」通る停のうち、
+    家の徒歩圏内(home_walks)にある停を、到着時刻つきで返す(2026-07-08 開発者要望
+    「帰りも近いバス停の表示・選択を」)。同じバスなのでどの停で降りてもよい。
+    徒歩が近い順に並べ、近い MAX_BOARD_OPTIONS 件に絞る。
+    home_walks: {stop_id: 徒歩分}(その地区の徒歩圏内の降車候補停。targets[tid]由来)。
+    from_pos: 乗車位置。これより後の停だけが降車候補になる"""
+    opts = []
+    seen = set()
+    for p in range(from_pos + 1, len(pattern.stop_ids)):
+        sid = pattern.stop_ids[p]
+        if sid in home_walks and sid not in seen:
+            seen.add(sid)
+            opts.append({
+                "stop": network.stops[sid]["name"],
+                "arr": fmt_hm(trip.arrivals[p]),
+                "walk_min": round(home_walks[sid]),
+            })
+    opts.sort(key=lambda o: o["walk_min"])
+    return opts[:MAX_BOARD_OPTIONS]
+
+
 # 乗換1回の便を「補完」として載せるかどうかの判定に使う時間幅(計画書§6
 # 「直通が存在する時間帯は直通を優先。乗換1回は直通が無い時間帯の補完として載せる」)。
 # この時間内に直通があれば、その乗換ルートは載せない(基幹停留所では乗換の
@@ -462,7 +488,8 @@ GAP_FILL_WINDOW_MIN = 30
 
 def scan_from_origin(network: transit_core.Network, origin_stops: list,
                       targets: dict, headsigns: dict,
-                      board_name_override: str = None, near_home: dict = None) -> dict:
+                      board_name_override: str = None, near_home: dict = None,
+                      alight_home: bool = False) -> dict:
     """origin_stops(徒歩圏内の乗り場すべて)のどれかから出発できる全便を1本ずつ試し、
     各行き先(targets)への時刻表を返す(直通優先・乗換1回は直通が無い時間帯の補完)。
 
@@ -476,6 +503,8 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
       施設名を使いたいのでこちらを指定する。Noneなら実際に乗った停留所名を使う)
     near_home: {stop_id: 徒歩分}。指定すると各便に board_options(同じバスが通る家の
       近くの停一覧)を付ける。行き(outbound)でのみ渡す。帰り(inbound)はNone
+    alight_home: Trueにすると各便に alight_options(同じバスが家の近くで降りられる停一覧)を
+      付ける。帰り(inbound)= targetsが家の地区側のときにTrueにする
     戻り値 : {行き先id: [itinerary辞書, ...](出発時刻の昇順)}
     """
     # 逆引き: stop_id -> [(行き先id, 徒歩分, 表示名), ...](乗換なし到達の判定に使う)
@@ -538,10 +567,16 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
             # 同じバスが降車位置より前に通る、家の近くの停一覧(near_home指定=行きのみ)
             b_opts = (board_options_for(network, pattern, trip, alight_pos, near_home)
                       if near_home is not None else None)
+            # 同じバスが乗車位置より後に通る、家の近くで降りられる停一覧(alight_home=帰りのみ)
+            a_opts = None
+            if alight_home:
+                home_walks = {sid: w for sid, w, _n in stops_with_walk}
+                a_opts = alight_options_for(network, pattern, trip, pos, home_walks)
             direct_rows[tid].append(
                 (depart_min, make_itinerary([leg], arrival, network, board_name, alight_place,
                                             headsigns, board_walk_min=origin_walk_min[origin_stop],
-                                            alight_walk_min=alight_walk, board_options=b_opts)))
+                                            alight_walk_min=alight_walk, board_options=b_opts,
+                                            alight_options=a_opts)))
 
         # (b) 乗換あり(最大1回): この便で直通しない行き先だけRAPTORで調べる。
         #     直通がすでにある行き先まで毎回調べると計算・出力とも無駄が大きい
@@ -822,9 +857,10 @@ def compute_day_type_schedules(network: transit_core.Network, districts: list,
             inbound[f["id"]] = {d["id"]: [] for d in districts}
             continue
         # 行き先発(inbound)は「乗り場」欄に施設名を出す(利用者は施設の建物から
-        # 歩くのであって、特定のりば名を意識しないため)
+        # 歩くのであって、特定のりば名を意識しないため)。alight_home=Trueで、家の近くで
+        # 降りられる停一覧(alight_options)を各便に付ける(帰りの近隣停の表示・選択用)
         inbound[f["id"]] = scan_from_origin(network, stops, district_targets, headsigns,
-                                             board_name_override=f["name"])
+                                             board_name_override=f["name"], alight_home=True)
 
     return {"outbound": outbound, "inbound": inbound, "district_board": district_board}
 
