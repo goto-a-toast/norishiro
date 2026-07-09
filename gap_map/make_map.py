@@ -247,7 +247,10 @@ def main():
     features = build_mesh_features(df)
 
     center_lat, center_lon = df["lat"].mean(), df["lon"].mean()
-    fmap = folium.Map(location=[center_lat, center_lon], zoom_start=12, tiles="OpenStreetMap")
+    # 背景地図は1種類だけなので control=False にして、レイヤー切替パネルに
+    # 「openstreetmap」という謎のラジオボタンが出ないようにする
+    fmap = folium.Map(location=[center_lat, center_lon], zoom_start=12, tiles=None)
+    folium.TileLayer("OpenStreetMap", control=False).add_to(fmap)
 
     print("レイヤ1(病院への所要時間)を追加中...")
     add_mesh_layer(fmap, features, "hospital_bucket", HOSPITAL_COLORS, HOSPITAL_LABELS,
@@ -277,7 +280,27 @@ def main():
         ).add_to(super_fg)
     super_fg.add_to(fmap)
 
-    folium.LayerControl(collapsed=False).add_to(fmap)
+    # レイヤー切替は左上に置く(右上は凡例①〜③で使っており、重なって見えなくなる)
+    folium.LayerControl(collapsed=False, position="topleft").add_to(fmap)
+    layer_control_css = """
+    <style>
+      /* レイヤー切替パネル: 見出しをつけて「何のチェックか」わかるようにする */
+      .leaflet-control-layers-expanded {
+          font-family: sans-serif;
+          font-size: 13px;
+          max-width: 240px;
+      }
+      .leaflet-control-layers-expanded::before {
+          content: "表示する情報(チェックで切替)";
+          display: block;
+          font-weight: bold;
+          margin-bottom: 4px;
+          white-space: nowrap;
+      }
+      .leaflet-control-layers label { margin: 2px 0; }
+    </style>
+    """
+    fmap.get_root().header.add_child(folium.Element(layer_control_css))
     add_legend(fmap, "① 病院への所要時間", HOSPITAL_COLORS, HOSPITAL_LABELS,
                unreachable_label=UNREACHABLE, unreachable_color=HOSPITAL_UNREACHABLE_COLOR,
                position_top=10)

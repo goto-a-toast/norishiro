@@ -97,7 +97,25 @@
                             padding: 2px; padding-right: 8px;
                         }
                     </style>
-            
+
+                    <style>
+                        /* レイヤー切替パネル(左上): 右上の凡例との重なりを避け、
+                           見出しをつけて「何のチェックか」わかるようにする */
+                        .leaflet-control-layers-expanded {
+                            font-family: sans-serif;
+                            font-size: 13px;
+                            max-width: 240px;
+                        }
+                        .leaflet-control-layers-expanded::before {
+                            content: "表示する情報(チェックで切替)";
+                            display: block;
+                            font-weight: bold;
+                            margin-bottom: 4px;
+                            white-space: nowrap;
+                        }
+                        .leaflet-control-layers label { margin: 2px 0; }
+                    </style>
+
 </head>
 <body>
     
@@ -5180,9 +5198,7 @@
             
     
             var layer_control_7608d1a40229a15a6cac5d7891e71020_layers = {
-                base_layers : {
-                    "openstreetmap" : tile_layer_edb9120b49391ad3fc39135bd48cfd36,
-                },
+                base_layers : {},
                 overlays :  {
                     "\u2460 \u75c5\u9662\u3078\u306e\u6240\u8981\u6642\u9593" : feature_group_4aafdd2f34f942c1d6ae73b6cd21ed6f,
                     "\u2461 \u6700\u5bc4\u308a\u30d0\u30b9\u505c\u307e\u3067\u306e\u8ddd\u96e2\u5e2f" : feature_group_73f8bfea09a6c3975ce926a83ef055ac,
@@ -5195,7 +5211,7 @@
                 layer_control_7608d1a40229a15a6cac5d7891e71020_layers.base_layers,
                 layer_control_7608d1a40229a15a6cac5d7891e71020_layers.overlays,
                 {
-  "position": "topright",
+  "position": "topleft",
   "collapsed": false,
   "autoZIndex": true,
 }
