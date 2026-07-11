@@ -17,8 +17,49 @@ let meta = null;
 let districtGap = {};
 const timetableCache = {};
 
+// ---------------- 対策1(広い地区): 索引データの遅延読み込み ----------------
+// mesh_index.json  … 817メッシュの中心座標と地区ID(GPSの地区判定をポリゴン精度に)
+// stops_index.json … 停留所名→座標(「いまの場所から約◯m」の正直表示)
+// 無い環境(再生成前)では null になり、従来動作にフォールバックする
+let meshIndexCache;
+let stopsIndexCache;
+let stopsIndex = null;   // render() が geoFix の鮮度を見て入れる
+
+async function getMeshIndex() {
+  if (meshIndexCache === undefined) {
+    meshIndexCache = await fetch("../data/mesh_index.json")
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  }
+  return meshIndexCache;
+}
+
+async function getStopsIndex() {
+  if (stopsIndexCache === undefined) {
+    stopsIndexCache = await fetch("../data/stops_index.json")
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  }
+  return stopsIndexCache;
+}
+
+function geoFixFresh() {
+  const g = state.geoFix;
+  return g && Date.now() - g.at < 10 * 60 * 1000 ? g : null;
+}
+
+// 地区IDから地区を探す(サブ地区=親エントリの sub 配列も対象)
+function findDistrict(did) {
+  for (const d of districts) {
+    if (d.id === did) return d;
+    for (const s of d.sub || []) {
+      if (s.id === did) return { ...s, municipality: d.municipality, parent: d };
+    }
+  }
+  return null;
+}
+
 // 表示状態。boardFilter は方向ごとの「このバス停から乗る便だけ表示」(null=すべて)
-const state = { did: null, fid: null, dayType: "weekday", boardFilter: { outbound: null, inbound: null } };
+const state = { did: null, fid: null, dayType: "weekday", boardFilter: { outbound: null, inbound: null },
+                geoFix: null };   // 最後にGPSで測った位置 {lat, lon, at}
 
 // ===============================================================
 // 共通ヘルパー(かんたんモードと同じ流儀)
@@ -97,6 +138,13 @@ function fillSelectors() {
       opt.value = d.id;
       opt.textContent = `${d.name}(${d.kana})`;
       og.appendChild(opt);
+      // サブ地区(広い地区の分割。対策2)は親の下にインデントして並べる
+      for (const sub of d.sub || []) {
+        const so = document.createElement("option");
+        so.value = sub.id;
+        so.textContent = `　└ ${sub.name}(${sub.kana})`;
+        og.appendChild(so);
+      }
     });
     dSel.appendChild(og);
   }
@@ -136,6 +184,25 @@ function distanceM(lat1, lon1, lat2, lon2) {
   return Math.round(R * Math.sqrt(x * x + y * y));
 }
 
+// 近い地区の候補。索引があれば「地区の最寄りメッシュまでの距離」(ポリゴン精度)、
+// 無ければ従来の代表点距離で近い順に n 地区(初出のみ)
+async function nearestDistricts(lat, lon, n) {
+  const idx = await getMeshIndex();
+  if (idx && Array.isArray(idx.meshes)) {
+    const best = new Map();
+    for (const [mlat, mlon, di] of idx.meshes) {
+      const dist = distanceM(lat, lon, mlat, mlon);
+      const id = idx.districts[di];
+      if (!best.has(id) || dist < best.get(id)) best.set(id, dist);
+    }
+    return [...best.entries()].sort((a, b) => a[1] - b[1])
+      .map(([id, dist]) => ({ d: findDistrict(id), dist }))
+      .filter((x) => x.d).slice(0, n);
+  }
+  return districts.map((d) => ({ d, dist: distanceM(lat, lon, d.lat, d.lon) }))
+    .sort((a, b) => a.dist - b.dist).slice(0, n);
+}
+
 function setupGeoButton() {
   const btn = document.getElementById("geo-btn");
   const result = document.getElementById("geo-result");
@@ -143,12 +210,10 @@ function setupGeoButton() {
   btn.addEventListener("click", () => {
     result.textContent = "位置をしらべています…";
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const { latitude, longitude } = pos.coords;
-        const near = districts
-          .map((d) => ({ d, dist: distanceM(latitude, longitude, d.lat, d.lon) }))
-          .sort((a, b) => a.dist - b.dist)
-          .slice(0, 3);
+        state.geoFix = { lat: latitude, lon: longitude, at: Date.now() };
+        const near = await nearestDistricts(latitude, longitude, 3);
         result.innerHTML = "";
         near.forEach(({ d, dist }) => {
           const b = document.createElement("button");
@@ -176,7 +241,7 @@ function syncDayTypeTabs() {
 // 描画
 // ===============================================================
 async function render() {
-  const district = districts.find((d) => d.id === state.did);
+  const district = findDistrict(state.did);
   const facility = destinations.find((f) => f.id === state.fid);
   if (!district || !facility) return;
   document.getElementById("district-select").value = state.did;
@@ -184,7 +249,10 @@ async function render() {
   syncDayTypeTabs();
 
   document.getElementById("pair-title").textContent = `${district.name} → ${facility.name}`;
-  renderGapPanel(district);
+  renderGapPanel(district.parent || district);  // 交通空白の集計は地区単位(サブは親で引く)
+
+  // GPSで測ったばかりの位置があれば、乗車停までの距離の正直表示に使う(対策1)
+  stopsIndex = geoFixFresh() ? await getStopsIndex() : null;
 
   const timetable = await getTimetable(state.did);
   const entry = timetable.to[state.fid];
@@ -214,6 +282,18 @@ async function render() {
   document.getElementById("validity-note").textContent =
     `この時刻表は ${dateJa(meta.valid_until)} まで有効です`;
   renderPhoneBox(district, collectOperators(entry));
+}
+
+// GPS測位が新しいときだけ、停留所までの直線距離を小さく添える(対策1・広い地区)。
+// 800m(徒歩約17分の目安)超は「とおい」と明記して正直に伝える
+function geoDistNote(stopName, dir) {
+  const fix = geoFixFresh();
+  if (dir !== "outbound" || !fix || !stopsIndex || !stopsIndex[stopName]) return "";
+  const [slat, slon] = stopsIndex[stopName];
+  const dist = distanceM(fix.lat, fix.lon, slat, slon);
+  const word = dist < 950 ? `約${Math.round(dist / 100) * 100}m` : `約${(dist / 1000).toFixed(1)}km`;
+  const far = dist > 800 ? "・とおい" : "";
+  return `<br><span class="sub${far ? " far" : ""}">いまの場所から ${word}${far}</span>`;
 }
 
 function directionSection(dir, label, entry, district, facility) {
@@ -324,7 +404,7 @@ function directionSection(dir, label, entry, district, facility) {
       "<tr>" +
       `<td class="dep">${timeWord(r.dep)}</td>` +
       `<td class="arr">${timeWord(r.arr)}</td>` +
-      `<td>${escapeHtml(r.board)}</td>` +
+      `<td>${escapeHtml(r.board)}${geoDistNote(r.board, dir)}</td>` +
       (hasPlatform ? `<td>${r.platform ? escapeHtml(platformText(r.platform)) + "番" : ""}</td>` : "") +
       `<td>${escapeHtml(headsignLabel(r.headsign))}</td>` +
       `<td class="num">${escapeHtml(r.route)}</td>` +

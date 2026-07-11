@@ -315,3 +315,64 @@ def test_slim_to_board_reprojects_dep_to_featured_stop():
     assert kept[0]["dep"] == "08:05"          # featured停の発車時刻につけ替え
     assert kept[0]["board_walk_min"] == 3
     assert kept[0]["ride_min"] == 25          # 到着08:30 − 発車08:05
+
+
+# ===============================================================
+# 対策1(広い地区): stops_index と地区の平坦化
+# ===============================================================
+from types import SimpleNamespace
+
+from export_web_data import collect_stop_names, build_stops_index, flatten_districts
+
+
+def test_collect_stop_names_walks_all_fields():
+    to = {
+        "f01": {"unreachable": True},
+        "f02": {
+            "board_walk_min": 3,
+            "outbound": {"weekday": [{
+                "board": "A停", "alight": "B停", "alight_place": "施設X",
+                "transfer": {"at": "C停"},
+                "board_options": [{"stop": "A停"}, {"stop": "D停"}],
+                "alight_options": None,
+            }]},
+            "inbound": {"weekday": [{
+                "board": "B停", "alight": "A停", "transfer": None,
+                "board_options": None,
+                "alight_options": [{"stop": "E停"}],
+            }]},
+        },
+    }
+    used = set()
+    collect_stop_names(to, used)
+    # alight_place(施設名)は集めない。unreachableは飛ばす
+    assert used == {"A停", "B停", "C停", "D停", "E停"}
+
+
+def test_build_stops_index_averages_same_name_and_sorts():
+    net1 = SimpleNamespace(stops={
+        "s1": {"name": "A停", "lat": 38.0, "lon": 140.0},
+        "s2": {"name": "A停", "lat": 38.001, "lon": 140.001},  # のりば違い
+        "s3": {"name": "使わない停", "lat": 39.0, "lon": 141.0},
+    })
+    net2 = SimpleNamespace(stops={
+        "s4": {"name": "B停", "lat": 38.5, "lon": 140.5},
+    })
+    index = build_stops_index({"weekday": net1, "saturday": net2}, {"A停", "B停"})
+    assert list(index) == ["A停", "B停"]           # 名前順=冪等
+    assert index["A停"] == [38.0005, 140.0005]     # 同名は座標平均
+    assert index["B停"] == [38.5, 140.5]
+    assert "使わない停" not in index
+
+
+def test_flatten_districts_appends_subs_with_parent_info():
+    districts = [
+        {"id": "d01", "name": "地区1", "municipality": "山形市"},
+        {"id": "d15", "name": "東沢地区", "municipality": "山形市",
+         "sub": [{"id": "d15a", "name": "東沢地区(にし)", "lat": 1, "lon": 2},
+                 {"id": "d15b", "name": "東沢地区(ひがし)", "lat": 3, "lon": 4}]},
+    ]
+    flat = flatten_districts(districts)
+    assert [d["id"] for d in flat] == ["d01", "d15", "d15a", "d15b"]  # 親も残す
+    sub = flat[2]
+    assert sub["municipality"] == "山形市" and sub["parent_id"] == "d15"

@@ -192,6 +192,15 @@ h1 {
   text-align: center;
 }
 
+/* サブ地区選択(広い地区の中間ステップ)。質問文はグリッドの幅いっぱいに */
+.sub-question { grid-column: 1 / -1; margin: 4px 0; }
+.district-btn.sub-dunno, .district-btn.sub-back { grid-column: 1 / -1; }
+.district-btn.sub-back {
+  background: var(--color-disabled-bg);
+  border-color: var(--color-disabled);
+  font-weight: normal;
+}
+
 .district-btn .kana {
   display: block;
   font-size: 16px;
@@ -321,6 +330,22 @@ h1 {
   color: #555555;
   background: #f2f6fb;
   border-left: 4px solid var(--color-outbound);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+/* GPS測位があるときの「いまの場所から およそ◯km」(対策1・広い地区)。
+   800m超は注意の色+文言(色だけに頼らず文章でも伝える) */
+.ride-card .geo-dist {
+  margin-top: 6px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #555555;
+}
+.ride-card .geo-dist.far-note {
+  font-weight: bold;
+  color: #7a2d00;
+  background: #fdeee3;
+  border-left: 4px solid var(--color-return);
   padding: 6px 10px;
   border-radius: 4px;
 }
