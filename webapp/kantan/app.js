@@ -14,7 +14,49 @@ let districts = [];
 let destinations = [];
 let meta = null;
 const timetableCache = {};
-const state = { city: "山形市", category: "hospital", did: null, fid: null };
+const state = { city: "山形市", category: "hospital", did: null, fid: null,
+                geoFix: null };   // 最後にGPSで測った位置 {lat, lon, at}(画面3の距離表示に使う)
+
+// ---------------- 対策1(広い地区): 索引データの遅延読み込み ----------------
+// mesh_index.json  … 817メッシュの中心座標と地区ID。GPSの地区判定をポリゴン精度にする
+// stops_index.json … 停留所名→座標。「いまの場所からバス停まで およそ◯km」の正直表示に使う
+// どちらも無い環境(再生成前)では null を返し、従来動作にフォールバックする
+let meshIndexCache;   // undefined=未取得 / null=取得失敗 / object=取得済み
+let stopsIndexCache;
+
+async function getMeshIndex() {
+  if (meshIndexCache === undefined) {
+    meshIndexCache = await fetch("../data/mesh_index.json")
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  }
+  return meshIndexCache;
+}
+
+async function getStopsIndex() {
+  if (stopsIndexCache === undefined) {
+    stopsIndexCache = await fetch("../data/stops_index.json")
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  }
+  return stopsIndexCache;
+}
+
+// GPSの測位が新しい(10分以内)ならその位置を返す
+function geoFixFresh() {
+  const g = state.geoFix;
+  return g && Date.now() - g.at < 10 * 60 * 1000 ? g : null;
+}
+
+// 地区IDから地区を探す(サブ地区=親エントリの sub 配列も対象。
+// サブ地区には親の市名と親への参照を持たせて返す)
+function findDistrict(did) {
+  for (const d of districts) {
+    if (d.id === did) return d;
+    for (const s of d.sub || []) {
+      if (s.id === did) return { ...s, municipality: d.municipality, parent: d };
+    }
+  }
+  return null;
+}
 
 // ===============================================================
 // 時刻のヘルパー
@@ -144,10 +186,11 @@ function showScreen(n) {
 // 画面1: 地区をえらぶ
 // ===============================================================
 // ---------------- GPSで近い地区をさがす(画面1) ----------------
-// 地区の「代表点」(districts.json の lat/lon = 人口最大メッシュの中心)との
-// 直線距離で近い順に3地区を候補として出し、利用者に選んでもらう。
-// 代表点方式なので地区境界の近くでは隣の地区が上に来ることがある——
-// だから自動で決めず、必ず「候補から選ぶ」形にする(誤判定への保険)。
+// mesh_index.json(住民のいる500mメッシュ全部の中心と地区ID)があれば、
+// 「一番近いメッシュの地区」で判定する。地区の形をメッシュがタイルしているので、
+// 東沢地区のような広い学区でも正しい地区が候補に出る(対策1)。
+// 索引が無い環境では従来どおり地区の代表点との距離で代用する。
+// どちらでも自動で決めず、必ず「候補から選ぶ」形にする(誤判定への保険)。
 // ※これは表示のための距離の並べ替えだけで、経路の計算はしない(設計原則の範囲内)
 
 // 2点間のおおよその距離(m)。ヒュベニではなく簡易式で十分(候補の並べ替え用)
@@ -172,12 +215,10 @@ function setupGeoButton() {
   btn.addEventListener("click", () => {
     result.textContent = "位置をしらべています…";
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const { latitude, longitude } = pos.coords;
-        const near = districts
-          .map((d) => ({ d, dist: distanceM(latitude, longitude, d.lat, d.lon) }))
-          .sort((a, b) => a.dist - b.dist)
-          .slice(0, 3);
+        state.geoFix = { lat: latitude, lon: longitude, at: Date.now() };
+        const near = await nearestDistricts(latitude, longitude, 3);
         result.innerHTML = '<p class="geo-note">ちかい じゅんに ならべました。おすまいの地区をえらんでください</p>';
         near.forEach(({ d, dist }) => {
           const b = document.createElement("button");
@@ -195,6 +236,30 @@ function setupGeoButton() {
       { timeout: 10000, maximumAge: 60000 }
     );
   });
+}
+
+// 近い地区の候補を作る。索引があれば「地区の最寄りメッシュまでの距離」で、
+// 無ければ従来の「代表点までの距離」で近い順に n 地区(初出のみ)
+async function nearestDistricts(lat, lon, n) {
+  const idx = await getMeshIndex();
+  if (idx && Array.isArray(idx.meshes)) {
+    const best = new Map();   // 地区ID → 最寄りメッシュまでの距離
+    for (const [mlat, mlon, di] of idx.meshes) {
+      const dist = distanceM(lat, lon, mlat, mlon);
+      const id = idx.districts[di];
+      if (!best.has(id) || dist < best.get(id)) best.set(id, dist);
+    }
+    return [...best.entries()]
+      .sort((a, b) => a[1] - b[1])
+      .map(([id, dist]) => ({ d: findDistrict(id), dist }))
+      .filter((x) => x.d)   // districts.json 側に無いIDは念のため飛ばす
+      .slice(0, n);
+  }
+  // フォールバック: 代表点との距離(索引が未生成の環境)
+  return districts
+    .map((d) => ({ d, dist: distanceM(lat, lon, d.lat, d.lon) }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, n);
 }
 
 // 市タブの見た目を state.city に合わせる(画面3から「もどる」で戻ったとき、
@@ -217,9 +282,52 @@ function renderScreen1() {
       btn.type = "button";
       btn.className = "district-btn";
       btn.innerHTML = `${escapeHtml(d.name)}<span class="kana">${escapeHtml(d.kana)}</span>`;
-      btn.addEventListener("click", () => { location.hash = d.id; });
+      // サブ地区(対策2・広い地区の分割)がある地区は、どのあたりに住んでいるかを
+      // ひとつだけ確認してから進む(GPS経由ならこのステップは出ない)
+      btn.addEventListener("click", () => {
+        if (Array.isArray(d.sub) && d.sub.length) {
+          renderSubChoice(d);
+        } else {
+          location.hash = d.id;
+        }
+      });
       grid.appendChild(btn);
     });
+}
+
+// 広い地区のサブ地区選択(画面1の中間ステップ)。
+// 「わからない」を必ず用意して、従来どおり親地区(代表点)の時刻表にも行けるようにする
+function renderSubChoice(parent) {
+  const grid = document.getElementById("district-grid");
+  grid.innerHTML = "";
+
+  const q = document.createElement("p");
+  q.className = "instruction sub-question";
+  q.textContent = `${parent.name}の どのあたりに おすまいですか?`;
+  grid.appendChild(q);
+
+  parent.sub.forEach((s) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "district-btn";
+    btn.innerHTML = `${escapeHtml(s.name)}<span class="kana">${escapeHtml(s.kana)}</span>`;
+    btn.addEventListener("click", () => { location.hash = s.id; });
+    grid.appendChild(btn);
+  });
+
+  const dunno = document.createElement("button");
+  dunno.type = "button";
+  dunno.className = "district-btn sub-dunno";
+  dunno.innerHTML = `わからない・どこでもよい<span class="kana">${escapeHtml(parent.name)}ぜんたいの時刻表へ</span>`;
+  dunno.addEventListener("click", () => { location.hash = parent.id; });
+  grid.appendChild(dunno);
+
+  const back = document.createElement("button");
+  back.type = "button";
+  back.className = "district-btn sub-back";
+  back.textContent = "← 地区のいちらんに もどる";
+  back.addEventListener("click", renderScreen1);
+  grid.appendChild(back);
 }
 
 // ===============================================================
@@ -227,7 +335,7 @@ function renderScreen1() {
 // ===============================================================
 async function renderScreen2(did) {
   showScreen(2);
-  const district = districts.find((d) => d.id === did);
+  const district = findDistrict(did);
   document.getElementById("s2-district-name").textContent = district ? district.name : "";
   const timetable = await getTimetable(did);
   renderFacilityList(timetable);
@@ -325,6 +433,7 @@ const s3 = {
   sel: null,         // 選択中の便 { dir: "outbound"|"inbound", idx: 数字 }
   manual: false,     // 利用者が時刻チップを自分でえらんだか
   timer: null,       // 1分ごとの時計更新タイマー
+  stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
 };
 
 // かんたんモードは行き先ごとに「一番いい乗り場」1つだけを見せる(見慣れないバス停を
@@ -352,7 +461,7 @@ function nextOutboundIdx(now) {
 
 async function renderScreen3(did, fid) {
   showScreen(3);
-  const district = districts.find((d) => d.id === did);
+  const district = findDistrict(did);
   const facility = destinations.find((f) => f.id === fid);
   document.getElementById("s3-district-name").textContent = district ? district.name : "";
   document.getElementById("s3-facility-name").textContent = facility ? facility.name : "";
@@ -381,6 +490,8 @@ async function renderScreen3(did, fid) {
   s3.entry = entry;
   s3.district = district;
   s3.facility = facility;
+  // GPSで測ったばかりの位置があれば、停留所までの距離の正直表示に使う(対策1)
+  s3.stopsIndex = geoFixFresh() ? await getStopsIndex() : null;
   s3.todayType = dayTypeOf(now);
   // 有効期間外の日も時刻表は出したままにする(R7)。表示は平日ダイヤで代用し、
   // 「対象外の日です」の注意書きを優先表示する
@@ -497,7 +608,26 @@ function rideStepsHtml(r, dir) {
         `ちかいバス停で のってください</div>`;
     }
   }
-  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}`);
+  // 対策1(広い地区): GPSで測ったばかりの位置があれば、この乗車停までの距離を
+  // 正直に併記する。「あるいて約◯分」は地区の代表点からの分数なので、
+  // 東沢地区のような広い地区では実際の家からの遠さを隠してしまう——
+  // その補正がこの1行。遠い(800m=徒歩約17分の目安を超える)ときは注意を出し、
+  // 下の電話番号欄(デマンド交通・市の窓口)に誘導する
+  let geoNote = "";
+  const fix = geoFixFresh();
+  if (dir === "outbound" && fix && s3.stopsIndex && s3.stopsIndex[r.board]) {
+    const [slat, slon] = s3.stopsIndex[r.board];
+    const dist = distanceM(fix.lat, fix.lon, slat, slon);
+    if (dist > 800) {
+      geoNote =
+        `<div class="geo-dist far-note">いまの場所から このバス停まで およそ${escapeHtml(distanceWord(dist).replace("約", ""))} あります。` +
+        `とおい場合は 下の電話番号に ごそうだんください</div>`;
+    } else {
+      geoNote =
+        `<div class="geo-dist">いまの場所から およそ${escapeHtml(distanceWord(dist).replace("約", ""))}</div>`;
+    }
+  }
+  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}${geoNote}`);
 
   // ② 正面表示(headsign)が主役。系統番号は小さな「かくにん」(R1・R2)
   steps.push(
@@ -785,7 +915,7 @@ async function route() {
   // 表示する地区の市を state.city に反映しておく
   // (画面1に戻ったとき、市タブがその地区の市になるように)
   if (did) {
-    const d = districts.find((x) => x.id === did);
+    const d = findDistrict(did);
     if (d) state.city = d.municipality;
   }
   // 画面3を離れるときは時計モードのタイマーを止める

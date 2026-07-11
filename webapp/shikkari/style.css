@@ -144,6 +144,7 @@ table.tt {
 .return   .tt td.dep { color: var(--color-return); }
 .tt td.num { white-space: nowrap; }
 .tt .sub { font-size: 13px; color: #555555; }
+.tt .sub.far { color: #7a2d00; font-weight: bold; }  /* GPS距離が800m超(対策1) */
 .tt td.note { font-size: 14px; color: #444444; }
 .no-service-note { font-size: 16px; color: #555555; text-align: center; padding: 10px 0; }
 .unreachable-note {

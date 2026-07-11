@@ -106,6 +106,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 WEBAPP_DATA_DIR = PROJECT_ROOT / "webapp" / "data"
 TIMETABLES_DIR = WEBAPP_DATA_DIR / "timetables"
 META_JSON = WEBAPP_DATA_DIR / "meta.json"
+STOPS_INDEX_JSON = WEBAPP_DATA_DIR / "stops_index.json"   # 対策1: 停留所名→座標の索引
 DISTRICTS_JSON = WEBAPP_DATA_DIR / "districts.json"
 DESTINATIONS_JSON = WEBAPP_DATA_DIR / "destinations.json"
 
@@ -982,11 +983,69 @@ def pick_kantan_board(outbound: dict):
 # ===============================================================
 # メイン
 # ===============================================================
+# ===============================================================
+# 対策1(広い地区): 停留所名→座標の索引(stops_index.json)
+# GPS利用時に「いまの場所からこのバス停まで およそ◯km」を正直に表示するための
+# 小さなデータ。時刻表JSONに実際に現れる停留所名だけを収録する(約400件・約20KB)
+# ===============================================================
+def collect_stop_names(to: dict, used: set):
+    """1地区ぶんの出力(to)を走査して、画面に出うる停留所名を集める。
+    alight_place は施設名(バス停ではない)なので集めない"""
+    for entry in to.values():
+        if entry.get("unreachable"):
+            continue
+        for direction in ("outbound", "inbound"):
+            for rows in entry.get(direction, {}).values():
+                for r in rows:
+                    used.add(r["board"])
+                    used.add(r["alight"])
+                    if r.get("transfer"):
+                        used.add(r["transfer"]["at"])
+                    for opts in (r.get("board_options"), r.get("alight_options")):
+                        for o in opts or []:
+                            used.add(o["stop"])
+
+
+def build_stops_index(networks: dict, used_names: set) -> dict:
+    """停留所名→[lat, lon] の索引を作る。同名の停(のりば違い・フィード重複)は
+    座標の平均を代表点にする(表示は「およそ◯m/km」の丸めなので十分)。
+    3ダイヤ種別のどれかにしか現れない停に備え、全ネットワークのunionから引く"""
+    points = {}
+    for network in networks.values():
+        for info in network.stops.values():
+            name = info["name"]
+            if name in used_names:
+                points.setdefault(name, []).append((float(info["lat"]), float(info["lon"])))
+    index = {}
+    for name in sorted(points):   # 名前順=冪等
+        pts = points[name]
+        index[name] = [round(sum(p[0] for p in pts) / len(pts), 5),
+                       round(sum(p[1] for p in pts) / len(pts), 5)]
+    return index
+
+
+def flatten_districts(districts: list) -> list:
+    """計算対象の地区リストを作る。サブ地区(親エントリの "sub" 配列。
+    make_subdistricts.py が生成)があれば親と同格の計算対象として追加する。
+    親のJSONも残す(旧URL・QR・GPS不使用時のフォールバック先)"""
+    flat = []
+    for d in districts:
+        flat.append(d)
+        for s in d.get("sub", []) or []:
+            flat.append({**s, "municipality": d.get("municipality"),
+                         "parent_id": d["id"]})
+    return flat
+
+
 def main():
     print("地区・行き先マスタを読み込み中...")
-    districts = json.loads(DISTRICTS_JSON.read_text(encoding="utf-8"))
+    districts_raw = json.loads(DISTRICTS_JSON.read_text(encoding="utf-8"))
+    districts = flatten_districts(districts_raw)
     destinations = json.loads(DESTINATIONS_JSON.read_text(encoding="utf-8"))
-    print(f"  地区: {len(districts)}件 / 行き先: {len(destinations)}件(採否=採用の分のみ)")
+    n_sub = len(districts) - len(districts_raw)
+    print(f"  地区: {len(districts_raw)}件"
+          + (f"+サブ地区{n_sub}件" if n_sub else "")
+          + f" / 行き先: {len(destinations)}件(採否=採用の分のみ)")
 
     print("\nmeta.jsonを作成中(date_table)...")
     date_table = build_date_table()
@@ -1009,9 +1068,11 @@ def main():
     print(f"  検算1: 2026-08-13〜15 = {obon}(期待値 全てsunday_holiday)")
 
     per_daytype = {}
+    networks = {}   # 対策1: stops_index の座標解決に使う(3ダイヤ種別ぶん保持)
     for day_type, ref_date in REFERENCE_DATES.items():
         print(f"\n[{day_type}] {ref_date}のネットワークを構築中...")
         network = build_network(config.GTFS_FEED_DIRS, ref_date)
+        networks[day_type] = network
         stop_index = StopIndex(network)
         headsigns = build_headsign_map(network)   # F4-1: 行き先表示(バス前面)の対応表
         print(f"  地区{len(districts)}件×行き先{len(destinations)}件を計算中...")
@@ -1027,6 +1088,7 @@ def main():
     max_bytes = 0
     max_district = None
     n_unreachable = 0
+    used_stop_names = set()   # 対策1: 画面に出うる停留所名を集める
     for d in districts:
         to = {}
         for f in destinations:
@@ -1034,6 +1096,7 @@ def main():
             to[f["id"]] = entry
             if entry.get("unreachable"):
                 n_unreachable += 1
+        collect_stop_names(to, used_stop_names)
         text = json.dumps({"district": d["id"], "to": to}, ensure_ascii=False,
                           separators=(",", ":"))
         (TIMETABLES_DIR / f"{d['id']}.json").write_text(text, encoding="utf-8")
@@ -1041,6 +1104,16 @@ def main():
         total_bytes += size
         if size > max_bytes:
             max_bytes, max_district = size, d["id"]
+
+    # 対策1: 停留所座標の索引を書き出す
+    stops_index = build_stops_index(networks, used_stop_names)
+    STOPS_INDEX_JSON.write_text(
+        json.dumps(stops_index, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    unresolved = sorted(used_stop_names - set(stops_index))
+    print(f"\n停留所座標の索引: {len(stops_index)}件 → {STOPS_INDEX_JSON}"
+          f"({STOPS_INDEX_JSON.stat().st_size / 1024:.1f} KB)")
+    print(f"  検算: 座標を解決できなかった停留所名 {len(unresolved)}件"
+          + ("" if not unresolved else f" ★NG 例: {unresolved[:5]}"))
 
     print(f"\n=== 検算(F3完成条件) ===")
     print(f"地区×行き先の組み合わせ: {len(districts) * len(destinations)}件"

@@ -7,6 +7,7 @@ gtfs_*/
 /output/
 # 例外: 地区マスタは人間が表示名・かなを編集するのでコミットして残す
 !/data/districts_master.csv
+!/data/subdistricts_master.csv
 
 # 生成物(スクリプトで再生成できる)
 timetable_*.pdf
