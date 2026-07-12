@@ -117,6 +117,23 @@ def test_apply_outputs_keeps_human_edits(tmp_path, monkeypatch):
     assert d15b["name"] == "妙見寺のほう" and d15b["kana"] == "みょうけんじ"
 
 
+def test_split_directions_unique_when_rep_is_at_the_edge():
+    """2026-07-12 バグ修正: 代表点が地区の西端にあると、全クラスタの重心が
+    代表点より東になり全サブが「(ひがし)」と命名されていた(実データ5地区で発生)。
+    方角は「クラスタ同士の真ん中」から見るので、必ず名前が区別できる"""
+    rows = ms.split_district(_mesh_df(), DISTRICTS[1])
+    names = [r["name"] for r in rows]
+    assert len(set(names)) == len(names)          # 重複なし
+    assert names == ["東沢地区(にし)", "東沢地区(ひがし)"]
+    assert [r["kana"] for r in rows] == ["ひがしざわ(にし)", "ひがしざわ(ひがし)"]
+
+
+def test_assign_directions_numbers_only_as_last_resort():
+    """重心が完全一致する退化ケースだけ番号で区別する(通常は方角で分かれる)"""
+    dirs = ms.assign_directions([(38.2, 140.3), (38.2, 140.3)], 38.2)
+    assert dirs[0][0] != dirs[1][0]
+
+
 # ===============================================================
 # 2026-07-12 バグ修正: 対象を絞った再実行で、他の分割済み地区が消えないこと
 # ===============================================================

@@ -148,10 +148,47 @@ def cluster_needs_more_split(g: pd.DataFrame) -> bool:
 
 
 def direction_word(dlat_m: float, dlon_m: float) -> tuple[str, str]:
-    """親代表点から見たサブ地区の方角(漢字表示は使わず、ひらがなで統一)"""
+    """基準点から見たサブ地区の方角(漢字表示は使わず、ひらがなで統一)"""
     if abs(dlon_m) >= abs(dlat_m):
         return ("ひがし", "ひがし") if dlon_m > 0 else ("にし", "にし")
     return ("きた", "きた") if dlat_m > 0 else ("みなみ", "みなみ")
+
+
+def assign_directions(centroids: list, base_lat: float) -> list:
+    """各クラスタ重心に、同じ地区内で重複しない方角ことばを割り当てる。
+
+    ★2026-07-12 バグ修正: 従来は親の代表点から見た方角だったため、代表点が
+    地区の端に寄っていると全サブが同じ方角になった(実データで「西郷第一地区
+    (ひがし)」×3 など5地区で重複)。基準を「クラスタ重心たちの真ん中」に変え、
+    それでも重なる組はその組だけの真ん中から見直す(2点なら必ず逆向きに分かれる)。
+    戻り値は centroids と同順の (表示, かな) のリスト"""
+    coslat = math.cos(math.radians(base_lat))
+
+    def calc(idxs: list) -> dict:
+        mlat = sum(centroids[i][0] for i in idxs) / len(idxs)
+        mlon = sum(centroids[i][1] for i in idxs) / len(idxs)
+        return {i: direction_word((centroids[i][0] - mlat) * 111000,
+                                  (centroids[i][1] - mlon) * 111000 * coslat)
+                for i in idxs}
+
+    dirs = calc(list(range(len(centroids))))
+    for _ in range(5):   # 重複が解けるまで(組は毎回小さくなるので数回で終わる)
+        groups = {}
+        for i, dw in dirs.items():
+            groups.setdefault(dw, []).append(i)
+        dup_groups = [ix for ix in groups.values() if len(ix) > 1]
+        if not dup_groups:
+            break
+        for ix in dup_groups:
+            dirs.update(calc(ix))
+    # 保険: 重心が完全一致する退化ケースでは番号で強制的に区別する
+    seen = {}
+    for i in sorted(dirs):
+        dw = dirs[i]
+        seen[dw] = seen.get(dw, 0) + 1
+        if seen[dw] > 1:
+            dirs[i] = (f"{dw[0]}{seen[dw]}", f"{dw[1]}{seen[dw]}")
+    return [dirs[i] for i in range(len(centroids))]
 
 
 def split_district(mesh: pd.DataFrame, district: dict) -> list:
@@ -167,17 +204,20 @@ def split_district(mesh: pd.DataFrame, district: dict) -> list:
     # 人口の多いクラスタから a, b, c を振る(同数ならメッシュコード最小で固定)
     order = sorted(range(k), key=lambda ci: (-g.loc[g["cluster"] == ci, "population"].sum(),
                                              g.loc[g["cluster"] == ci, "meshcode"].min()))
+    # 方角: 各クラスタの人口重心を先に全部求め、重複しない方角ことばを割り当てる
+    centroids = []
+    for ci in order:
+        c = g[g["cluster"] == ci]
+        w = c["population"].sum() or 1.0
+        centroids.append(((c["lat"] * c["population"]).sum() / w,
+                          (c["lon"] * c["population"]).sum() / w))
+    directions = assign_directions(centroids, district["lat"])
+
     rows = []
     for rank, ci in enumerate(order):
         c = g[g["cluster"] == ci]
         top = c.sort_values(["population", "meshcode"], ascending=[False, True]).iloc[0]
-        # 方角: クラスタの人口重心が親代表点から見てどちらか(おおよそのメートル換算)
-        w = c["population"].sum() or 1.0
-        clat = (c["lat"] * c["population"]).sum() / w
-        clon = (c["lon"] * c["population"]).sum() / w
-        dlat_m = (clat - district["lat"]) * 111000
-        dlon_m = (clon - district["lon"]) * 111000 * math.cos(math.radians(district["lat"]))
-        dir_ja, dir_kana = direction_word(dlat_m, dlon_m)
+        dir_ja, dir_kana = directions[rank]
         rows.append({
             "sub_id": f"{district['id']}{'abc'[rank]}",
             "parent_id": district["id"],

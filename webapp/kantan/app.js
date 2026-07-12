@@ -432,6 +432,7 @@ const s3 = {
   showType: null,    // 時刻表として表示しているダイヤ種別(有効期間外は平日で代用)
   sel: null,         // 選択中の便 { dir: "outbound"|"inbound", idx: 数字 }
   manual: false,     // 利用者が時刻チップを自分でえらんだか
+  tomorrowView: false, // きょう運行が無い日に「あしたの時刻表」へ切り替えたか
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
   seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
@@ -499,6 +500,7 @@ async function renderScreen3(did, fid) {
   // 「対象外の日です」の注意書きを優先表示する
   s3.showType = s3.todayType || "weekday";
   s3.manual = false;
+  s3.tomorrowView = false;
 
   // 初期選択 = つぎの便。本日の便が終わっていたら選択なし(カードに終了案内を出す)。
   // 有効期間外の日は「つぎの便」が決められないので、始発の便を選んだ状態にする
@@ -562,8 +564,23 @@ function renderRideCard(now) {
       (tRows.length
         ? `<div class="card-sub">あしたの始発は ${timeWord(tRows[0].dep)} です</div>`
         : "");
+    // きょう運行が無い日は「あしたの時刻表」への入口を出す(2026-07-12 開発者要望。
+    // タップ+1回の明示操作にすることで「きょう乗れる」との誤解を防ぐ)
+    if (!ranToday && tRows.length) {
+      head += `<button type="button" id="show-tomorrow-btn" class="tomorrow-btn">あしたの じこくひょうを 見る</button>`;
+    }
     card.innerHTML = head;
+    const tbtn = card.querySelector("#show-tomorrow-btn");
+    if (tbtn) tbtn.addEventListener("click", () => showTomorrowTimetable(tType));
     return;
+  }
+
+  // あしたの時刻表を表示中は、大きな見出しを出し続ける(誤解防止)+戻る入口
+  let banner = "";
+  if (s3.tomorrowView) {
+    banner =
+      `<div class="tomorrow-banner">あしたの じこくひょうです` +
+      `<button type="button" id="back-today-btn" class="back-today-btn">きょうに もどる</button></div>`;
   }
 
   const nowMin = now.getHours() * 60 + now.getMinutes();
@@ -580,7 +597,24 @@ function renderRideCard(now) {
       ` ${dirWord}のバス</div>`;
   }
 
-  card.innerHTML = head + rideStepsHtml(ride, s3.sel.dir);
+  card.innerHTML = banner + head + rideStepsHtml(ride, s3.sel.dir);
+  const bbtn = card.querySelector("#back-today-btn");
+  if (bbtn) bbtn.addEventListener("click", () => renderScreen3(s3.district.id, s3.facility.id));
+}
+
+// きょう運行の無い日に「あしたの時刻表」へ切り替える(2026-07-12 開発者要望)。
+// あしたの始発を選んだ状態にして乗り方まで見せる。時計連動(あと◯分)はしない
+function showTomorrowTimetable(tType) {
+  s3.tomorrowView = true;
+  s3.showType = tType;
+  s3.sel = { dir: "outbound", idx: 0 };
+  s3.manual = true;
+  renderDirection("outbound");
+  renderDirection("inbound");
+  renderRideCard(new Date());
+  updateChipSelection();
+  document.getElementById("day-type-note").textContent =
+    `※あしたの「${meta.day_types[tType]}」ダイヤです(きょうの運行はありません)`;
 }
 
 // ①歩く→②乗る→(のりかえ)→③降りる のステップを組み立てる(R1〜R6)
@@ -885,6 +919,8 @@ function setupSpeakButton() {
       if (!s3.manual && s3.sel.dir === "outbound") {
         const wait = hmToMin(ride.dep) - (now.getHours() * 60 + now.getMinutes());
         parts.push(`つぎのバスは、${timeSpeech(ride.dep)}、あと${wait}分です。`);
+      } else if (s3.tomorrowView) {
+        parts.push(`あしたのバスは、${timeSpeech(ride.dep)}です。`);
       } else {
         parts.push(`えらんだバスは、${timeSpeech(ride.dep)}です。`);
       }
