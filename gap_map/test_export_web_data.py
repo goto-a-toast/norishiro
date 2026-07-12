@@ -410,6 +410,24 @@ def test_build_stops_index_averages_same_name_and_sorts():
     assert "使わない停" not in index
 
 
+def test_build_stops_index_keeps_distant_same_name_stops_apart():
+    """2026-07-12 開発者報告「七日町が24km」の修正: 別の町にある同名停を平均すると
+    「どちらでもない空中の一点」になる。1km超離れた同名停は複数座標で出力し、
+    近い(1km以内の)のりば違いだけを平均する"""
+    net = SimpleNamespace(stops={
+        "s1": {"name": "七日町", "lat": 38.255, "lon": 140.340},   # 山形市
+        "s2": {"name": "七日町", "lat": 38.256, "lon": 140.341},   # 山形市(のりば違い)
+        "s3": {"name": "七日町", "lat": 38.670, "lon": 140.335},   # 遠くの別の町(約46km北)
+    })
+    index = build_stops_index({"weekday": net}, {"七日町"})
+    v = index["七日町"]
+    assert isinstance(v[0], list) and len(v) == 2          # 2か所の別地点
+    assert v[0] == [38.2555, 140.3405]                     # 山形市側は2のりばの平均
+    assert v[1] == [38.67, 140.335]
+    # 再実行しても同じ並び(冪等)
+    assert build_stops_index({"weekday": net}, {"七日町"})["七日町"] == v
+
+
 def test_flatten_districts_appends_subs_with_parent_info():
     districts = [
         {"id": "d01", "name": "地区1", "municipality": "山形市"},
