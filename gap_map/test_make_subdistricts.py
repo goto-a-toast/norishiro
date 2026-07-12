@@ -115,3 +115,70 @@ def test_apply_outputs_keeps_human_edits(tmp_path, monkeypatch):
     d15b = next(s for d in out if d["id"] == "d15"
                 for s in d.get("sub", []) if s["id"] == "d15b")
     assert d15b["name"] == "妙見寺のほう" and d15b["kana"] == "みょうけんじ"
+
+
+# ===============================================================
+# 2026-07-12 バグ修正: 対象を絞った再実行で、他の分割済み地区が消えないこと
+# ===============================================================
+def _two_wide_setup():
+    """d15と同じ「西に密集+東に散在」の地区をもう1つ(d40)足したフィクスチャ"""
+    rows = []
+    for i, pop in enumerate([500, 300, 200]):
+        rows.append({"meshcode": f"40{i}", "district_id": "d40",
+                     "municipality": "上山市", "source_school": "Y小学校区",
+                     "population": pop, "lat": 38.10, "lon": WEST_LON + i * 0.002})
+    for i, pop in enumerate([100, 100, 100, 100]):
+        rows.append({"meshcode": f"50{i}", "district_id": "d40",
+                     "municipality": "上山市", "source_school": "Y小学校区",
+                     "population": pop, "lat": 38.10, "lon": EAST_LON + i * 0.002})
+    mesh = pd.concat([_mesh_df(), pd.DataFrame(rows)], ignore_index=True)
+    districts = DISTRICTS + [{"id": "d40", "name": "Y地区", "kana": "わい",
+                              "municipality": "上山市", "lat": 38.10, "lon": WEST_LON}]
+    return mesh, districts
+
+
+def test_apply_outputs_rerun_with_subset_keeps_other_splits(tmp_path, monkeypatch):
+    """d15とd40を分割済みの状態で --districts d15 だけ再実行しても、
+    d40のサブ地区がマスタ・メッシュ対応・districts.json から消えないこと
+    (旧実装はここで黙ってd40の分割を全部消していた)"""
+    mesh, districts = _two_wide_setup()
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    dj = tmp_path / "districts.json"
+    dj.write_text(json.dumps(districts, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(ms, "SUBDISTRICTS_MASTER_CSV", data_dir / "subdistricts_master.csv")
+    monkeypatch.setattr(ms, "MESH_SUBDISTRICTS_CSV", data_dir / "mesh_subdistricts.csv")
+    monkeypatch.setattr(ms, "DISTRICTS_JSON", dj)
+
+    ms.apply_outputs(mesh, districts, ["d15", "d40"])
+    ms.apply_outputs(mesh, districts, ["d15"])   # d40を指定しない再実行
+
+    master = pd.read_csv(data_dir / "subdistricts_master.csv", dtype=str)
+    assert set(master["parent_id"]) == {"d15", "d40"}
+    out = json.loads(dj.read_text(encoding="utf-8"))
+    d40 = next(d for d in out if d["id"] == "d40")
+    assert [s["id"] for s in d40["sub"]] == ["d40a", "d40b"]
+    meshmap = pd.read_csv(data_dir / "mesh_subdistricts.csv", dtype=str).fillna("")
+    assert set(meshmap.loc[meshmap["district_id"] == "d40", "sub_id"]) == {"d40a", "d40b"}
+
+
+def test_apply_outputs_remove_unsplits_explicitly(tmp_path, monkeypatch):
+    """分割をやめるのは --remove を明示したときだけ。3つの出力すべてから消える"""
+    mesh, districts = _two_wide_setup()
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    dj = tmp_path / "districts.json"
+    dj.write_text(json.dumps(districts, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(ms, "SUBDISTRICTS_MASTER_CSV", data_dir / "subdistricts_master.csv")
+    monkeypatch.setattr(ms, "MESH_SUBDISTRICTS_CSV", data_dir / "mesh_subdistricts.csv")
+    monkeypatch.setattr(ms, "DISTRICTS_JSON", dj)
+
+    ms.apply_outputs(mesh, districts, ["d15", "d40"])
+    ms.apply_outputs(mesh, districts, ["d15"], remove=["d40"])
+
+    master = pd.read_csv(data_dir / "subdistricts_master.csv", dtype=str)
+    assert set(master["parent_id"]) == {"d15"}
+    out = json.loads(dj.read_text(encoding="utf-8"))
+    assert "sub" not in next(d for d in out if d["id"] == "d40")
+    meshmap = pd.read_csv(data_dir / "mesh_subdistricts.csv", dtype=str).fillna("")
+    assert (meshmap.loc[meshmap["district_id"] == "d40", "sub_id"] == "").all()

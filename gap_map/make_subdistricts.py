@@ -14,6 +14,7 @@
      python3 gap_map/make_subdistricts.py --apply    … 基準該当の地区を分割して書き出す
      python3 gap_map/make_subdistricts.py --apply --districts d15,d40
                                                      … 対象を明示指定したいとき
+     (指定しなかった分割済み地区は消えずに残る。分割をやめるには --apply --remove d40)
   3. data/subdistricts_master.csv の display_name / kana を人間が確認・修正
      (自動初期値「東沢地区(ひがし)」のままでも動く。再実行しても編集は消えない)
   4. python3 gap_map/make_subdistricts.py --apply    … 修正を districts.json に反映
@@ -116,11 +117,14 @@ def weighted_kmeans(g: pd.DataFrame, k: int) -> np.ndarray:
     for _ in range(100):
         d = np.stack([haversine_m(lat, lon, c0, c1) for c0, c1 in centers])
         new_assign = np.argmin(d, axis=0)
-        # 空クラスタは「一番遠い点」を割り当てて維持する(退化の防止)
+        # 空クラスタは「一番遠い点」を割り当てて維持する(退化の防止)。
+        # 同時に2つ空いたとき同じ点を取り合わないよう、使った点は除外する
+        rescue_dmin = np.min(d, axis=0).copy()
         for ci in range(k):
             if not (new_assign == ci).any():
-                far = int(np.argmax(np.min(d, axis=0)))
+                far = int(np.argmax(rescue_dmin))
                 new_assign[far] = ci
+                rescue_dmin[far] = -1.0
         if (new_assign == assign).all() and _ > 0:
             break
         assign = new_assign
@@ -196,7 +200,9 @@ def merge_human_edits(master: pd.DataFrame) -> pd.DataFrame:
     if not SUBDISTRICTS_MASTER_CSV.exists():
         return master
     old = pd.read_csv(SUBDISTRICTS_MASTER_CSV, dtype=str).fillna("")
-    edits = {r["sub_id"]: (r["display_name"], r["kana"]) for _, r in old.iterrows()}
+    # 手で編集したCSVに列が欠けていても落ちないよう Series.get で読む
+    edits = {r["sub_id"]: (r.get("display_name", ""), r.get("kana", ""))
+             for _, r in old.iterrows()}
     kept = 0
     for i, row in master.iterrows():
         e = edits.get(row["sub_id"])
@@ -211,7 +217,8 @@ def merge_human_edits(master: pd.DataFrame) -> pd.DataFrame:
     return master
 
 
-def apply_outputs(mesh: pd.DataFrame, districts: list, targets: list) -> None:
+def apply_outputs(mesh: pd.DataFrame, districts: list, targets: list,
+                  remove: list = ()) -> None:
     all_rows = []
     for d in districts:
         if d["id"] in targets:
@@ -219,6 +226,24 @@ def apply_outputs(mesh: pd.DataFrame, districts: list, targets: list) -> None:
     master = pd.DataFrame([{k: v for k, v in r.items() if k != "_meshcodes"}
                            for r in all_rows])
     master = merge_human_edits(master)
+
+    # ★2026-07-12 バグ修正: 今回の対象(targets)に入っていない分割済み地区の
+    # サブ地区は、既存マスタからそのまま引き継ぐ(従来はここで黙って消えていた。
+    # 例: d15,d40 を分割済みの状態で --districts d15 だけ再実行 → d40 が消失)。
+    # 分割をやめたい地区は --remove d40 のように明示して外す
+    kept_old = pd.DataFrame()
+    if SUBDISTRICTS_MASTER_CSV.exists():
+        old = pd.read_csv(SUBDISTRICTS_MASTER_CSV,
+                          dtype={"sub_id": str, "parent_id": str, "rep_meshcode": str})
+        for col in ("display_name", "kana"):
+            if col in old.columns:
+                old[col] = old[col].fillna("")
+        drop = set(targets) | set(remove)
+        kept_old = old[~old["parent_id"].isin(drop)]
+        if len(kept_old):
+            print(f"既存の分割 {sorted(set(kept_old['parent_id']))} は今回の対象外なので"
+                  f"そのまま残します(外すには --remove を指定)")
+        master = pd.concat([master, kept_old], ignore_index=True).sort_values("sub_id")
     master.to_csv(SUBDISTRICTS_MASTER_CSV, index=False, quoting=csv.QUOTE_NONNUMERIC)
     print(f"→ {SUBDISTRICTS_MASTER_CSV} に{len(master)}サブ地区")
 
@@ -228,7 +253,15 @@ def apply_outputs(mesh: pd.DataFrame, districts: list, targets: list) -> None:
         for mc in r["_meshcodes"]:
             sub_of[mc] = r["sub_id"]
     mesh_out = mesh.copy()
-    mesh_out["sub_id"] = mesh_out["meshcode"].map(sub_of).fillna("")
+    mesh_out["sub_id"] = mesh_out["meshcode"].map(sub_of)
+    # 引き継いだ地区のメッシュ対応も既存CSVから残す
+    if len(kept_old) and MESH_SUBDISTRICTS_CSV.exists():
+        old_mesh = pd.read_csv(MESH_SUBDISTRICTS_CSV, dtype={"meshcode": str})
+        if "sub_id" in old_mesh.columns:
+            old_map = dict(zip(old_mesh["meshcode"], old_mesh["sub_id"].fillna("")))
+            keep_mask = mesh_out["district_id"].isin(set(kept_old["parent_id"]))
+            mesh_out.loc[keep_mask, "sub_id"] = mesh_out.loc[keep_mask, "meshcode"].map(old_map)
+    mesh_out["sub_id"] = mesh_out["sub_id"].fillna("")
     mesh_out.to_csv(MESH_SUBDISTRICTS_CSV, index=False)
     print(f"→ {MESH_SUBDISTRICTS_CSV} に{len(mesh_out)}件"
           f"(sub_idあり {sum(1 for v in mesh_out['sub_id'] if v)}件)")
@@ -267,6 +300,9 @@ def main():
                     help="分割を実行して書き出す(無指定なら採点表の表示のみ)")
     ap.add_argument("--districts", default="",
                     help="対象地区IDをカンマ区切りで明示指定(例: d15,d40)")
+    ap.add_argument("--remove", default="",
+                    help="分割をやめる地区IDをカンマ区切りで指定(例: d40)。"
+                         "指定しない限り、既存の分割は再実行しても消えない")
     args = ap.parse_args()
 
     mesh = load_meshes()
@@ -286,15 +322,17 @@ def main():
         print("\n(採点のみ。分割して書き出すには --apply を付けて再実行)")
         return
 
+    remove = [x.strip() for x in args.remove.split(",") if x.strip()]
     if args.districts:
         targets = [x.strip() for x in args.districts.split(",") if x.strip()]
     else:
         targets = list(score.loc[score["対象"], "district_id"])
-    if not targets:
+    targets = [t for t in targets if t not in remove]
+    if not targets and not remove:
         print("\n分割対象がありません(基準該当なし)")
         return
-    print(f"\n分割対象: {targets}")
-    apply_outputs(mesh, districts, targets)
+    print(f"\n分割対象: {targets}" + (f" / 分割解除: {remove}" if remove else ""))
+    apply_outputs(mesh, districts, targets, remove)
     print("\n次の手順: subdistricts_master.csv の表示名・かなを確認 → "
           "make_mesh_index.py → export_web_data.py の順で再生成")
 

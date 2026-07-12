@@ -341,11 +341,11 @@ async function renderScreen2(did) {
   renderFacilityList(timetable);
 }
 
-// かんたんモードが「行き」で実際に見せる便(=一番いい乗り場 kantan_board の便)だけを返す。
-// 画面2の所要時間・のりかえ判定も、画面3で見せる停とそろえるためにこれを使う
+// かんたんモードが「行き」で見せる便。データ工場が entry.kantan_board の便に
+// 絞り込み済みなので、ここでは絞らずそのまま返す(その停に便が無いダイヤ種別は
+// 工場が別の停で埋めており、名前で再フィルタすると落としてしまう)
 function kantanOutbound(entry, dt) {
-  const rows = (entry.outbound && entry.outbound[dt]) || [];
-  return entry.kantan_board ? rows.filter((r) => r.board === entry.kantan_board) : rows;
+  return (entry.outbound && entry.outbound[dt]) || [];
 }
 
 function bestOutboundMinutes(entry) {
@@ -434,18 +434,15 @@ const s3 = {
   manual: false,     // 利用者が時刻チップを自分でえらんだか
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
+  seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
 };
 
 // かんたんモードは行き先ごとに「一番いい乗り場」1つだけを見せる(見慣れないバス停を
-// 混ぜない。設計C)。データ工場が entry.kantan_board にその停名を入れているので、
-// 行き(outbound)はその停の便だけに絞る。帰り(inbound)は乗り場欄が施設名で統一
-// されているので絞り込まない。kantan_board が無い古いデータでは全便を出す(後方互換)
+// 混ぜない。設計C)。その絞り込みはデータ工場(export_web_data.py)が済ませて
+// JSON に入れているので、ここでは絞らずそのまま返す。kantan_board の停に便が無い
+// ダイヤ種別は工場が別の停の便で埋めるため、停名で再フィルタしてはいけない
 function rowsFor(dir, showType) {
-  let rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
-  if (dir === "outbound" && s3.entry && s3.entry.kantan_board) {
-    rows = rows.filter((r) => r.board === s3.entry.kantan_board);
-  }
-  return rows;
+  return (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
 }
 
 function s3Rows(dir) {
@@ -468,7 +465,11 @@ async function renderScreen3(did, fid) {
 
   if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
 
+  // 画面遷移の連打対策: await中に新しいrenderScreen3が始まっていたら、
+  // 古い方はここで打ち切る(古いsetIntervalが残り続けるのを防ぐ)
+  const seq = ++s3.seq;
   const timetable = await getTimetable(did);
+  if (seq !== s3.seq) return;
   const entry = timetable.to[fid];
 
   // 行けない施設(画面2ではタップできないが、URL直叩きで来る場合がある)
@@ -492,6 +493,7 @@ async function renderScreen3(did, fid) {
   s3.facility = facility;
   // GPSで測ったばかりの位置があれば、停留所までの距離の正直表示に使う(対策1)
   s3.stopsIndex = geoFixFresh() ? await getStopsIndex() : null;
+  if (seq !== s3.seq) return;
   s3.todayType = dayTypeOf(now);
   // 有効期間外の日も時刻表は出したままにする(R7)。表示は平日ダイヤで代用し、
   // 「対象外の日です」の注意書きを優先表示する
@@ -548,12 +550,15 @@ function renderRideCard(now) {
   // 見出し行(時計モード)
   let head = "";
   if (!ride) {
-    // 本日の便はすべて終わった。あしたの始発を date_table から引くだけで案内する
+    // 「きょうのダイヤに行きの便が1本も無い」と「あったが全部出発した」を区別する
+    // (2026-07-12 監査指摘: 運行の無い曜日に「おわりました」と出すのは誤情報)。
+    // どちらも、あしたの始発を date_table から引くだけで案内する
+    const ranToday = s3Rows("outbound").length > 0;
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const tType = dayTypeOf(tomorrow);
     const tRows = tType ? rowsFor("outbound", tType) : [];
     head =
-      `<div class="card-main">本日の便は おわりました</div>` +
+      `<div class="card-main">${ranToday ? "本日の便は おわりました" : "きょうは 行きのバスの運行が ありません"}</div>` +
       (tRows.length
         ? `<div class="card-sub">あしたの始発は ${timeWord(tRows[0].dep)} です</div>`
         : "");
@@ -821,9 +826,11 @@ function renderPhoneBox(district, operators = []) {
     lines.push({ label: "この時刻表のバス", name, tel: op.tel });
   }
 
-  // 2. デマンド交通(対象地区のみ)
+  // 2. デマンド交通(対象地区のみ)。meta側の対象一覧は親地区名で書かれているので、
+  //    サブ地区(例: 東沢地区(ひがし))は親の名前で照合する
+  const demandName = district.parent ? district.parent.name : district.name;
   const demand = meta.demand_phone.find(
-    (p) => Array.isArray(p.districts) && p.districts.includes(district.name)
+    (p) => Array.isArray(p.districts) && p.districts.includes(demandName)
   );
   if (demand) {
     seenTel.add(demand.tel);
@@ -863,7 +870,9 @@ function setupSpeakButton() {
     const ride = s3.sel ? s3Rows(s3.sel.dir)[s3.sel.idx] : null;
     let text;
     if (!ride) {
-      text = "本日の便は、おわりました。";
+      text = s3Rows("outbound").length > 0
+        ? "本日の便は、おわりました。"
+        : "きょうは、行きのバスの運行が、ありません。";
     } else {
       const parts = [];
       if (!s3.manual && s3.sel.dir === "outbound") {

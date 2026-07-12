@@ -927,7 +927,17 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
     if kantan_board is not None:
         entry["kantan_board"] = kantan_board
         for day_type, rows in outbound.items():
-            outbound[day_type] = _slim_to_board(rows, kantan_board)
+            slimmed = _slim_to_board(rows, kantan_board)
+            if rows and not slimmed:
+                # ★2026-07-10 バグ修正: kantan_board がこのダイヤ種別では1本も
+                # 便を持たない(全種別をカバーする停が存在しないペア)。
+                # この種別だけ停を選び直して絞り込む。旧実装はここで空にして
+                # しまい「平日だけ0便」の誤った時刻表を出していた
+                fallback = pick_kantan_board({day_type: rows})
+                slimmed = _slim_to_board(rows, fallback) if fallback else rows
+                if not slimmed:   # 想定外の保険(選び直した停でも空なら絞らない)
+                    slimmed = rows
+            outbound[day_type] = slimmed
     direct_dist_m = haversine_m(district["lat"], district["lon"], facility["lat"], facility["lon"])
     if direct_dist_m <= config.MAX_WALK_TO_STOP_M:
         entry["direct_walk_min"] = round(walk_minutes(direct_dist_m))
@@ -951,9 +961,11 @@ def pick_kantan_board(outbound: dict):
     徒歩が短い(=近い)方を優先する(普段使わない遠い停をむやみに出さない)。
     最寄り停が一番速ければ当然そのまま選ばれる。
     outbound: {day_type: [itinerary,...]}。行きの便が1本も無ければ None"""
-    totals = {}   # board -> door-to-doorのリスト(全ダイヤ種別のパレート最適便)
-    walk = {}     # board -> 徒歩分
-    for rows in outbound.values():
+    totals = {}    # board -> door-to-doorのリスト(全ダイヤ種別のパレート最適便)
+    walk = {}      # board -> 徒歩分
+    coverage = {}  # board -> その停を通る便があるダイヤ種別の集合(2026-07-10 バグ修正)
+    served = {day_type for day_type, rows in outbound.items() if rows}
+    for day_type, rows in outbound.items():
         for r in frontier_rows(rows):
             arr = hm_to_min(r["arr"])
             opts = r.get("board_options")
@@ -963,14 +975,25 @@ def pick_kantan_board(outbound: dict):
                     b = o["stop"]
                     totals.setdefault(b, []).append(arr - (hm_to_min(o["dep"]) - o["walk_min"]))
                     walk.setdefault(b, o["walk_min"])
+                    coverage.setdefault(b, set()).add(day_type)
             else:
                 b = r["board"]
                 totals.setdefault(b, []).append(arr - _leave_home_min(r))
                 walk.setdefault(b, r.get("board_walk_min") or 0)
+                coverage.setdefault(b, set()).add(day_type)
     if not totals:
         return None
 
-    typical = {b: statistics.median(v) for b, v in totals.items()}
+    # ★2026-07-10 バグ修正: 運行のある全ダイヤ種別をカバーする停を優先する。
+    # 従来は全種別まぜこぜの中央値だけで選んでいたため、土日しか走らない
+    # コミュニティバスの停(例: 上山のあずま町)が選ばれると、_slim_to_board が
+    # 平日の便を全部落とし「平日0便」という誤った時刻表になっていた
+    # (実測: 14ペアで平日13〜22便が消失)。全種別をカバーする停が無いペアは
+    # build_entry 側の種別別フォールバックが受け持つ
+    full_coverage = {b for b, c in coverage.items() if c >= served}
+    candidates = {b: t for b, t in totals.items() if b in full_coverage} or totals
+
+    typical = {b: statistics.median(v) for b, v in candidates.items()}
     fastest_time = min(typical.values())
     # 「一番速い停」と同等(差がKANTAN_SWITCH_GAIN_MIN以内)の停をすべて候補にし、
     # その中で徒歩が短い(=近くてなじみのある)停を選ぶ。これにより、
@@ -1021,6 +1044,12 @@ def build_stops_index(networks: dict, used_names: set) -> dict:
         pts = points[name]
         index[name] = [round(sum(p[0] for p in pts) / len(pts), 5),
                        round(sum(p[1] for p in pts) / len(pts), 5)]
+        # 同名なのに遠く離れた別地点の停があると、平均座標はどちらの実位置でも
+        # なくなり距離表示が狂う。再生成時に気づけるよう警告だけ出す(2026-07-12)
+        spread = max(haversine_m(pts[0][0], pts[0][1], p[0], p[1]) for p in pts)
+        if spread > 1000:
+            print(f"  ★注意: 同名停「{name}」が{spread/1000:.1f}km離れて複数あります"
+                  f"(距離表示が不正確になりえます)")
     return index
 
 
