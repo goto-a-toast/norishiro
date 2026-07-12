@@ -289,8 +289,14 @@ async function render() {
 function geoDistNote(stopName, dir) {
   const fix = geoFixFresh();
   if (dir !== "outbound" || !fix || !stopsIndex || !stopsIndex[stopName]) return "";
-  const [slat, slon] = stopsIndex[stopName];
-  const dist = distanceM(fix.lat, fix.lon, slat, slon);
+  // 同名のバス停が遠くの別の町にもあるとき、索引は複数座標([[lat,lon],...])を持つ。
+  // 一番近いものまでの距離を使う(2026-07-12 開発者報告「七日町が24km」の修正)
+  const v = stopsIndex[stopName];
+  const pts = Array.isArray(v[0]) ? v : [v];
+  let dist = Infinity;
+  for (const [slat, slon] of pts) {
+    dist = Math.min(dist, distanceM(fix.lat, fix.lon, slat, slon));
+  }
   const word = dist < 950 ? `約${Math.round(dist / 100) * 100}m` : `約${(dist / 1000).toFixed(1)}km`;
   const far = dist > 800 ? "・とおい" : "";
   return `<br><span class="sub${far ? " far" : ""}">いまの場所から ${word}${far}</span>`;

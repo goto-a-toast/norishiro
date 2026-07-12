@@ -1029,9 +1029,35 @@ def collect_stop_names(to: dict, used: set):
                             used.add(o["stop"])
 
 
+def _cluster_stop_points(pts: list, radius_m: float = 1000) -> list:
+    """同名停の座標を「たがいに1km以内でつながる」かたまりに分ける(決定的)。
+    のりば違い・フィード重複は同じかたまりに、別の町の同名停は別のかたまりになる"""
+    pts = sorted(pts)
+    parent = list(range(len(pts)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(len(pts)):
+        for j in range(i + 1, len(pts)):
+            if haversine_m(pts[i][0], pts[i][1], pts[j][0], pts[j][1]) <= radius_m:
+                parent[find(i)] = find(j)
+    groups = {}
+    for i in range(len(pts)):
+        groups.setdefault(find(i), []).append(pts[i])
+    return sorted(groups.values())
+
+
 def build_stops_index(networks: dict, used_names: set) -> dict:
-    """停留所名→[lat, lon] の索引を作る。同名の停(のりば違い・フィード重複)は
+    """停留所名→座標 の索引を作る。同名の停(のりば違い・フィード重複)は
     座標の平均を代表点にする(表示は「およそ◯m/km」の丸めなので十分)。
+    ただし別の町に同じ名前の停がある場合(例: 七日町が山形市と他市に存在)、
+    全部を平均すると「どちらでもない空中の一点」になり距離表示が大きく狂う
+    (2026-07-12 開発者報告「七日町が24km」)。そこで1km超離れたものは別の
+    かたまりとして [[lat,lon],...] の複数座標で出力し、JS側が一番近いものを使う。
     3ダイヤ種別のどれかにしか現れない停に備え、全ネットワークのunionから引く"""
     points = {}
     for network in networks.values():
@@ -1040,16 +1066,18 @@ def build_stops_index(networks: dict, used_names: set) -> dict:
             if name in used_names:
                 points.setdefault(name, []).append((float(info["lat"]), float(info["lon"])))
     index = {}
+    n_multi = 0
     for name in sorted(points):   # 名前順=冪等
-        pts = points[name]
-        index[name] = [round(sum(p[0] for p in pts) / len(pts), 5),
-                       round(sum(p[1] for p in pts) / len(pts), 5)]
-        # 同名なのに遠く離れた別地点の停があると、平均座標はどちらの実位置でも
-        # なくなり距離表示が狂う。再生成時に気づけるよう警告だけ出す(2026-07-12)
-        spread = max(haversine_m(pts[0][0], pts[0][1], p[0], p[1]) for p in pts)
-        if spread > 1000:
-            print(f"  ★注意: 同名停「{name}」が{spread/1000:.1f}km離れて複数あります"
-                  f"(距離表示が不正確になりえます)")
+        centers = []
+        for c in _cluster_stop_points(points[name]):
+            centers.append([round(sum(p[0] for p in c) / len(c), 5),
+                            round(sum(p[1] for p in c) / len(c), 5)])
+        index[name] = centers[0] if len(centers) == 1 else centers
+        if len(centers) > 1:
+            n_multi += 1
+            print(f"  同名停「{name}」は{len(centers)}か所の別地点として収録しました")
+    if n_multi:
+        print(f"  (複数地点の停名: {n_multi}件。JSは一番近い地点までの距離を表示)")
     return index
 
 

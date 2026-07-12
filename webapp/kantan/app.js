@@ -621,8 +621,15 @@ function rideStepsHtml(r, dir) {
   let geoNote = "";
   const fix = geoFixFresh();
   if (dir === "outbound" && fix && s3.stopsIndex && s3.stopsIndex[r.board]) {
-    const [slat, slon] = s3.stopsIndex[r.board];
-    const dist = distanceM(fix.lat, fix.lon, slat, slon);
+    // 同じ名前のバス停が遠くの別の町にもあるとき、索引は複数の座標を持つ
+    // ([[lat,lon],...] 形式)。利用者に関係あるのは一番近いものなので最小距離を使う
+    // (2026-07-12 開発者報告「七日町が24km」の修正。ふつうの停は [lat,lon] のまま)
+    const v = s3.stopsIndex[r.board];
+    const pts = Array.isArray(v[0]) ? v : [v];
+    let dist = Infinity;
+    for (const [slat, slon] of pts) {
+      dist = Math.min(dist, distanceM(fix.lat, fix.lon, slat, slon));
+    }
     if (dist > 800) {
       geoNote =
         `<div class="geo-dist far-note">いまの場所から このバス停まで およそ${escapeHtml(distanceWord(dist).replace("約", ""))} あります。` +
