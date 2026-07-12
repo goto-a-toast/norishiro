@@ -43,7 +43,9 @@ def load_mesh_table() -> pd.DataFrame:
     if MESH_SUBDISTRICTS_CSV.exists():
         mesh = pd.read_csv(MESH_SUBDISTRICTS_CSV, dtype=str)
         src = MESH_SUBDISTRICTS_CSV.name
-        mesh["use_id"] = mesh.get("sub_id", pd.Series(dtype=str)).fillna("")
+        # sub_id 列が無いCSV(手編集ミス等)でも district_id にフォールバックする。
+        # ※mesh.get(列名, 空Series) は添字がずれて全行NaNになるので使わない
+        mesh["use_id"] = mesh["sub_id"].fillna("") if "sub_id" in mesh.columns else ""
         mesh.loc[mesh["use_id"] == "", "use_id"] = mesh["district_id"]
     elif MESH_DISTRICTS_CSV.exists():
         mesh = pd.read_csv(MESH_DISTRICTS_CSV, dtype=str)

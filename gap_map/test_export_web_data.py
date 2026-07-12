@@ -185,6 +185,30 @@ def test_pick_kantan_board_none_when_no_outbound():
     assert pick_kantan_board({"weekday": [], "saturday": [], "sunday_holiday": []}) is None
 
 
+def test_pick_kantan_board_prefers_stop_that_serves_every_day_type():
+    """2026-07-10 バグ修正: 土日しか便の無い停(コミュニティバス等)がいくら速くても、
+    運行のある全ダイヤ種別をカバーする停を優先する。従来は全種別まぜこぜの中央値で
+    速いB停を選び、_slim_to_board が平日を空にして「平日0便」になっていた"""
+    outbound = {
+        "weekday": [row("08:00", "08:40", "A", 3)],                # Aは毎日走る
+        "saturday": [row("08:00", "08:20", "B", 3),                # Bは土曜だけ(速い)
+                     row("09:00", "09:40", "A", 3)],
+        "sunday_holiday": [],
+    }
+    assert pick_kantan_board(outbound) == "A"
+
+
+def test_pick_kantan_board_falls_back_to_fastest_when_no_stop_serves_all():
+    """全ダイヤ種別をカバーする停がひとつも無いペアでは従来どおり速い停を選ぶ
+    (種別ごとの補完は build_entry 側のフォールバックが受け持つ)"""
+    outbound = {
+        "weekday": [row("08:00", "08:40", "A", 3)],
+        "saturday": [row("08:00", "08:20", "B", 3)],
+        "sunday_holiday": [],
+    }
+    assert pick_kantan_board(outbound) == "B"
+
+
 # ===============================================================
 # 降車の表示(2026-07-08 開発者指摘「どこで降りるか分からない時刻表は不安」)
 # ===============================================================
@@ -251,6 +275,27 @@ def test_build_entry_slims_outbound_to_kantan_board():
     # 行きは fast の便だけ(near便は落ちる)。帰りは空のまま
     assert [r["board"] for r in entry["outbound"]["weekday"]] == ["fast", "fast"]
     assert entry["outbound"]["saturday"] == []
+
+
+def test_build_entry_keeps_weekday_when_kantan_board_runs_only_on_weekend():
+    """2026-07-10 バグ修正の保険側: 全ダイヤ種別をカバーする停が無く、選ばれた停に
+    便が無いダイヤ種別は、その種別だけ停を選び直して絞る(平日を空にしない)"""
+    district = {"id": "d01", "lat": 0.0, "lon": 0.0}
+    facility = {"id": "f01", "lat": 10.0, "lon": 10.0}
+    week_rows = [row("08:00", "08:40", "平日停", 3), row("10:00", "10:40", "平日停", 3)]
+    sat_rows = [row("08:00", "08:20", "土曜停", 3)]   # 速い→kantan_boardは土曜停になる
+    per_daytype = {
+        "weekday": {"district_board": {"d01": ("平日停", 3)},
+                    "outbound": {"d01": {"f01": week_rows}}, "inbound": {}},
+        "saturday": {"district_board": {"d01": ("土曜停", 3)},
+                     "outbound": {"d01": {"f01": sat_rows}}, "inbound": {}},
+        "sunday_holiday": {"district_board": {}, "outbound": {}, "inbound": {}},
+    }
+    entry = build_entry(district, facility, per_daytype)
+    assert entry["kantan_board"] == "土曜停"
+    # 旧実装はここが [] になり「平日0便」の誤った時刻表を出していた
+    assert [r["board"] for r in entry["outbound"]["weekday"]] == ["平日停", "平日停"]
+    assert [r["board"] for r in entry["outbound"]["saturday"]] == ["土曜停"]
 
 
 # ===============================================================

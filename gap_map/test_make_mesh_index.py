@@ -75,6 +75,21 @@ def test_index_with_sub_prefers_sub_id_and_falls_back(tmp_path, monkeypatch):
     assert ids == {"d01", "d15a", "d15b"}
 
 
+def test_sub_csv_without_sub_id_column_falls_back_to_district_id(tmp_path, monkeypatch):
+    """2026-07-12 バグ修正: mesh_subdistricts.csv に sub_id 列そのものが無くても、
+    NaNを出力せず district_id にフォールバックする(旧実装は mesh.get(列名, 空Series)
+    の添字ずれで全行NaNの壊れたJSONを書いていた)"""
+    out_path = _setup(tmp_path, monkeypatch, with_sub=False)
+    pd.DataFrame({
+        "meshcode": [MESH_A, MESH_B, MESH_C],
+        "district_id": ["d15", "d15", "d01"],
+    }).to_csv(make_mesh_index.MESH_SUBDISTRICTS_CSV, index=False)
+    make_mesh_index.main()
+    out = json.loads(out_path.read_text(encoding="utf-8"))   # NaNがあればここで例外
+    assert out["districts"] == ["d01", "d15"]
+    assert all(isinstance(out["districts"][m[2]], str) for m in out["meshes"])
+
+
 def test_idempotent_output(tmp_path, monkeypatch):
     out_path = _setup(tmp_path, monkeypatch, with_sub=True)
     make_mesh_index.main()

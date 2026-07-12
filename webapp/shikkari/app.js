@@ -450,8 +450,10 @@ function renderPhoneBox(district, operators) {
     const name = op.desk ? `${op.name}(${op.desk})` : op.name;
     lines.push({ label: "この時刻表のバス", name, tel: op.tel });
   }
+  // meta側の対象一覧は親地区名で書かれているので、サブ地区は親の名前で照合する
+  const demandName = district.parent ? district.parent.name : district.name;
   const demand = meta.demand_phone.find(
-    (p) => Array.isArray(p.districts) && p.districts.includes(district.name)
+    (p) => Array.isArray(p.districts) && p.districts.includes(demandName)
   );
   if (demand) {
     seenTel.add(demand.tel);
