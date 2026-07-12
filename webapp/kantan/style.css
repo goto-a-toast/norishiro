@@ -295,6 +295,45 @@ h1 {
   margin-top: 4px;
 }
 
+/* きょう運行が無い日の「あしたの時刻表」への入口と、切り替え後の見出し(2026-07-12) */
+.ride-card .tomorrow-btn {
+  display: block;
+  margin: 14px auto 4px;
+  min-height: var(--back-size);
+  padding: 10px 24px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-outbound);
+  background: var(--bg-outbound);
+  border: 3px solid var(--color-outbound);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.ride-card .tomorrow-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 24px;
+  font-weight: bold;
+  color: #7a2d00;
+  background: #fdeee3;
+  border-left: 4px solid var(--color-return);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.ride-card .back-today-btn {
+  font-size: 18px;
+  font-weight: normal;
+  padding: 6px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  cursor: pointer;
+}
+
 .ride-steps {
   list-style: none;
   margin: 12px 0 0;
