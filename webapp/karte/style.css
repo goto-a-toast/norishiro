@@ -1,0 +1,212 @@
+/* =====================================================================
+   モビリティ・カルテ(M8-2)のデザイン設定。
+   かんたんモードと同じ変数・原則を踏襲する(BIZ UDPGothic・行き青/帰り橙・
+   基本文字24px以上・ボタン高さ72px以上・横スクロール禁止・色だけに頼らない)。
+   ===================================================================== */
+
+:root {
+  --color-text:      #1a1a1a;
+  --color-outbound:  #00518e;
+  --color-return:    #a83200;
+  --color-border:    #444444;
+  --color-bg:        #ffffff;
+  --tap-size:        72px;
+  --grade-a: #1f6b3b;   /* 緑系(良好) */
+  --grade-b: #2f7d32;
+  --grade-c: #8a6d00;   /* 黄系(ふつう) */
+  --grade-d: #b05a00;   /* 橙系(やや厳しい) */
+  --grade-e: #a83200;   /* 赤橙系(交通空白のめやす) */
+}
+
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "BIZ UDPGothic";
+  src: url("../fonts/BIZUDPGothic-Bold.ttf");
+  font-weight: bold;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  color: var(--color-text);
+  font-size: 22px;
+  line-height: 1.6;
+  background: var(--color-bg);
+}
+
+noscript {
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  padding: 40px 16px;
+}
+
+#app { max-width: 640px; margin: 0 auto; padding: 0 16px 48px; }
+
+#app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 8px;
+}
+#app-header h1 {
+  font-size: 26px;
+  line-height: 1.4;
+  margin: 0;
+}
+.home-link {
+  flex: 0 0 auto;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--color-outbound);
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.lead-note {
+  font-size: 18px;
+  color: #444444;
+  background: #f4f7fb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 8px 0 20px;
+}
+
+/* ---------------- 探す方法(①②③共通) ---------------- */
+.find-block {
+  border-top: 3px solid var(--color-border);
+  padding: 16px 0;
+}
+.find-block h2 { font-size: 22px; margin: 0 0 10px; }
+.find-note { font-size: 17px; color: #555555; margin: 0 0 10px; }
+
+.addr-form { display: flex; flex-direction: column; gap: 10px; }
+.addr-label { font-size: 18px; }
+.addr-input {
+  width: 100%;
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 22px;
+  padding: 10px 14px;
+  border: 3px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.find-btn {
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-outbound);
+  border: 3px solid var(--color-outbound);
+  border-radius: 14px;
+  padding: 8px 16px;
+}
+.find-btn.wide { width: 100%; }
+
+.find-result { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.find-heading { font-size: 18px; margin: 0; color: #444444; }
+.find-candidate {
+  min-height: var(--tap-size);
+  text-align: left;
+  font-family: inherit;
+  font-size: 20px;
+  padding: 10px 16px;
+  border: 3px solid var(--color-border);
+  border-radius: 12px;
+  background: #fffdf5;
+}
+.find-error { font-size: 18px; color: var(--color-return); margin: 0; }
+
+.district-select {
+  width: 100%;
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 22px;
+  padding: 8px 12px;
+  border: 3px solid var(--color-border);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* ---------------- カード ---------------- */
+.karte-card {
+  margin-top: 20px;
+  border: 3px solid var(--color-border);
+  border-radius: 16px;
+  padding: 18px;
+  background: #fffefb;
+}
+
+.grade-badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+.grade-badge.grade-A { background: var(--grade-a); }
+.grade-badge.grade-B { background: var(--grade-b); }
+.grade-badge.grade-C { background: var(--grade-c); }
+.grade-badge.grade-D { background: var(--grade-d); }
+.grade-badge.grade-E { background: var(--grade-e); }
+.grade-letter {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+.grade-text { font-size: 19px; line-height: 1.4; }
+
+.karte-place { font-size: 24px; font-weight: bold; margin: 0 0 4px; }
+.karte-note { font-size: 16px; color: #555555; margin: 0 0 16px; }
+
+.karte-row {
+  border-top: 2px solid #e0e0e0;
+  padding: 12px 0;
+}
+.karte-row h3 { font-size: 20px; margin: 0 0 6px; }
+.karte-row p { margin: 4px 0; font-size: 19px; }
+.karte-compare { color: #444444; font-size: 17px; }
+
+.karte-link-btn {
+  width: 100%;
+  min-height: var(--tap-size);
+  margin-top: 16px;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-return);
+  border: 3px solid var(--color-return);
+  border-radius: 14px;
+}
+
+.karte-validity { font-size: 15px; color: #777777; text-align: center; margin-top: 10px; }
+
+:focus-visible {
+  outline: 4px solid var(--color-outbound);
+  outline-offset: 2px;
+}
+
+@media (max-width: 380px) {
+  body { font-size: 20px; }
+  #app-header h1 { font-size: 22px; }
+  .grade-letter { font-size: 32px; }
+}
