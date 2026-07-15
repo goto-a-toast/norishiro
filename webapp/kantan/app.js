@@ -441,7 +441,9 @@ const s3 = {
 // かんたんモードは行き先ごとに「一番いい乗り場」1つだけを見せる(見慣れないバス停を
 // 混ぜない。設計C)。その絞り込みはデータ工場(export_web_data.py)が済ませて
 // JSON に入れているので、ここでは絞らずそのまま返す。kantan_board の停に便が無い
-// ダイヤ種別は工場が別の停の便で埋めるため、停名で再フィルタしてはいけない
+// ダイヤ種別は工場が別の停の便で埋めるため、停名で再フィルタしてはいけない。
+// 帰り(inbound)も工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
+// 便が混ざるが、どの停から乗るかは各便のステップ①が徒歩分つきで案内する)
 function rowsFor(dir, showType) {
   return (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
 }
@@ -622,12 +624,13 @@ function rideStepsHtml(r, dir) {
   const marks = ["①", "②", "③", "④", "⑤"];
   const steps = [];
 
-  // ① バス停まで歩く。徒歩分数は行き(自宅側)のときだけデータがある。
+  // ① バス停まで歩く。徒歩分は行き=家から/帰り=施設から(2026-07-10から帰りも
+  // 実停名+徒歩分。施設の最寄りでない停から乗る便があるため)。
   // 0分(バス停がすぐそこ)のときは「約0分」という変な表示をしない。
   // r.board_walk_min はこの便が実際に使う乗車停留所までの徒歩分(便によって
   // 乗る停留所が変わることがあるため、地区共通の値ではなく便ごとの値を使う)
   let walk = "";
-  if (dir === "outbound" && r.board_walk_min >= 1) {
+  if (r.board_walk_min >= 1) {
     walk = ` <span class="walk-note">あるいて約${r.board_walk_min}分</span>`;
   }
   const platform = r.platform
@@ -926,7 +929,8 @@ function setupSpeakButton() {
       }
       const hsWord = String(ride.headsign).replace(/(行き|ゆき)$/, "");
       parts.push(`${ride.board}バス停から、${hsWord}行きに、のってください。`);
-      if (s3.sel.dir === "outbound" && ride.board_walk_min >= 1) {
+      // 徒歩分は行き=家から/帰り=施設から(帰りも実停名+徒歩分。2026-07-10)
+      if (ride.board_walk_min >= 1) {
         parts.push(`バス停までは、あるいて約${ride.board_walk_min}分です。`);
       }
       if (ride.transfer) {
