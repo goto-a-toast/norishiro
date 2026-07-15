@@ -14,9 +14,9 @@ GTFSを介さない、手作りの小さなネットワークで検証する(tes
 
 from transit_core import Network, Pattern, Trip, Leg
 from export_web_data import (
-    StopIndex, boardable_routes, build_origins,
+    StopIndex, boardable_directions, build_origins,
     frontier_rows, keep_useful_boards, pick_kantan_board,
-    make_itinerary, build_entry,
+    make_itinerary, build_entry, collapse_transfer_alternatives,
     board_options_for, alight_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
 )
 
@@ -29,48 +29,55 @@ def meters_to_lat_deg(m: float) -> float:
     return m / M_PER_DEG_LAT
 
 
-def make_stop_pattern(stop_id: str, route_name: str) -> Pattern:
-    """stop_id → ELSEWHERE と停まる、1系統ぶんのPattern(1本のTrip)を作る。
-    ELSEWHEREは遠方(緯度90度)に置き、乗車候補としては絶対に拾われない終点役"""
-    trip = Trip(trip_id=f"{stop_id}-trip", route_name=route_name,
+def make_stop_pattern(stop_id: str, route_name: str, terminal: str = "ELSEWHERE") -> Pattern:
+    """stop_id → terminal と停まる、1系統ぶんのPattern(1本のTrip)を作る。
+    終点は遠方(緯度90度)に置き、乗車候補としては絶対に拾われない終点役"""
+    trip = Trip(trip_id=f"{stop_id}-{terminal}-trip", route_name=route_name,
                 arrivals=[0, 10], departures=[0, 10])
-    return Pattern(stop_ids=(stop_id, "ELSEWHERE"), trips=[trip])
+    return Pattern(stop_ids=(stop_id, terminal), trips=[trip])
 
 
 def make_network() -> Network:
-    """代表点(緯度0・経度0)の近くに4停留所を置く(距離はすべて代表点からの直線距離):
-      near      : 約100m。系統R1のみ → これが最寄り停になる
+    """代表点(緯度0・経度0)の近くに5停留所を置く(距離はすべて代表点からの直線距離):
+      near      : 約100m。系統R1(終点ELSEWHERE)のみ → これが最寄り停になる
       sameplace : 約120m(near からは約20m。SAME_PLACE_M=150以内)。系統R1のみ
                   (「のりば違い」を想定。系統が同じでも同じ場所なので候補に入るべき)
       diffroute : 約400m(near からは約300m。SAME_PLACE_M超・MAX_WALK_TO_STOP_M以内)。
                   系統R2のみ → 最寄り停(R1のみ)には無い系統なので候補に入るべき
-      redundant : 約500m(near からは約400m)。系統R1のみ → 最寄り停と同じ系統の
-                  重複でしかないので、遠いなら候補に入らないべき(データ量爆発対策)
+      redundant : 約500m(near からは約400m)。系統R1・終点も同じ → 最寄り停と系統も
+                  方向も重複でしかないので、遠いなら候補に入らないべき(データ量爆発対策)
+      revdir    : 約600m。系統R1だが終点がOTHERWAY(=同じ系統の別方向)→ 系統名は
+                  最寄り停と同じでも方向が違うので候補に入るべき(2026-07-10 済生館の
+                  「本町が漏れて帰りが1本になる」実害への対応)
     """
     stops_def = {
-        "near": (meters_to_lat_deg(100), "R1"),
-        "sameplace": (meters_to_lat_deg(120), "R1"),
-        "diffroute": (meters_to_lat_deg(400), "R2"),
-        "redundant": (meters_to_lat_deg(500), "R1"),
+        "near": (meters_to_lat_deg(100), "R1", "ELSEWHERE"),
+        "sameplace": (meters_to_lat_deg(120), "R1", "ELSEWHERE"),
+        "diffroute": (meters_to_lat_deg(400), "R2", "ELSEWHERE"),
+        "redundant": (meters_to_lat_deg(500), "R1", "ELSEWHERE"),
+        "revdir": (meters_to_lat_deg(600), "R1", "OTHERWAY"),
     }
     patterns = []
-    stop_routes = {"ELSEWHERE": []}
-    stops = {"ELSEWHERE": {"name": "ELSEWHERE", "lat": 90.0, "lon": 0.0}}
-    for stop_id, (lat, route) in stops_def.items():
-        patterns.append(make_stop_pattern(stop_id, route))
+    stop_routes = {"ELSEWHERE": [], "OTHERWAY": []}
+    stops = {"ELSEWHERE": {"name": "ELSEWHERE", "lat": 90.0, "lon": 0.0},
+             "OTHERWAY": {"name": "OTHERWAY", "lat": 90.0, "lon": 10.0}}
+    for stop_id, (lat, route, terminal) in stops_def.items():
+        patterns.append(make_stop_pattern(stop_id, route, terminal))
         idx = len(patterns) - 1
         stop_routes[stop_id] = [(idx, 0)]
-        stop_routes["ELSEWHERE"].append((idx, 1))
+        stop_routes[terminal].append((idx, 1))
         stops[stop_id] = {"name": stop_id, "lat": lat, "lon": 0.0}
     return Network(patterns=patterns, stop_routes=stop_routes, stops=stops, footpaths={})
 
 
-def test_boardable_routes_returns_the_stops_own_routes():
+def test_boardable_directions_returns_route_and_terminal_pairs():
     network = make_network()
-    assert boardable_routes(network, "near") == {"R1"}
-    assert boardable_routes(network, "diffroute") == {"R2"}
+    assert boardable_directions(network, "near") == {("R1", "ELSEWHERE")}
+    assert boardable_directions(network, "diffroute") == {("R2", "ELSEWHERE")}
+    # 同じ系統R1でも終点が違えば別の「方向」として区別される
+    assert boardable_directions(network, "revdir") == {("R1", "OTHERWAY")}
     # 終点(ELSEWHERE)では乗れないので空集合
-    assert boardable_routes(network, "ELSEWHERE") == set()
+    assert boardable_directions(network, "ELSEWHERE") == set()
 
 
 def test_build_origins_expands_to_new_route_stop_but_skips_redundant_one():
@@ -85,18 +92,38 @@ def test_build_origins_expands_to_new_route_stop_but_skips_redundant_one():
     assert chosen_ids[0] == "near"          # 1件目は必ず最寄り
     assert "sameplace" in chosen_ids        # 同じ場所は系統が同じでも候補に入る
     assert "diffroute" in chosen_ids        # 別系統を持つ停は遠くても候補に入る
-    assert "redundant" not in chosen_ids    # 系統が重複するだけの遠い停は候補に入らない
+    assert "redundant" not in chosen_ids    # 系統も方向も重複するだけの遠い停は候補に入らない
+    assert "revdir" in chosen_ids           # 同じ系統でも別方向(終点違い)の停は候補に入る
+                                            # (2026-07-10 済生館→本町の取りこぼしへの対応)
 
 
 def test_build_origins_without_expand_keeps_only_nearest_and_sameplace():
-    """expand_by_route=False(施設側の既定)のとき: 別系統を持つ停でも候補にしない
-    (最寄り+同じ場所のみ。inbound肥大を防ぐための挙動)"""
+    """expand_by_route=False のとき: 別系統を持つ停でも候補にしない(最寄り+同じ場所のみ)。
+    ※2026-07-10から施設側もexpand_by_route=Trueで呼ぶため既定では使わなくなったが、
+    フラグの切り分けが正しいことは引き続き確認する"""
     network = make_network()
     stop_index = StopIndex(network)
     origins = build_origins(network, stop_index, [("f01", 0.0, 0.0, "テスト施設")])
     chosen_ids = {stop_id for stop_id, _walk_min, _name in origins["f01"]}
 
     assert chosen_ids == {"near", "sameplace"}
+
+
+def test_collapse_transfer_groups_by_window_from_group_start():
+    """乗換便の集約は「グループ先頭から20分」で区切る。「直前の便から20分」でつなぐと、
+    乗換候補が数分おきにある市街地で1日ぶんが1グループに数珠つなぎされ、帰りの
+    選択肢が代表1本に潰れる(2026-07-10 大郷⇔済生館で実害があった)"""
+    def t_row(dep, arr):
+        return {"dep": dep, "arr": arr, "board": "b", "board_walk_min": 1, "transfer": None}
+
+    # 15分おきに一日中ある乗換候補(数珠つなぎなら全部1グループになってしまう並び)
+    rows = [t_row(f"{h:02d}:{m:02d}", f"{h + 1:02d}:{m:02d}")
+            for h in range(8, 18) for m in (0, 15, 30, 45)]
+    out = collapse_transfer_alternatives(rows)
+    # 20分窓なら1時間に2〜3グループでき、朝の1本だけに潰れない
+    assert len(out) >= 20
+    # 各グループの代表は残り、まとめられた分は alt_routes に件数が残る
+    assert any(r.get("alt_routes") for r in out)
 
 
 # ===============================================================
@@ -250,9 +277,36 @@ def test_make_itinerary_alight_falls_back_to_place_when_stop_unknown():
 # ===============================================================
 # slim方式(2026-07-08 開発者決定): 行きは「一番いい乗り場」1停の便だけを保存する
 # ===============================================================
+def test_build_entry_prunes_dominated_inbound_rows():
+    """帰り(inbound)は行単位のパレートフロンティアで間引く(2026-07-10。施設側の
+    乗り場拡大による都心ペアの爆発対策)。「施設を出る時刻が同じか早いのに家に着くのが
+    同じか遅い」便だけが落ち、単一の乗り場の単調な時刻表は1本も落ちない"""
+    district = {"id": "d01", "lat": 0.0, "lon": 0.0}
+    facility = {"id": "f01", "lat": 10.0, "lon": 10.0}
+    in_rows = [
+        row("08:00", "08:30", "honcho", 3),     # 施設を07:57に出て08:30着
+        row("08:05", "08:28", "nanoka", 8),     # 07:57に出て08:28着 → 上の便を支配(落ちる相手)
+        row("09:00", "09:30", "honcho", 3),     # 単調な後続便は残る
+    ]
+    empty = {"district_board": {}, "outbound": {}, "inbound": {}}
+    per_daytype = {
+        "weekday": {
+            "district_board": {"d01": ("honcho", 3)},
+            "outbound": {},
+            "inbound": {"f01": {"d01": in_rows}},
+        },
+        "saturday": empty,
+        "sunday_holiday": empty,
+    }
+    entry = build_entry(district, facility, per_daytype)
+    kept = [(r["dep"], r["board"]) for r in entry["inbound"]["weekday"]]
+    assert kept == [("08:05", "nanoka"), ("09:00", "honcho")]
+
+
 def test_build_entry_slims_outbound_to_kantan_board():
     """build_entry は行き(outbound)を pick_kantan_board が選んだ1停の便だけに絞る。
-    帰り(inbound)は触らない。かんたん・しっかり とも同じ1停の時刻表を見せる"""
+    帰り(inbound)は間引かない(フロンティアに残る便はすべて保持)。
+    かんたん・しっかり とも同じ1停の時刻表を見せる"""
     district = {"id": "d01", "lat": 0.0, "lon": 0.0}
     facility = {"id": "f01", "lat": 10.0, "lon": 10.0}   # 遠方=直接徒歩(direct_walk)は付かない
     out_rows = [
