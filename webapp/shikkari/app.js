@@ -318,6 +318,11 @@ function directionSection(dir, label, entry, district, facility) {
     if (r.alight_walk_min >= 1 && r.alight_place) {
       notes.push(`${escapeHtml(r.alight_place)}まで徒歩${r.alight_walk_min}分`);
     }
+    // 帰りは乗り場も実停名(2026-07-10。施設の最寄りでない停から乗る便がある)。
+    // どのくらい歩くのか、施設からの徒歩分を補足に出す
+    if (!isOutbound && r.board_walk_min >= 1) {
+      notes.push(`${escapeHtml(facility.name)}から徒歩${r.board_walk_min}分`);
+    }
     if (r.alt_routes) notes.push(`ほかに同時間帯の経路が${r.alt_routes}本`);
     const op = operatorOf(r.op);
     return (
