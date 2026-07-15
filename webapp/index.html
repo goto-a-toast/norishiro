@@ -16,6 +16,7 @@
   --blue: #00518e;      /* かんたん(行き=青。PDFと同じ) */
   --orange: #a83200;    /* 空白マップ(帰り=橙。PDFと同じ) */
   --green: #1f6b3b;     /* しっかり */
+  --purple: #6a3d9a;    /* モビリティ・カルテ(M8) */
   --border: #dddddd;
   --bg: #ffffff;
   --bg-soft: #f4f7fb;
@@ -76,6 +77,8 @@ header .place { font-size: 15px; color: var(--color-sub); margin: 6px 0 0; }
 .card.shikkari .title { color: var(--green); }
 .card.map { border-left-color: var(--orange); }
 .card.map .title { color: var(--orange); }
+.card.karte { border-left-color: var(--purple); }
+.card.karte .title { color: var(--purple); }
 
 /* ---- 作品概要 ---- */
 .about { margin: 30px 0 0; }
@@ -122,8 +125,8 @@ footer a { color: var(--blue); }
     <p class="place">山形市・上山市 / 公共交通オープンデータチャレンジ2026 応募作品</p>
   </header>
 
-  <!-- 3つの顔への入口(大きく・押しやすく) -->
-  <nav class="entrances" aria-label="3つの入口">
+  <!-- 3つの顔への入口(大きく・押しやすく)+モビリティ・カルテ(M8。3つの顔への案内役) -->
+  <nav class="entrances" aria-label="4つの入口">
     <a class="card kantan" href="kantan/">
       <span class="emoji" aria-hidden="true">🚌</span>
       <span class="body">
@@ -150,6 +153,15 @@ footer a { color: var(--blue); }
       </span>
       <span class="go" aria-hidden="true">›</span>
     </a>
+
+    <a class="card karte" href="karte/">
+      <span class="emoji" aria-hidden="true">📝</span>
+      <span class="body">
+        <span class="title">モビリティ・カルテ</span>
+        <span class="desc">じゅうしょを入れると、あなたの家の<br>移動のようすが分かります</span>
+      </span>
+      <span class="go" aria-hidden="true">›</span>
+    </a>
   </nav>
 
   <!-- 作品概要 -->
@@ -165,6 +177,12 @@ footer a { color: var(--blue); }
     <p>
       サーバー計算を持たない静的サイトなので運用費はかからず、他の自治体もフォークして
       自分の市で再生成できます。
+    </p>
+    <p>
+      さらに「モビリティ・カルテ」から、じゅうしょや いまいる場所を入れるだけで、
+      あなたの家の移動のようすが分かり、そのまま①の時刻表につながります。
+      じゅうしょは端末の中だけで使い、保存や送信はしません(しらべるときだけ、
+      国土地理院に問い合わせます)。
     </p>
   </section>
 
