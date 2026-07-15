@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>あなたの家の 移動のようす - モビリティ・カルテ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript>この機能にはJavaScriptが必要です</noscript>
+
+<div id="app" hidden>
+  <header id="app-header">
+    <h1>あなたの家の<br>移動のようすを しらべます</h1>
+    <a id="home-link" class="home-link" href="../index.html" aria-label="玄関にもどる">🏠 玄関</a>
+  </header>
+
+  <p class="lead-note">
+    じゅうしょ・いまいる場所・地区の どれかから、おうちのあたりの
+    バスの使いやすさを 調べられます。じゅうしょは この画面の中だけで使い、
+    保存はしません(しらべるときだけ、国土地理院に問い合わせます)。
+  </p>
+
+  <!-- 方法1: じゅうしょで しらべる -->
+  <section class="find-block">
+    <h2>① じゅうしょで しらべる</h2>
+    <form id="addr-form" class="addr-form">
+      <label for="addr-input" class="addr-label">じゅうしょを 入れてください</label>
+      <input id="addr-input" class="addr-input" type="text" inputmode="text"
+             placeholder="例: 山形市松波四丁目">
+      <button id="addr-btn" class="find-btn" type="submit">🔍 しらべる</button>
+    </form>
+    <div id="addr-result" class="find-result" aria-live="polite"></div>
+  </section>
+
+  <!-- 方法2: いまいる場所から -->
+  <section class="find-block">
+    <h2>② いまいる場所から しらべる</h2>
+    <button id="geo-btn" class="find-btn wide" type="button">📍 いまいる場所から しらべる</button>
+    <div id="geo-result" class="find-result" aria-live="polite"></div>
+  </section>
+
+  <!-- 方法3: 地区から選ぶ(保険) -->
+  <section class="find-block">
+    <h2>③ 地区から えらぶ</h2>
+    <p class="find-note">①②が うまくいかないときは、こちらをお使いください。
+      とくていの おうちではなく、地区ぜんたいの めやすになります。</p>
+    <select id="district-select" class="district-select">
+      <option value="">地区を えらんでください</option>
+    </select>
+  </section>
+
+  <!-- カード表示エリア -->
+  <section id="karte-card" class="karte-card" hidden aria-live="polite"></section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
