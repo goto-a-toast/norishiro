@@ -318,6 +318,21 @@ def write_outputs(meshes: pd.DataFrame, master: pd.DataFrame) -> None:
 
     # Webアプリ用JSON(表示名が空なら自動生成名を使う)
     DISTRICTS_JSON.parent.mkdir(parents=True, exist_ok=True)
+
+    # ★2026-07-19 バグ修正: 既存 districts.json のサブ地区(make_subdistricts.py --apply が
+    # 注入した "sub" 配列)を引き継ぐ。このスクリプトはJSONをマスタから作り直すため、
+    # 従来は再実行するとサブ地区分割が黙って消えていた(開発者のMacでの再実行確認で発覚)。
+    # 引き継ぎは id と source_school の両方が一致する地区だけ(別の地域でidが偶然同じでも
+    # 古いsubを誤って付けないため)。壊れた既存JSONは無視して作り直す
+    old_subs = {}
+    if DISTRICTS_JSON.exists():
+        try:
+            for d in json.loads(DISTRICTS_JSON.read_text(encoding="utf-8")):
+                if d.get("sub"):
+                    old_subs[(d["id"], d.get("source_school", ""))] = d["sub"]
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
     records = []
     for _, r in master.iterrows():
         records.append({
@@ -332,6 +347,13 @@ def write_outputs(meshes: pd.DataFrame, master: pd.DataFrame) -> None:
                               if r["source_school"].endswith("小学校")
                               else r["source_school"]),
         })
+        key = (records[-1]["id"], records[-1]["source_school"])
+        if key in old_subs:
+            records[-1]["sub"] = old_subs[key]
+    n_kept_subs = sum(1 for rec in records if "sub" in rec)
+    if n_kept_subs:
+        print(f"既存のサブ地区分割を{n_kept_subs}地区分引き継ぎました"
+              f"(かな等を直したいときは make_subdistricts.py --apply を再実行)")
     DISTRICTS_JSON.write_text(
         json.dumps(records, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"→ {DISTRICTS_JSON} に{len(records)}地区")

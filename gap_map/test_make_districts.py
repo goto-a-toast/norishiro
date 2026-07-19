@@ -151,3 +151,73 @@ def test_build_master_yamagata_order_unchanged(monkeypatch):
     master = md.build_master(meshes)
     assert list(master["source_school"]) == ["出羽小学校", "金井小学校", "宮川小学校"]
     assert list(master["id"]) == ["d01", "d02", "d03"]
+
+
+# ===============================================================
+# 2026-07-19 バグ修正: 再実行でサブ地区分割が消えないこと
+# ===============================================================
+def _tmp_outputs(tmp_path, monkeypatch):
+    monkeypatch.setattr(md, "MESH_DISTRICTS_CSV", tmp_path / "mesh_districts.csv")
+    monkeypatch.setattr(md, "DISTRICTS_MASTER_CSV", tmp_path / "districts_master.csv")
+    monkeypatch.setattr(md, "DISTRICTS_JSON", tmp_path / "districts.json")
+
+
+def test_write_outputs_preserves_existing_subdistricts(tmp_path, monkeypatch):
+    """make_subdistricts.py --apply が注入した sub 配列は、make_districts.py を
+    再実行しても消えない(id+source_school が一致する地区に引き継ぐ)。
+    source_school が変わった地区(=別物になった地区)には引き継がない"""
+    _tmp_outputs(tmp_path, monkeypatch)
+    sub = [{"id": "d01a", "name": "金井地区(にし)", "kana": "かない(にし)",
+            "lat": 38.3, "lon": 140.3}]
+    (tmp_path / "districts.json").write_text(json.dumps([
+        {"id": "d01", "name": "金井地区", "kana": "かない", "municipality": "山形市",
+         "lat": 38.3, "lon": 140.3, "source_school": "金井小学校区", "sub": sub},
+        {"id": "d02", "name": "旧地区", "kana": "きゅう", "municipality": "山形市",
+         "lat": 38.2, "lon": 140.2, "source_school": "旧小学校区",
+         "sub": [{"id": "d02a", "name": "旧(きた)", "kana": "きゅう(きた)",
+                  "lat": 38.2, "lon": 140.2}]},
+    ], ensure_ascii=False), encoding="utf-8")
+
+    master = pd.DataFrame([
+        {"id": "d01", "municipality": "山形市", "source_school": "金井小学校",
+         "name": "金井地区", "display_name": "", "kana": "かない",
+         "population": 100, "mesh_count": 1, "rep_meshcode": 574022891,
+         "lat": 38.3, "lon": 140.3},
+        {"id": "d02", "municipality": "山形市", "source_school": "別小学校",   # 学区が変わった
+         "name": "別地区", "display_name": "", "kana": "べつ",
+         "population": 200, "mesh_count": 1, "rep_meshcode": 574022892,
+         "lat": 38.2, "lon": 140.2},
+    ])
+    meshes = pd.DataFrame({
+        "meshcode": [574022891, 574022892],
+        "municipality": ["山形市", "山形市"],
+        "source_school": ["金井小学校", "別小学校"],
+        "population": [100, 200],
+    })
+    md.write_outputs(meshes, master)
+    out = json.loads((tmp_path / "districts.json").read_text(encoding="utf-8"))
+    d01 = next(d for d in out if d["id"] == "d01")
+    assert d01["sub"] == sub                       # 一致する地区は引き継ぐ
+    d02 = next(d for d in out if d["id"] == "d02")
+    assert "sub" not in d02                        # 学区が変わった地区には付けない
+
+
+def test_write_outputs_reproduces_committed_districts_json(tmp_path, monkeypatch):
+    """実リポジトリの districts_master.csv+既存 districts.json から、コミット済みの
+    districts.json(サブ地区21件入り)を丸ごと再現できること=山形の再実行無変更の証明"""
+    _tmp_outputs(tmp_path, monkeypatch)
+    committed = (md.PROJECT_ROOT / "webapp" / "data" / "districts.json").read_text(encoding="utf-8")
+    (tmp_path / "districts.json").write_text(committed, encoding="utf-8")
+
+    master = pd.read_csv(md.PROJECT_ROOT / "data" / "districts_master.csv")
+    for col in ("display_name", "kana"):
+        master[col] = master[col].fillna("")
+    meshes = pd.DataFrame({
+        "meshcode": master["rep_meshcode"],
+        "municipality": master["municipality"],
+        "source_school": master["source_school"],
+        "population": master["population"],
+    })
+    md.write_outputs(meshes, master)
+    regenerated = (tmp_path / "districts.json").read_text(encoding="utf-8")
+    assert regenerated == committed
