@@ -6,12 +6,17 @@
 """
 
 # ===============================================================
-# 対象範囲(県全域に広げるときはここに市町村名を足すだけ)
+# 対象範囲
 # ===============================================================
-TARGET_MUNICIPALITIES = ["山形市", "上山市"]
+# 全国展開キット(R1・docs/plan_region_kit.md): 地域固有の値は region.py が
+# 一元管理する。data/region.json が無ければ山形設定(従来と完全に同じ値)、
+# あればその値で上書きされる。県全域化・他地域展開は region.json を書くだけ
+from region import REGION
+
+TARGET_MUNICIPALITIES = REGION["target_municipalities"]
 
 MESH_LEVEL = 4              # 4 = 500mメッシュ(標準地域メッシュ4次)
-TARGET_DATE = "20260610"    # 分析する日(フィード有効期間内の平日・非祝日の水曜)
+TARGET_DATE = REGION["target_date"]   # 分析する日(フィード有効期間内の平日・非祝日)
 
 # ===============================================================
 # 入力データの置き場所(M0で手動ダウンロードしたもの)
@@ -21,10 +26,9 @@ from pathlib import Path
 DATA_DIR = Path(__file__).parent.parent / "data"
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 
-POP_MESH_FILES = [   # e-Stat 500mメッシュ人口(県全域化のときはファイルを足す)
-    DATA_DIR / "tblT001101H5740" / "tblT001101H5740.txt",
-]
-N03_GEOJSON = DATA_DIR / "N03-20230101_06_GML" / "N03-23_06_230101.geojson"
+# e-Stat 500mメッシュ人口・N03行政区域(地域を変えるときは region.json で差し替え)
+POP_MESH_FILES = [DATA_DIR / f for f in REGION["pop_mesh_files"]]
+N03_GEOJSON = DATA_DIR / REGION["n03_geojson"]
 TARGET_MESHES_CSV = DATA_DIR / "target_meshes.csv"   # M1の出力
 
 # ===============================================================
@@ -34,25 +38,14 @@ TARGET_MESHES_CSV = DATA_DIR / "target_meshes.csv"   # M1の出力
 # yamagata_gtfs_feeds.csv の全31フィードをここに追加していく想定
 # (build_network.py 側のコード変更は不要)
 _PROJECT_ROOT = Path(__file__).parent.parent
-GTFS_FEED_DIRS = [
-    _PROJECT_ROOT / "gtfs_山形交通",
-    _PROJECT_ROOT / "gtfs_上山市",
-    _PROJECT_ROOT / "gtfs_山形市",   # 山形市営バス(山交バスとは別事業者)
-    # ここから、対象2市(山形市・上山市)に隣接する市町村のフィード。
-    # 計画書§3「GTFSは31フィード全部を読み込む」方式へ運用を合わせる第一歩として、
-    # 隣接市町村分をまず追加(県全域化のときはyamagata_gtfs_feeds.csvの残りも追加していく)
-    _PROJECT_ROOT / "gtfs_天童市",
-    _PROJECT_ROOT / "gtfs_山辺町",
-    _PROJECT_ROOT / "gtfs_中山町",
-    _PROJECT_ROOT / "gtfs_東根市",
-    _PROJECT_ROOT / "gtfs_南陽市",
-    _PROJECT_ROOT / "gtfs_寒河江市",
-]
+# フィードの一覧と順序は region.py が管理(順序は meta.json の operators 添字になる)。
+# 山形の既定値: 山形交通・上山市・山形市+隣接6市町(計9フィード)
+GTFS_FEED_DIRS = [_PROJECT_ROOT / d for d in REGION["gtfs_feed_dirs"]]
 NETWORK_PKL = DATA_DIR / "network.pkl"   # build_network.py の出力(中間データ)
 
-_P04_DIR = DATA_DIR / "P04-14_06_GML" / "P04-14_06_GML"
-P04_SHP = _P04_DIR / "P04-14_06-g_MedicalInstitution.shp"   # 医療機関(点データ)
-P04_DBF = _P04_DIR / "P04-14_06-g_MedicalInstitution.dbf"   # 医療機関(属性テーブル)
+_P04_DIR = DATA_DIR / REGION["p04_dir"]
+P04_SHP = _P04_DIR / REGION["p04_shp"]   # 医療機関(点データ)
+P04_DBF = _P04_DIR / REGION["p04_dbf"]   # 医療機関(属性テーブル)
 FACILITIES_CSV = DATA_DIR / "facilities.csv"   # M2の出力
 
 # ===============================================================

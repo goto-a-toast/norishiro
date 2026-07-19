@@ -57,18 +57,19 @@ DESTINATIONS_JSON = PROJECT_ROOT / "webapp" / "data" / "destinations.json"
 HOSPITAL_MIN_COUNT = 5
 SUPER_MIN_COUNT = 15
 
+# 基幹病院・まちなかスポットは地域固有なので region.py が管理する
+# (全国展開キットR1。山形の既定値は従来とまったく同じ。他地域では region.json に書くか、
+#  空のままなら「頻度上位の病院・スーパーだけ」で行き先マスタが作られる)
+from region import REGION
+
 # 基幹病院(頻度上位に入っていても「抽出理由」をこちらで上書きする)
-CORE_HOSPITALS = {"山形県立中央病院", "国立大学法人山形大学医学部附属病院", "山形市立病院済生館"}
+CORE_HOSPITALS = set(REGION["core_hospitals"])
 
 # 駅・市役所・まちなかの手動追加分(facilities.csvに無いので、GTFS停留所の座標を転用する。
-# 出典stopは各フィードのstops.txtで目視確認したもの)
+# 出典stop(memo)は各フィードのstops.txtで目視確認したもの)
 MANUAL_TOWN_FACILITIES = [
-    # (正式名, カテゴリ, lat, lon, 出典)
-    ("山形駅", "山形市", 38.249105, 140.328658, "gtfs_山形市:1_01(山形駅前)"),
-    ("山形市役所", "山形市", 38.255061, 140.340318, "gtfs_山形市:42_01(市役所前)"),
-    ("かみのやま温泉駅", "上山市", 38.152465, 140.278184, "gtfs_上山市:1_01(かみのやま温泉駅前)"),
-    ("上山市役所", "上山市", 38.149764, 140.267745, "gtfs_上山市:24_01(市役所前)"),
-    ("上山城", "上山市", 38.155768, 140.277004, "gtfs_山形交通:S060100000600100(上山城口)"),
+    (t["name"], t["municipality"], t["lat"], t["lon"], t["memo"])
+    for t in REGION["town_spots"]
 ]
 
 # 正式名 → かな(全角括弧付きの法人格などは読み飛ばさず全部読む)。

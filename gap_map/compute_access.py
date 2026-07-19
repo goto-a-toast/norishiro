@@ -277,16 +277,28 @@ def main():
     print(f"病院所要時間の分布:\n{reachable['time_to_hospital_min'].describe()}")
 
     print("\n=== 指標②の検証 ===")
-    yasoen = df[df["meshcode"] == 574022381]
-    if not yasoen.empty:
-        print(f"野草園メッシュ(574022381)の hospital_visit_ok = "
-              f"{yasoen.iloc[0]['hospital_visit_ok']} (期待値: No)")
+    from region import REGION, is_default_region   # 地域別の目視確認地点(R1)
+    if is_default_region():
+        # 山形の既知の地点での目視確認(分析確定時と同じ表示)
+        yasoen = df[df["meshcode"] == 574022381]
+        if not yasoen.empty:
+            print(f"野草園メッシュ(574022381)の hospital_visit_ok = "
+                  f"{yasoen.iloc[0]['hospital_visit_ok']} (期待値: No)")
+        center_lat, center_lon, center_label = 38.2484, 140.3278, "山形駅"
+    elif REGION["town_spots"]:
+        # 他地域: まちなかスポットの1番目(駅など)の周辺で妥当性を目視確認する
+        spot = REGION["town_spots"][0]
+        center_lat, center_lon, center_label = spot["lat"], spot["lon"], spot["name"]
+    else:
+        center_lat = float(meshes["lat"].mean())
+        center_lon = float(meshes["lon"].mean())
+        center_label = "対象地域の中心"
 
     eki_mesh = meshes.assign(
-        d2=(meshes["lat"] - 38.2484) ** 2 + (meshes["lon"] - 140.3278) ** 2
+        d2=(meshes["lat"] - center_lat) ** 2 + (meshes["lon"] - center_lon) ** 2
     ).nsmallest(5, "d2")["meshcode"]
     near_eki = df[df["meshcode"].isin(eki_mesh)]
-    print("山形駅周辺メッシュの hospital_visit_ok:")
+    print(f"{center_label}周辺メッシュの hospital_visit_ok:")
     print(near_eki[["meshcode", "hospital_visit_ok", "visit_total_min"]].to_string(index=False))
 
     print(f"\nhospital_visit_ok の内訳:\n{df['hospital_visit_ok'].value_counts().to_string()}")

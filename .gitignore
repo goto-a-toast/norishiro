@@ -5,9 +5,12 @@ gtfs_*/
 # ルートの data/ だけを無視する(webapp/data/ のJSONはPages配信に必要なのでコミットする)
 /data/*
 /output/
-# 例外: 地区マスタは人間が表示名・かなを編集するのでコミットして残す
+# 例外: 人間が編集するマスタ類はコミットして残す
 !/data/districts_master.csv
 !/data/subdistricts_master.csv
+!/data/operators_master.csv
+!/data/demand_phone_master.csv
+!/data/region.json
 
 # 生成物(スクリプトで再生成できる)
 timetable_*.pdf

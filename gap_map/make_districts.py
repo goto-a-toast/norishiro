@@ -284,12 +284,22 @@ def main():
     n_districts = len(master)
     total_pop = master["population"].sum()
     total_mesh = master["mesh_count"].sum()
-    print(f"地区数: {n_districts}(条件: 2市合計で35〜50)"
-          f" → {'OK' if 35 <= n_districts <= 50 else 'NG'}")
+    # 期待値は地域設定に持つ(山形: 総人口276,482人。期待値の無い地域は観測値のみ表示)
+    from region import region_expected, is_default_region
+    if is_default_region():
+        print(f"地区数: {n_districts}(条件: 2市合計で35〜50)"
+              f" → {'OK' if 35 <= n_districts <= 50 else 'NG'}")
+    else:
+        print(f"地区数: {n_districts} … 多すぎ/少なすぎでないか目視確認してください")
     print(f"所属メッシュ合計: {total_mesh}(条件: 全{len(meshes)}メッシュ)"
           f" → {'OK' if total_mesh == len(meshes) else 'NG'}")
-    print(f"地区別人口の合計: {total_pop:,}人(条件: 276,482人に一致)"
-          f" → {'OK' if total_pop == 276482 else 'NG'}")
+    want_pop = region_expected("total_population")
+    if want_pop is not None:
+        print(f"地区別人口の合計: {total_pop:,}人(条件: {want_pop:,}人に一致)"
+              f" → {'OK' if total_pop == want_pop else 'NG'}")
+    else:
+        print(f"地区別人口の合計: {total_pop:,}人 … 対象市町村の実際の人口と"
+              f"桁が合っているか目視確認してください")
 
     print("\n=== 地区一覧(表示名・かなの目視確認用) ===")
     with pd.option_context("display.max_rows", None, "display.unicode.east_asian_width", True):
