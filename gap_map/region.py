@@ -68,6 +68,19 @@ YAMAGATA_DEFAULTS = {
     "p04_shp": "P04-14_06-g_MedicalInstitution.shp",
     "p04_dbf": "P04-14_06-g_MedicalInstitution.dbf",
 
+    # 地区分け(make_districts.py)の方式を市町村ごとに選ぶ(R2):
+    #   a27_polygon        … 国土数値情報A27の小学校区ポリゴン(あれば最良)
+    #   p29_nearest_school … 国土数値情報P29の小学校への最寄り割り当て(近似)
+    #   municipality       … 市町村ぜんたいで1地区(学区データが無い地域の代替。
+    #                        広すぎる地区は make_subdistricts.py の自動分割で割れる)
+    # ここに書かれていない市町村は municipality 方式になる
+    "district_methods": {"山形市": "a27_polygon", "上山市": "p29_nearest_school"},
+    # A27(学区ポリゴン)・P29(学校点)の置き場所(data/ からの相対パス。県ごとにファイル名が変わる)
+    "a27_shp": "A27-16_06_GML/shape/A27-16_06.shp",
+    "a27_dbf": "A27-16_06_GML/shape/A27-16_06.dbf",
+    "p29_shp": "P29-21_06_GML/P29-21_06.shp",
+    "p29_dbf": "P29-21_06_GML/P29-21_06.dbf",
+
     # 行き先マスタ(make_destinations.py)の地域固有リスト
     # core_hospitals: 遠くても必ず行き先に採用する基幹病院
     "core_hospitals": ["山形県立中央病院", "国立大学法人山形大学医学部附属病院",

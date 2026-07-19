@@ -30,6 +30,9 @@ def test_defaults_match_frozen_yamagata_config():
     assert len(r["town_spots"]) == 5           # 山形駅・山形市役所・かみのやま温泉駅・上山市役所・上山城
     assert r["expected"]["total_population"] == 276482
     assert r["expected"]["gap_population"] == 15418
+    # R2: 地区分け方式の既定値(従来のハードコードと同じ組み合わせ)
+    assert r["district_methods"] == {"山形市": "a27_polygon", "上山市": "p29_nearest_school"}
+    assert r["a27_shp"].endswith("A27-16_06.shp") and r["p29_shp"].endswith("P29-21_06.shp")
 
 
 def test_config_uses_region_values():
