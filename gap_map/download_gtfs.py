@@ -15,13 +15,14 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent
-FEEDS_CSV = PROJECT_ROOT / "yamagata_gtfs_feeds.csv"
+from region import REGION   # 地域設定(全国展開キットR1。無ければ山形の既定値)
 
-# config.GTFS_FEED_DIRS の「gtfs_◯◯」に対応する事業者名(yamagata_gtfs_feeds.csv の
-# 「事業者名」列と突き合わせる)。config.py 側を変更したらここも合わせて直すこと
-TARGET_OPERATORS = ["山形交通", "上山市", "山形市", "天童市", "山辺町",
-                     "中山町", "東根市", "南陽市", "寒河江市"]
+PROJECT_ROOT = Path(__file__).parent.parent
+FEEDS_CSV = PROJECT_ROOT / REGION["gtfs_feeds_csv"]
+
+# 「gtfs_◯◯」に対応する事業者名(取得先一覧CSVの「事業者名」列と突き合わせる)。
+# region の gtfs_feed_dirs から機械的に導くので、二重管理は不要になった
+TARGET_OPERATORS = [d.removeprefix("gtfs_") for d in REGION["gtfs_feed_dirs"]]
 
 
 def main():

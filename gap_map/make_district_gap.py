@@ -123,12 +123,20 @@ def main():
     DISTRICT_GAP_JSON.write_text(
         json.dumps(gap, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
-    # 検算: 全地区の空白人口合計が確定値(15,418人)と一致するか(docs/handover.md §4.1)
+    # 検算: 全地区の空白人口合計が確定値と一致するか(期待値は地域設定に持つ。
+    # 山形: 15,418人/571人=docs/handover.md §4.1。期待値の無い地域は観測値のみ表示)
+    from region import region_expected
     total_gap = sum(v["gap_population"] for v in gap.values())
     total_hidden = sum(v["hidden_gap_population"] for v in gap.values())
     print(f"→ {DISTRICT_GAP_JSON}  地区数: {len(gap)}")
-    print(f"  検算: 空白人口合計 = {total_gap:,}人(確定値 15,418人)")
-    print(f"  検算: 隠れ空白人口合計 = {total_hidden:,}人(確定値 571人)")
+    want_gap = region_expected("gap_population")
+    want_hidden = region_expected("hidden_gap_population")
+    if want_gap is not None:
+        print(f"  検算: 空白人口合計 = {total_gap:,}人(確定値 {want_gap:,}人)")
+        print(f"  検算: 隠れ空白人口合計 = {total_hidden:,}人(確定値 {want_hidden:,}人)")
+    else:
+        print(f"  観測値(この地域の期待値は未設定): 空白人口合計 = {total_gap:,}人 / "
+              f"隠れ空白人口合計 = {total_hidden:,}人 … 桁がおかしくないか目視確認してください")
     print("  ※対象2市の全地区を集計対象にした場合の一致を確認すること"
           "(隣接市のメッシュは district_id が無いので自然に除外される)")
 

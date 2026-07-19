@@ -97,8 +97,11 @@ def main():
     print(f"\n→ {config.TARGET_MESHES_CSV} に {len(df)}件を書き出しました")
     print("市町村別メッシュ数:")
     print(df["municipality"].value_counts().to_string())
+    from region import region_expected
+    _want = region_expected("total_population")
     print(f"\n人口合計: {df['population'].sum():,.0f}人 "
-          "(計画書の検算目安: 27万人前後)")
+          + (f"(検算目安: {_want:,}人前後)" if _want is not None
+             else "… 対象市町村の実際の人口と桁が合っているか目視確認してください"))
     n_missing_age = df["population_65plus"].isna().sum()
     print(f"65歳以上人口合計: {df['population_65plus'].sum():,.0f}人 "
           f"(秘匿等により年齢内訳が欠損しているメッシュ: {n_missing_age}件)")
