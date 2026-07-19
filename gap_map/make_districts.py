@@ -4,10 +4,13 @@ F1: 地区マスタを作る(docs/plan_final_sprint.md §3・F1)。
 
 「地区」= かんたんモードで高齢者が選ぶ出発地。小学校区をベースにする。
 
-  - 山形市: 国土数値情報 A27(小学校区ポリゴン・平成28年版)の36学区。
-            各メッシュの中心点がどの学区ポリゴンに入るかで割り当てる
-  - 上山市: A27に未収録のため、国土数値情報 P29(学校・点データ)の
-            小学校5校への「最寄り割り当て」で学区相当の地区を作る(近似)
+方式は市町村ごとに地域設定(region.py の district_methods)で選ぶ(全国展開キットR2):
+  - a27_polygon: 国土数値情報 A27(小学校区ポリゴン)。メッシュ中心がどのポリゴンに
+                 入るかで割り当てる(山形市=36学区がこの方式)
+  - p29_nearest_school: A27未収録の市町村向け。国土数値情報 P29(学校・点データ)の
+                 小学校への「最寄り割り当て」で学区相当の地区を作る(上山市=5校がこの方式)
+  - municipality: 学区データが無い地域の代替。市町村ぜんたいで1地区にする
+                 (広すぎる地区は make_subdistricts.py の自動人口クラスタ分割で割れる)
 
 入力:
   data/target_meshes.csv            … 対象817メッシュ(M1の凍結出力)
@@ -39,21 +42,45 @@ from shapely.geometry import MultiPolygon, Point, Polygon
 import config
 from build_network import haversine_m
 from fetch_facilities import read_dbf_records, read_shp_points
+from region import REGION
 
 PROJECT_ROOT = Path(__file__).parent.parent
 
-A27_SHP = config.DATA_DIR / "A27-16_06_GML" / "shape" / "A27-16_06.shp"
-A27_DBF = config.DATA_DIR / "A27-16_06_GML" / "shape" / "A27-16_06.dbf"
-P29_SHP = config.DATA_DIR / "P29-21_06_GML" / "P29-21_06.shp"
-P29_DBF = config.DATA_DIR / "P29-21_06_GML" / "P29-21_06.dbf"
+# 地区分けの元データの置き場所と方式は地域設定(region.py)が管理する(R2)。
+# 山形の既定値: A27-16_06(山形県の学区ポリゴン)+P29-21_06(学校点)、
+# 方式は 山形市=a27_polygon / 上山市=p29_nearest_school
+A27_SHP = config.DATA_DIR / REGION["a27_shp"]
+A27_DBF = config.DATA_DIR / REGION["a27_dbf"]
+P29_SHP = config.DATA_DIR / REGION["p29_shp"]
+P29_DBF = config.DATA_DIR / REGION["p29_dbf"]
 
 MESH_DISTRICTS_CSV = config.DATA_DIR / "mesh_districts.csv"
 DISTRICTS_MASTER_CSV = config.DATA_DIR / "districts_master.csv"
 DISTRICTS_JSON = PROJECT_ROOT / "webapp" / "data" / "districts.json"
 
-# 市町村コード(JIS)。target_meshes.csv の municipality 列と対応させる
-CITY_CODE = {"山形市": "06201", "上山市": "06207"}
 P29_ELEMENTARY = "16001"   # P29の学校分類コード: 16001 = 小学校
+
+# 市町村コード(JIS)はN03(行政区域)の属性から自動で引く(R2で直書きを廃止)
+_city_codes = None
+
+
+def municipality_code(name: str) -> str:
+    """市町村名→JISコード(例: 山形市→06201)。N03のGeoJSONから1回だけ読んで覚える。
+    A27(学区ポリゴン)・P29(学校点)を市町村で絞り込むのに使う"""
+    global _city_codes
+    if _city_codes is None:
+        n03 = json.loads(Path(config.N03_GEOJSON).read_text(encoding="utf-8"))
+        _city_codes = {}
+        for feature in n03["features"]:
+            props = feature.get("properties", {})
+            muni = props.get("N03_004")     # 市区町村名
+            code = props.get("N03_007")     # 行政区域コード(JIS)
+            if muni and code:
+                _city_codes[muni] = str(code)
+    if name not in _city_codes:
+        raise SystemExit(f"市町村「{name}」がN03(行政区域データ)に見つかりません。"
+                         f"region.json の対象市町村名と {config.N03_GEOJSON.name} を確認してください")
+    return _city_codes[name]
 
 
 # ===============================================================
@@ -125,56 +152,85 @@ def read_shp_polygons(path) -> list:
 # ===============================================================
 # 地区の元データ読み込み
 # ===============================================================
-def load_yamagata_school_districts() -> list:
-    """A27から山形市の小学校区を [(学校名, ポリゴン), ...] で返す"""
+def load_school_polygons(city_code: str) -> list:
+    """A27からその市町村の小学校区を [(学校名, ポリゴン), ...] で返す"""
     geoms = read_shp_polygons(A27_SHP)
     records = read_dbf_records(A27_DBF)
     assert len(geoms) == len(records), "A27のshpとdbfの件数が一致しません"
     return [(rec["A27_007"], geom) for rec, geom in zip(records, geoms)
-            if rec["A27_005"] == CITY_CODE["山形市"]]
+            if rec["A27_005"] == city_code]
 
 
-def load_kaminoyama_schools() -> list:
-    """P29から上山市の小学校を [(学校名, lat, lon), ...] で返す"""
+def load_elementary_schools(city_code: str) -> list:
+    """P29からその市町村の小学校を [(学校名, lat, lon), ...] で返す"""
     points = read_shp_points(P29_SHP)
     records = read_dbf_records(P29_DBF)
     assert len(points) == len(records), "P29のshpとdbfの件数が一致しません"
     return [(rec["P29_004"], lat, lon) for rec, (lon, lat) in zip(records, points)
-            if rec["P29_001"] == CITY_CODE["上山市"] and rec["P29_003"] == P29_ELEMENTARY]
+            if rec["P29_001"] == city_code and rec["P29_003"] == P29_ELEMENTARY]
 
 
 # ===============================================================
 # メッシュ→地区の割り当て
 # ===============================================================
 def assign_meshes(meshes: pd.DataFrame) -> pd.DataFrame:
-    """各メッシュに (municipality, source_school) を割り当てて返す"""
-    yamagata = load_yamagata_school_districts()
-    kaminoyama = load_kaminoyama_schools()
-    print(f"山形市の学区ポリゴン: {len(yamagata)}件 / 上山市の小学校: {len(kaminoyama)}校")
+    """各メッシュに (municipality, source_school) を割り当てて返す。
+
+    方式は市町村ごとに地域設定(REGION["district_methods"])で選ぶ(R2):
+      a27_polygon        … メッシュ中心がどの学区ポリゴンに入るか(現在の山形市方式)
+      p29_nearest_school … 最寄りの小学校で学区を近似(現在の上山市方式)
+      municipality       … 市町村ぜんたいで1地区(学区データが無い地域の代替。
+                           広すぎるときは make_subdistricts.py の自動分割で割れる)
+    設定に無い市町村は municipality 方式になる"""
+    methods = {m: REGION["district_methods"].get(m, "municipality")
+               for m in meshes["municipality"].unique()}
+
+    # 方式ごとに必要な元データを先に読む(無い・0件のときは対処法つきで止まる)
+    polygons = {}   # municipality -> [(学校名, ポリゴン), ...]
+    schools_pt = {}  # municipality -> [(学校名, lat, lon), ...]
+    for m, method in methods.items():
+        if method == "a27_polygon":
+            polygons[m] = load_school_polygons(municipality_code(m))
+            print(f"{m}: 学区ポリゴン {len(polygons[m])}件(A27)")
+            if not polygons[m]:
+                raise SystemExit(f"{m} の学区ポリゴンがA27に見つかりません。"
+                                 f"p29_nearest_school か municipality 方式を検討してください")
+        elif method == "p29_nearest_school":
+            schools_pt[m] = load_elementary_schools(municipality_code(m))
+            print(f"{m}: 小学校 {len(schools_pt[m])}校(P29・最寄り割り当てで学区を近似)")
+            if not schools_pt[m]:
+                raise SystemExit(f"{m} の小学校がP29に見つかりません。"
+                                 f"municipality 方式を検討してください")
+        elif method == "municipality":
+            print(f"{m}: 市町村ぜんたいで1地区(学区データを使わない代替方式。"
+                  f"広すぎる場合は make_subdistricts.py で分割できます)")
+        else:
+            raise ValueError(f"未知の地区分け方式です: {m} = {method}")
 
     schools = []
     n_fallback = 0
     for row in meshes.itertuples():
-        if row.municipality == "山形市":
+        method = methods[row.municipality]
+        if method == "a27_polygon":
+            polys = polygons[row.municipality]
             pt = Point(row.lon, row.lat)
-            hit = [name for name, geom in yamagata if geom.contains(pt)]
+            hit = [name for name, geom in polys if geom.contains(pt)]
             if hit:
                 schools.append(hit[0])
             else:
                 # 市境の際などでどのポリゴンにも入らないメッシュは、最寄りの学区へ
                 # (shapelyのdistanceは度単位の近似だが、隣接学区の判定には十分)
                 n_fallback += 1
-                schools.append(min(yamagata, key=lambda ng: ng[1].distance(pt))[0])
-        elif row.municipality == "上山市":
-            # 上山市はA27未収録のため「最寄りの小学校」で学区を近似(計画書§3)
+                schools.append(min(polys, key=lambda ng: ng[1].distance(pt))[0])
+        elif method == "p29_nearest_school":
             schools.append(min(
-                kaminoyama,
+                schools_pt[row.municipality],
                 key=lambda s: haversine_m(row.lat, row.lon, s[1], s[2]))[0])
-        else:
-            raise ValueError(f"想定外の市町村です: {row.municipality}")
+        else:   # municipality
+            schools.append(row.municipality)
 
     if n_fallback:
-        print(f"※どの学区ポリゴンにも入らず最寄り割り当てにした山形市メッシュ: {n_fallback}件")
+        print(f"※どの学区ポリゴンにも入らず最寄り割り当てにしたメッシュ: {n_fallback}件")
     out = meshes.copy()
     out["source_school"] = schools
     return out
@@ -182,8 +238,12 @@ def assign_meshes(meshes: pd.DataFrame) -> pd.DataFrame:
 
 def auto_district_name(school_name: str) -> str:
     """学校名から地区名の初期値を作る(例: 金井小学校 → 金井地区)。
-    住民感覚と合わない場合は districts_master.csv の display_name を人間が直す"""
-    return school_name.replace("小学校", "") + "地区"
+    municipality方式では市町村名がそのまま入ってくるので、そのまま地区名にする
+    (例: 天童市 → 天童市)。住民感覚と合わない場合は districts_master.csv の
+    display_name を人間が直す"""
+    if school_name.endswith("小学校"):
+        return school_name.replace("小学校", "") + "地区"
+    return school_name
 
 
 # ===============================================================
@@ -209,8 +269,11 @@ def build_master(meshes: pd.DataFrame) -> pd.DataFrame:
             "lon": round(float(top["lon"]), 6),
         })
 
-    # idは並び順から機械的に振る(山形市→上山市、学校名順。再実行しても同じidになる)
-    rows.sort(key=lambda r: (r["municipality"] != "山形市", r["source_school"]))
+    # idは並び順から機械的に振る(市町村は地域設定の並び順、その中は学校名順。
+    # 再実行しても同じidになる。山形の既定値では従来どおり 山形市→上山市)
+    muni_order = {m: i for i, m in enumerate(REGION["target_municipalities"])}
+    rows.sort(key=lambda r: (muni_order.get(r["municipality"], len(muni_order)),
+                             r["source_school"]))
     for i, r in enumerate(rows, start=1):
         r["id"] = f"d{i:02d}"
     df = pd.DataFrame(rows)
@@ -255,6 +318,21 @@ def write_outputs(meshes: pd.DataFrame, master: pd.DataFrame) -> None:
 
     # Webアプリ用JSON(表示名が空なら自動生成名を使う)
     DISTRICTS_JSON.parent.mkdir(parents=True, exist_ok=True)
+
+    # ★2026-07-19 バグ修正: 既存 districts.json のサブ地区(make_subdistricts.py --apply が
+    # 注入した "sub" 配列)を引き継ぐ。このスクリプトはJSONをマスタから作り直すため、
+    # 従来は再実行するとサブ地区分割が黙って消えていた(開発者のMacでの再実行確認で発覚)。
+    # 引き継ぎは id と source_school の両方が一致する地区だけ(別の地域でidが偶然同じでも
+    # 古いsubを誤って付けないため)。壊れた既存JSONは無視して作り直す
+    old_subs = {}
+    if DISTRICTS_JSON.exists():
+        try:
+            for d in json.loads(DISTRICTS_JSON.read_text(encoding="utf-8")):
+                if d.get("sub"):
+                    old_subs[(d["id"], d.get("source_school", ""))] = d["sub"]
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
     records = []
     for _, r in master.iterrows():
         records.append({
@@ -264,8 +342,18 @@ def write_outputs(meshes: pd.DataFrame, master: pd.DataFrame) -> None:
             "municipality": r["municipality"],
             "lat": r["lat"],
             "lon": r["lon"],
-            "source_school": r["source_school"] + "区",
+            # 「◯◯小学校」→「◯◯小学校区」。municipality方式では市町村名のまま
+            "source_school": (r["source_school"] + "区"
+                              if r["source_school"].endswith("小学校")
+                              else r["source_school"]),
         })
+        key = (records[-1]["id"], records[-1]["source_school"])
+        if key in old_subs:
+            records[-1]["sub"] = old_subs[key]
+    n_kept_subs = sum(1 for rec in records if "sub" in rec)
+    if n_kept_subs:
+        print(f"既存のサブ地区分割を{n_kept_subs}地区分引き継ぎました"
+              f"(かな等を直したいときは make_subdistricts.py --apply を再実行)")
     DISTRICTS_JSON.write_text(
         json.dumps(records, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"→ {DISTRICTS_JSON} に{len(records)}地区")
