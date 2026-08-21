@@ -113,6 +113,10 @@ noscript { display: block; font-size: 24px; font-weight: bold; text-align: cente
   border-radius: 18px;
   background: #ffffff;
 }
+/* いまの場所から一番近い停(2026-08-21)。色だけに頼らずチップの文字にも
+   「いちばん近い」と書いてあるので、ここは補助の枠線だけ */
+.board-chip.nearest { border-color: var(--color-outbound); border-width: 3px; }
+.board-chip.geo-near { background: #fdf6e3; }
 .board-chip[aria-pressed="true"] {
   color: #ffffff;
   background: var(--color-text);

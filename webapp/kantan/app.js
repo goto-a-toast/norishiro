@@ -202,7 +202,24 @@ function distanceM(lat1, lon1, lat2, lon2) {
 }
 
 function distanceWord(m) {
-  return m < 950 ? `約${Math.round(m / 100) * 100}m` : `約${(m / 1000).toFixed(1)}km`;
+  // 100m未満を「約0m」と書かないよう、いちばん小さい表示は「約100m」にそろえる
+  // (GPSの誤差もこの程度はあるため、それ以上細かく書くと正確そうに見えて かえって誤解を生む)
+  return m < 950 ? `約${Math.max(100, Math.round(m / 100) * 100)}m` : `約${(m / 1000).toFixed(1)}km`;
+}
+
+// 停留所名から「いまの場所までの直線距離(m)」を出す。索引が無い/その停が索引に
+// 無いときは null。同じ名前のバス停が遠くの別の町にもあるとき、索引は複数の座標
+// ([[lat,lon],...] 形式)を持つので一番近いものを使う(2026-07-12「七日町が24km」の修正)。
+// これは距離の表示と並べ替えのためだけで、経路の計算はしない(設計原則の範囲内)
+function stopDistanceM(name, fix, idx) {
+  if (!fix || !idx || !idx[name]) return null;
+  const v = idx[name];
+  const pts = Array.isArray(v[0]) ? v : [v];
+  let best = Infinity;
+  for (const [slat, slon] of pts) {
+    best = Math.min(best, distanceM(fix.lat, fix.lon, slat, slon));
+  }
+  return isFinite(best) ? best : null;
 }
 
 function setupGeoButton() {
@@ -435,6 +452,8 @@ const s3 = {
   tomorrowView: false, // きょう運行が無い日に「あしたの時刻表」へ切り替えたか
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
+  boardPick: null,   // 利用者が「いまの場所から近いバス停」で選んだ乗車停名
+                     // (null = データ工場のおすすめ=kantan_board のまま。F10-L)
   seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
 };
 
@@ -445,7 +464,51 @@ const s3 = {
 // 帰り(inbound)も工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
 // 便が混ざるが、どの停から乗るかは各便のステップ①が徒歩分つきで案内する)
 function rowsFor(dir, showType) {
-  return (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  const rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  // 利用者が「いまの場所から近いバス停」を選んでいれば、その停から乗る形に付け替える
+  // (行きだけ。帰りの降車停はエンジンが「バス+徒歩の合計が最短」の停を選び済み)
+  return dir === "outbound" && s3.boardPick ? rowsFromBoard(rows, s3.boardPick) : rows;
+}
+
+// 1本の便の中から「その名前のバス停で乗るときの発車時刻」を取り出す。
+// ふつうは1つだけだが、山形駅前のように同じ名前ののりばが複数ある場所では、
+// 1本の便が同じ名前の停を2回通ることがある(実データで47,532便中3便)。
+// そのときは「その名前で乗れる最後の発車」を採る(いちばん待たずに乗れて、
+// バスに乗っている時間も短い。着く時刻はどちらで乗っても同じ便なので変わらない)
+function boardOptionOf(r, stop) {
+  const opts = Array.isArray(r.board_options) && r.board_options.length ? r.board_options : null;
+  if (!opts) {
+    return r.board === stop ? { stop, dep: r.dep, walk_min: r.board_walk_min } : null;
+  }
+  let best = null;
+  for (const o of opts) {
+    if (o.stop !== stop) continue;
+    if (!best || hmToMin(o.dep) > hmToMin(best.dep)) best = o;
+  }
+  return best;
+}
+
+// 選んだバス停から乗る形に、便の表示を付け替える(新しい計算はしない)。
+// 同じバスなので降車側は変わらない。発車時刻と徒歩分をその停の値(board_options に
+// 入っている実測値)に差し替え、「のること約◯分」だけ引き算し直す
+// (しっかりモードの「乗車バス停で絞り込み」とまったく同じやり方)。
+// その停に停まらない便は落とす。board_options が無い古いデータでは停名の一致で判定する
+function rowsFromBoard(rows, stop) {
+  const out = [];
+  for (const r of rows) {
+    const opt = boardOptionOf(r, stop);
+    if (!opt) continue;
+    const wait = r.transfer ? r.transfer.wait_min : 0;
+    out.push({
+      ...r,
+      board: opt.stop,
+      dep: opt.dep,
+      board_walk_min: opt.walk_min != null ? opt.walk_min : r.board_walk_min,
+      ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait,
+    });
+  }
+  out.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
+  return out;
 }
 
 function s3Rows(dir) {
@@ -457,6 +520,27 @@ function nextOutboundIdx(now) {
   if (!s3.todayType || s3.todayType !== s3.showType) return -1;
   const nowMin = now.getHours() * 60 + now.getMinutes();
   return s3Rows("outbound").findIndex((r) => hmToMin(r.dep) >= nowMin);
+}
+
+// 表示中の便の選択をやり直す(初期表示と、乗車バス停を選び直したときの両方で使う)。
+// 既定は「つぎの便」。本日の便が終わっていたら選択なし(カードが終了案内を出す)。
+// 有効期間外の日・あしたの時刻表を見ているときは、始発を選んだ状態にして時計とは
+// 連動させない(「本日の便はおわりました」という誤った案内を出さないため)
+function resetSelection(now) {
+  const rows = s3Rows("outbound");
+  const nextIdx = nextOutboundIdx(now);
+  if (s3.tomorrowView) {
+    s3.sel = rows.length ? { dir: "outbound", idx: 0 } : null;
+    s3.manual = true;
+  } else if (nextIdx >= 0) {
+    s3.sel = { dir: "outbound", idx: nextIdx };
+    s3.manual = false;
+  } else if (!s3.todayType && rows.length > 0) {
+    s3.sel = { dir: "outbound", idx: 0 };
+    s3.manual = true;
+  } else {
+    s3.sel = null;
+  }
 }
 
 async function renderScreen3(did, fid) {
@@ -481,6 +565,7 @@ async function renderScreen3(did, fid) {
     document.getElementById("ride-card").innerHTML =
       '<div class="card-main">この行き先へは バスで行けません</div>';
     document.getElementById("chip-hint").hidden = true;
+    document.getElementById("near-stop-box").hidden = true;
     dirBlocks.forEach((el) => { el.hidden = true; }); // 空の行き/帰り枠は出さない
     document.getElementById("day-type-note").textContent = "";
     document.getElementById("validity-note").textContent = "";
@@ -503,25 +588,17 @@ async function renderScreen3(did, fid) {
   s3.showType = s3.todayType || "weekday";
   s3.manual = false;
   s3.tomorrowView = false;
+  s3.boardPick = null;   // 乗車バス停の選択は行き先を変えるたびに白紙に戻す
 
-  // 初期選択 = つぎの便。本日の便が終わっていたら選択なし(カードに終了案内を出す)。
-  // 有効期間外の日は「つぎの便」が決められないので、始発の便を選んだ状態にする
-  // (「本日の便はおわりました」という誤った案内を出さないため)
-  const nextIdx = nextOutboundIdx(now);
-  if (nextIdx >= 0) {
-    s3.sel = { dir: "outbound", idx: nextIdx };
-  } else if (!s3.todayType && s3Rows("outbound").length > 0) {
-    s3.sel = { dir: "outbound", idx: 0 };
-    s3.manual = true; // 時計とは連動させない(「あと◯分」を出さない)
-  } else {
-    s3.sel = null;
-  }
+  // 初期選択 = つぎの便(くわしくは resetSelection)
+  resetSelection(now);
 
   document.getElementById("chip-hint").hidden = false;
   renderDirection("outbound");
   renderDirection("inbound");
   renderRideCard(now);
   updateChipSelection();
+  renderNearStopBox();
 
   // ダイヤ種別の注記(R7)。有効期間外の案内を優先する
   document.getElementById("day-type-note").textContent = s3.todayType
@@ -615,8 +692,180 @@ function showTomorrowTimetable(tType) {
   renderDirection("inbound");
   renderRideCard(new Date());
   updateChipSelection();
+  renderNearStopBox();   // 候補と本数は曜日で変わるので出し直す
   document.getElementById("day-type-note").textContent =
     `※あしたの「${meta.day_types[tType]}」ダイヤです(きょうの運行はありません)`;
+}
+
+// ===============================================================
+// 「いまの場所から いちばん近いバス停」(2026-08-21 開発者要望
+//  「最寄りのバス停は目的地に合わせて、現在位置情報から検出できるように」)
+// ---------------------------------------------------------------
+// 候補にするのは「この行き先へ行くバスが実際に停まるバス停」だけ(=表示中の便の
+// board_options)。目的地に合わせた候補なので、選んでも必ずその行き先へ行ける。
+// 選ぶと rowsFor() が「その停から乗る形」に表示を付け替える。発車時刻・徒歩分は
+// JSONに入っている実測値の付け替えで、新しい計算はしない(設計原則の範囲内)。
+// 自動では切り替えない(GPSの誤差に備えて、切り替えは必ず利用者が押す)
+// ===============================================================
+
+// この行き先へのバスが停まる、家の近くのバス停一覧(表示中のダイヤ種別の便から作る)。
+// 便が1本も無い停は候補にしない(選んだとたん「運行がありません」になるのを防ぐ)
+function boardStopCandidates() {
+  const base = (s3.entry && s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
+  const map = new Map();   // 停名 → { stop, trips(この日の本数), walk_min }
+  for (const r of base) {
+    const opts = Array.isArray(r.board_options) && r.board_options.length
+      ? r.board_options
+      : [{ stop: r.board, walk_min: r.board_walk_min }];
+    // 同じ便の中に同じ名前の停が2回出ることがある(のりば違い)。本数は便の数で数える
+    const seen = new Set();
+    for (const o of opts) {
+      if (seen.has(o.stop)) continue;
+      seen.add(o.stop);
+      const cur = map.get(o.stop);
+      if (cur) {
+        cur.trips += 1;
+        if (o.walk_min != null) {
+          cur.walk_min = cur.walk_min == null ? o.walk_min : Math.min(cur.walk_min, o.walk_min);
+        }
+      } else {
+        map.set(o.stop, { stop: o.stop, trips: 1, walk_min: o.walk_min != null ? o.walk_min : null });
+      }
+    }
+  }
+  return [...map.values()];
+}
+
+// 候補を「いまの場所から近い順」に並べる。座標が索引に無い停は出さない(距離を偽らない)
+function nearBoardStops(fix) {
+  return boardStopCandidates()
+    .map((c) => ({ ...c, dist: stopDistanceM(c.stop, fix, s3.stopsIndex) }))
+    .filter((c) => c.dist !== null)
+    .sort((a, b) => a.dist - b.dist);
+}
+
+// データ工場が選んだ「おすすめの乗り場」=「もどす」ボタンの行き先。
+// 基本は entry.kantan_board だが、その停に便が無い曜日は工場が別の停の便で埋めている
+// (export_web_data.py の _slim_to_board のフォールバック)。そのため
+// 「表示中の曜日で実際に使われている停」を優先し、便の無い停の名前を出さない
+function recommendedBoard() {
+  const base = (s3.entry && s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
+  const boards = [...new Set(base.map((r) => r.board))];
+  const kb = s3.entry && s3.entry.kantan_board ? s3.entry.kantan_board : null;
+  if (!boards.length) return kb;
+  return kb && boards.includes(kb) ? kb : boards[0];
+}
+
+// 乗車バス停を選び直す(null = おすすめに もどす)。画面3の中だけを描き直す
+function applyBoardPick(stop) {
+  s3.boardPick = stop;
+  const now = new Date();
+  resetSelection(now);
+  renderDirection("outbound");
+  renderRideCard(now);
+  updateChipSelection();
+  renderNearStopBox();
+  // 見せている便が変わるので、電話番号欄(運行主体)も出し直す
+  renderPhoneBox(s3.district, collectOperators());
+}
+
+function nearBoxButton(id, label, cls) {
+  return `<button type="button" id="${id}" class="${cls}">${escapeHtml(label)}</button>`;
+}
+
+function renderNearStopBox() {
+  const box = document.getElementById("near-stop-box");
+  if (!box) return;
+  // 位置情報が使えない端末では欄ごと出さない(一覧の操作だけで完結する)
+  if (!("geolocation" in navigator) || !s3.entry) { box.hidden = true; return; }
+  box.hidden = false;
+
+  // きょう(表示中の曜日)に行きの便が1本も無いときは、この欄を出さない
+  // (のりかたカードが「きょうは 行きのバスの運行が ありません」と案内する)
+  const cands = boardStopCandidates();
+  if (cands.length === 0) { box.hidden = true; return; }
+
+  const fix = geoFixFresh();
+  if (!fix) {
+    box.innerHTML = nearBoxButton("near-stop-btn",
+      "📍 いまいる場所から いちばん近いバス停をさがす", "near-btn");
+    box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
+    return;
+  }
+
+  const list = nearBoardStops(fix);
+  if (list.length === 0) {
+    // 停留所の座標データが無い(再生成前)環境。できないことは正直に書く
+    box.innerHTML =
+      `<p class="near-lead">バス停の場所のデータが ないため、いちばん近いバス停は しらべられませんでした</p>` +
+      nearBoxButton("near-stop-btn", "📍 もういちど しらべる", "near-btn");
+    box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
+    return;
+  }
+
+  const nearest = list[0];
+  const rec = recommendedBoard();
+  const shown = [...new Set(s3Rows("outbound").map((r) => r.board))];
+  const isShown = shown.length === 1 && shown[0] === nearest.stop;
+  const destName = s3.facility ? s3.facility.name : "この行き先";
+
+  let html = "";
+  if (s3.boardPick) {
+    html += `<p class="near-active">いま「${escapeHtml(s3.boardPick)}」から のる時刻表を 出しています</p>`;
+  }
+  html +=
+    `<p class="near-lead">いまいる場所から いちばん近いバス停</p>` +
+    `<p class="near-stop">「${escapeHtml(nearest.stop)}」` +
+    `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>` +
+    `<p class="near-note">${escapeHtml(destName)}へ行くバスが とまるバス停の中から えらびました` +
+    `(この日 ${nearest.trips}本)</p>`;
+  if (nearest.dist > 800) {
+    html +=
+      `<p class="near-far">いちばん近くても およそ${escapeHtml(distanceWord(nearest.dist).replace("約", ""))} あります。` +
+      `とおい場合は 下の電話番号に ごそうだんください</p>`;
+  }
+  if (isShown) {
+    html += `<p class="near-current">いまの時刻表は このバス停の ものです</p>`;
+  } else {
+    html += nearBoxButton("near-use-btn", `「${nearest.stop}」から のる`, "near-btn near-use");
+  }
+  if (s3.boardPick && rec && s3.boardPick !== rec) {
+    html += nearBoxButton("near-reset-btn", `おすすめの「${rec}」に もどす`, "near-btn near-reset");
+  }
+  html += nearBoxButton("near-remeasure-btn", "📍 位置を もういちど しらべる", "near-btn near-remeasure");
+
+  box.innerHTML = html;
+  const use = box.querySelector("#near-use-btn");
+  if (use) use.addEventListener("click", () => applyBoardPick(nearest.stop));
+  const reset = box.querySelector("#near-reset-btn");
+  if (reset) reset.addEventListener("click", () => applyBoardPick(null));
+  box.querySelector("#near-remeasure-btn").addEventListener("click", measureNearStop);
+}
+
+// GPSで位置を測り直して、いちばん近いバス停を出す。
+// 画面1の📍を押さずにQR・リンクから直接来た人も、ここだけで使えるようにする
+function measureNearStop() {
+  const box = document.getElementById("near-stop-box");
+  box.innerHTML = `<p class="near-lead">位置を しらべています…</p>`;
+  const seq = s3.seq;   // 測っている間に別の行き先へ移ったら、結果は捨てる
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      state.geoFix = { lat: pos.coords.latitude, lon: pos.coords.longitude, at: Date.now() };
+      const idx = await getStopsIndex();
+      if (seq !== s3.seq) return;
+      s3.stopsIndex = idx;
+      renderNearStopBox();
+      renderRideCard(new Date());   // ①の「いまの場所から およそ◯m」も出す
+    },
+    () => {
+      if (seq !== s3.seq) return;
+      box.innerHTML =
+        `<p class="near-lead">位置情報が つかえませんでした</p>` +
+        nearBoxButton("near-stop-btn", "📍 もういちど しらべる", "near-btn");
+      box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
+    },
+    { timeout: 10000, maximumAge: 60000 }
+  );
 }
 
 // ①歩く→②乗る→(のりかえ)→③降りる のステップを組み立てる(R1〜R6)
@@ -629,8 +878,12 @@ function rideStepsHtml(r, dir) {
   // 0分(バス停がすぐそこ)のときは「約0分」という変な表示をしない。
   // r.board_walk_min はこの便が実際に使う乗車停留所までの徒歩分(便によって
   // 乗る停留所が変わることがあるため、地区共通の値ではなく便ごとの値を使う)
+  // 徒歩分は地区の代表点からの目安。利用者がGPSで乗車バス停を選んだときは、
+  // 実測の「いまの場所から およそ◯m」(下の geoNote)のほうが正確なので、
+  // 基準の違う2つの数字を並べない(代表点からの目安は出さない)
+  const gpsPicked = Boolean(s3.boardPick) && stopDistanceM(r.board, geoFixFresh(), s3.stopsIndex) !== null;
   let walk = "";
-  if (r.board_walk_min >= 1) {
+  if (r.board_walk_min >= 1 && !(dir === "outbound" && gpsPicked)) {
     walk = ` <span class="walk-note">あるいて約${r.board_walk_min}分</span>`;
   }
   const platform = r.platform
@@ -657,16 +910,8 @@ function rideStepsHtml(r, dir) {
   // 下の電話番号欄(デマンド交通・市の窓口)に誘導する
   let geoNote = "";
   const fix = geoFixFresh();
-  if (dir === "outbound" && fix && s3.stopsIndex && s3.stopsIndex[r.board]) {
-    // 同じ名前のバス停が遠くの別の町にもあるとき、索引は複数の座標を持つ
-    // ([[lat,lon],...] 形式)。利用者に関係あるのは一番近いものなので最小距離を使う
-    // (2026-07-12 開発者報告「七日町が24km」の修正。ふつうの停は [lat,lon] のまま)
-    const v = s3.stopsIndex[r.board];
-    const pts = Array.isArray(v[0]) ? v : [v];
-    let dist = Infinity;
-    for (const [slat, slon] of pts) {
-      dist = Math.min(dist, distanceM(fix.lat, fix.lon, slat, slon));
-    }
+  const dist = dir === "outbound" ? stopDistanceM(r.board, fix, s3.stopsIndex) : null;
+  if (dist !== null) {
     if (dist > 800) {
       geoNote =
         `<div class="geo-dist far-note">いまの場所から このバス停まで およそ${escapeHtml(distanceWord(dist).replace("約", ""))} あります。` +
@@ -929,8 +1174,13 @@ function setupSpeakButton() {
       }
       const hsWord = String(ride.headsign).replace(/(行き|ゆき)$/, "");
       parts.push(`${ride.board}バス停から、${hsWord}行きに、のってください。`);
-      // 徒歩分は行き=家から/帰り=施設から(帰りも実停名+徒歩分。2026-07-10)
-      if (ride.board_walk_min >= 1) {
+      // 徒歩分は行き=家から/帰り=施設から(帰りも実停名+徒歩分。2026-07-10)。
+      // GPSで乗車バス停を選んでいるときは、代表点からの目安ではなく実測の距離を読む
+      const spDist = s3.sel.dir === "outbound" && s3.boardPick
+        ? stopDistanceM(ride.board, geoFixFresh(), s3.stopsIndex) : null;
+      if (spDist !== null) {
+        parts.push(`バス停までは、いまいる場所から、${distanceWord(spDist).replace("約", "およそ")}です。`);
+      } else if (ride.board_walk_min >= 1) {
         parts.push(`バス停までは、あるいて約${ride.board_walk_min}分です。`);
       }
       if (ride.transfer) {
