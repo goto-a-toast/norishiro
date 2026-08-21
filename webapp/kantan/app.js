@@ -864,7 +864,9 @@ function measureNearStop() {
         nearBoxButton("near-stop-btn", "📍 もういちど しらべる", "near-btn");
       box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
     },
-    { timeout: 10000, maximumAge: 60000 }
+    // バス停どうしは100〜300mしか離れていないので、地区をえらぶときの測位より
+    // 高い精度が要る。「もういちど しらべる」で古い位置が返らないよう maximumAge は0
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 }
 
