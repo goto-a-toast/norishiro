@@ -58,6 +58,11 @@
     <div id="ride-card" class="ride-card" aria-live="polite"></div>
     <p id="chip-hint" class="chip-hint">(下の時刻をおすと、上の「のりかた」がその便にかわります)</p>
 
+    <!-- いまの場所から いちばん近いバス停(2026-08-21 開発者要望)。
+         この行き先へ行くバスが停まるバス停の中から、GPSでいちばん近いものを出す。
+         位置情報が使えない環境ではJSが欄ごと隠す(表示は従来どおりで完結する) -->
+    <div id="near-stop-box" class="near-stop-box" aria-live="polite" hidden></div>
+
     <section class="direction-block outbound">
       <div class="direction-header">
         <span class="direction-label">行き</span>

@@ -284,22 +284,73 @@ async function render() {
   renderPhoneBox(district, collectOperators(entry));
 }
 
-// GPS測位が新しいときだけ、停留所までの直線距離を小さく添える(対策1・広い地区)。
-// 800m(徒歩約17分の目安)超は「とおい」と明記して正直に伝える
-function geoDistNote(stopName, dir) {
+// 停留所名から「いまの場所までの直線距離(m)」。測位が古い/索引に無いときは null。
+// 同名のバス停が遠くの別の町にもあるとき、索引は複数座標([[lat,lon],...])を持つので
+// 一番近いものを使う(2026-07-12 開発者報告「七日町が24km」の修正)
+function stopDistanceM(stopName) {
   const fix = geoFixFresh();
-  if (dir !== "outbound" || !fix || !stopsIndex || !stopsIndex[stopName]) return "";
-  // 同名のバス停が遠くの別の町にもあるとき、索引は複数座標([[lat,lon],...])を持つ。
-  // 一番近いものまでの距離を使う(2026-07-12 開発者報告「七日町が24km」の修正)
+  if (!fix || !stopsIndex || !stopsIndex[stopName]) return null;
   const v = stopsIndex[stopName];
   const pts = Array.isArray(v[0]) ? v : [v];
   let dist = Infinity;
   for (const [slat, slon] of pts) {
     dist = Math.min(dist, distanceM(fix.lat, fix.lon, slat, slon));
   }
-  const word = dist < 950 ? `約${Math.round(dist / 100) * 100}m` : `約${(dist / 1000).toFixed(1)}km`;
+  return isFinite(dist) ? dist : null;
+}
+
+function distanceWord(m) {
+  // 100m未満を「約0m」と書かないよう、いちばん小さい表示は「約100m」にそろえる
+  // (GPSの誤差もこの程度はあるため、それ以上細かく書くと正確そうに見えて かえって誤解を生む)
+  return m < 950 ? `約${Math.max(100, Math.round(m / 100) * 100)}m` : `約${(m / 1000).toFixed(1)}km`;
+}
+
+// GPS測位が新しいときだけ、停留所までの直線距離を小さく添える(対策1・広い地区)。
+// 800m(徒歩約17分の目安)超は「とおい」と明記して正直に伝える
+function geoDistNote(stopName, dir) {
+  const dist = dir === "outbound" ? stopDistanceM(stopName) : null;
+  if (dist === null) return "";
   const far = dist > 800 ? "・とおい" : "";
-  return `<br><span class="sub${far ? " far" : ""}">いまの場所から ${word}${far}</span>`;
+  return `<br><span class="sub${far ? " far" : ""}">いまの場所から ${distanceWord(dist)}${far}</span>`;
+}
+
+// 位置を測り直して、バス停の絞り込みを「いまの場所から近い順」に並べ替える
+// (2026-08-21 開発者要望「最寄りのバス停を目的地に合わせて現在位置から検出」)
+function measureNearStops() {
+  if (!("geolocation" in navigator)) return;
+  const result = document.getElementById("geo-result");
+  result.textContent = "位置をしらべています…";
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      state.geoFix = { lat: pos.coords.latitude, lon: pos.coords.longitude, at: Date.now() };
+      await getStopsIndex();
+      result.textContent = "";
+      render();   // 各方向のバス停チップが「近い順+距離つき」で描き直される
+    },
+    () => {
+      result.textContent = "位置情報がつかえませんでした。バス停は下のボタンからえらんでください";
+    },
+    { timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+// board_options / alight_options から「その名前のバス停の便」を1つ選ぶ。
+// 山形駅前のように同じ名前ののりばが複数ある場所では、1本の便が同じ名前の停を
+// 2回通ることがある(実データで行き47,532便中3便)。そのときは
+//   乗車(dep・latest=true) → その名前で乗れる最後の発車(待ち時間が短い)
+//   降車(arr・latest=false)→ その名前で降りられる最初の到着(早く家に着く)
+// を採る。どちらも同じ便なので反対側の時刻は変わらない
+function pickOption(options, stop, timeKey, latest) {
+  let best = null;
+  for (const o of options || []) {
+    if (o.stop !== stop) continue;
+    if (!best) { best = o; continue; }
+    const better = latest
+      ? hmToMin(o[timeKey]) > hmToMin(best[timeKey])
+      : hmToMin(o[timeKey]) < hmToMin(best[timeKey]);
+    if (better) best = o;
+  }
+  return best;
 }
 
 function directionSection(dir, label, entry, district, facility) {
@@ -332,20 +383,50 @@ function directionSection(dir, label, entry, district, facility) {
   if (stopList.length > 1) {
     const bf = document.createElement("div");
     bf.className = "board-filter no-print";
-    bf.innerHTML = `<span class="board-filter-label">${filterLabel}</span>`;
-    const chips = [["すべて", null], ...stopList.map((b) => [b, b])];
-    chips.forEach(([text, value]) => {
+
+    // 「いまの場所から近い順」(2026-08-21 開発者要望)。GPSで測ったばかりの位置が
+    // あれば、候補を近い順に並べ替えて距離を添え、一番近い停に印をつける。
+    // 候補はこの行き先の便が実際に停まる停(board_options/alight_options)なので、
+    // どれを選んでもこの行き先には行ける=「目的地に合わせた最寄り」になる。
+    // 並べ替えと距離の表示だけで、経路の計算はしない(設計原則の範囲内)
+    const withDist = stopList.map((stop) => ({ stop, dist: stopDistanceM(stop) }));
+    const measured = withDist.some((c) => c.dist !== null);
+    if (measured) {
+      const key = (c) => (c.dist === null ? Infinity : c.dist);
+      withDist.sort((a, b) => key(a) - key(b));
+    }
+    const nearest = measured ? withDist[0].stop : null;
+    // 距離を出すときは「どこからの距離か」を見出しに明記する(帰りの降車停も家の近くの
+    // 停なので、施設で測ればその場所からの距離になる。基準をあいまいにしない)
+    bf.innerHTML = `<span class="board-filter-label">${filterLabel}` +
+      `${measured ? "(いまいる場所から近い順)" : ""}</span>`;
+
+    const chips = [{ stop: null, text: "すべて", dist: null }, ...withDist];
+    chips.forEach((c) => {
       const chip = document.createElement("button");
       chip.type = "button";
-      chip.className = "board-chip";
-      chip.textContent = text;
-      chip.setAttribute("aria-pressed", String(active === value));
+      chip.className = "board-chip" + (c.stop && c.stop === nearest ? " nearest" : "");
+      chip.textContent = c.stop === null
+        ? c.text
+        : c.stop + (c.dist === null ? "" :
+            `(${distanceWord(c.dist)}${c.stop === nearest ? "・いちばん近い" : ""})`);
+      chip.setAttribute("aria-pressed", String(active === c.stop));
       chip.addEventListener("click", () => {
-        state.boardFilter[dir] = value;
+        state.boardFilter[dir] = c.stop;
         render();
       });
       bf.appendChild(chip);
     });
+
+    // 位置を測って近い順に並べ替えるボタン(使えない端末では出さない)
+    if ("geolocation" in navigator) {
+      const geo = document.createElement("button");
+      geo.type = "button";
+      geo.className = "board-chip geo-near";
+      geo.textContent = measured ? "📍 位置を測り直す" : "📍 いまいる場所から近い順";
+      geo.addEventListener("click", measureNearStops);
+      bf.appendChild(geo);
+    }
     sec.appendChild(bf);
   }
 
@@ -355,7 +436,7 @@ function directionSection(dir, label, entry, district, facility) {
   if (active && isOutbound) {
     shown = [];
     for (const r of rows) {
-      const opt = (r.board_options || []).find((o) => o.stop === active);
+      const opt = pickOption(r.board_options, active, "dep", true);
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
       shown.push({ ...r, board: active, dep: opt.dep, board_walk_min: opt.walk_min,
@@ -367,7 +448,7 @@ function directionSection(dir, label, entry, district, facility) {
     // そろえる。同じ停を選んでも時刻が変わらないようにするため(o.arrはバス到着なので徒歩を足す)
     shown = [];
     for (const r of rows) {
-      const opt = (r.alight_options || []).find((o) => o.stop === active);
+      const opt = pickOption(r.alight_options, active, "arr", false);
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
       const homeArr = hmToMin(opt.arr) + opt.walk_min;
