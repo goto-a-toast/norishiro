@@ -117,6 +117,12 @@ noscript { display: block; font-size: 24px; font-weight: bold; text-align: cente
    「いちばん近い」と書いてあるので、ここは補助の枠線だけ */
 .board-chip.nearest { border-color: var(--color-outbound); border-width: 3px; }
 .board-chip.geo-near { background: #fdf6e3; }
+/* 「もっと近い停があるが時刻表に無い」ことを正直に伝える注記(2026-08-22) */
+.board-filter-note {
+  margin: 2px 0 8px; font-size: 14px; line-height: 1.5; color: #7a2d00;
+  background: #fdeee3; border-left: 4px solid var(--color-return);
+  padding: 6px 10px; border-radius: 4px;
+}
 .board-chip[aria-pressed="true"] {
   color: #ffffff;
   background: var(--color-text);

@@ -757,6 +757,23 @@ function nearBoardStops(fix) {
     .sort((a, b) => a.dist - b.dist);
 }
 
+// いまの場所の「ほんとうの最寄り停」を、索引の全停(約390停)から出す。
+// この時刻表の乗り場候補かどうかは問わない。候補よりずっと近い停があるのに
+// 黙って遠い停を「いちばん近い」と出すと嘘になるため、正直に併記するのに使う
+// (2026-08-22 開発者指摘「山形県立中央病院にいるのに最寄りとして出てこない」)。
+// 原因は docs/plan_f10_stop_select.md §6.7 = 家側の事前計算が「地区の代表点1点」
+// 基準で、代表点から徒歩800m圏の外にある停は、そもそも時刻表に載っていないこと
+function trueNearestStop(fix) {
+  const idx = s3.stopsIndex;
+  if (!fix || !idx) return null;
+  let best = null;
+  for (const stop of Object.keys(idx)) {
+    const dist = stopDistanceM(stop, fix, idx);
+    if (dist !== null && (best === null || dist < best.dist)) best = { stop, dist };
+  }
+  return best;
+}
+
 // データ工場が選んだ「おすすめの乗り場」=「もどす」ボタンの行き先。
 // 基本は entry.kantan_board だが、その停に便が無い曜日は工場が別の停の便で埋めている
 // (export_web_data.py の _slim_to_board のフォールバック)。そのため
@@ -859,10 +876,21 @@ function renderNearStopBox() {
   const shownBoards = [...new Set(s3Rows("outbound").map((r) => r.board))];
   const isShown = shownBoards.length === 1 && shownBoards[0] === nearest.stop;
 
+  // この時刻表に載っていない、もっと近い停があるか(=代表点方式の限界に当たったか)。
+  // 100m以上近いときだけ言う(GPSの誤差の範囲で騒がない)
+  const truly = trueNearestStop(fix);
+  const uncovered = truly && truly.stop !== nearest.stop && truly.dist + 100 < nearest.dist;
+
   let html =
-    `<p class="near-lead">いまいる場所から いちばん近いのは ` +
+    `<p class="near-lead">${uncovered ? "この時刻表で のれるバス停のうち、いちばん近いのは " : "いまいる場所から いちばん近いのは "}` +
     `<span class="near-stop">「${escapeHtml(nearest.stop)}」</span>` +
     `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>`;
+  if (uncovered) {
+    html +=
+      `<p class="near-far">いまいる場所の すぐ近くには「${escapeHtml(truly.stop)}」` +
+      `(${escapeHtml(distanceWord(truly.dist))})が ありますが、そのバス停から のる時刻表は ` +
+      `まだ ありません。下の電話番号で ごそうだんください</p>`;
+  }
   if (isShown) {
     html += `<p class="near-note">いまの時刻表は このバス停の ものです` +
       `(${escapeHtml(destName)}へ この日 ${nearest.trips}本)</p>`;
@@ -871,7 +899,7 @@ function renderNearStopBox() {
       ` えらびました(この日 ${nearest.trips}本)</p>` +
       nearBoxButton("near-use-btn", `「${nearest.stop}」から のる`, "near-btn near-use");
   }
-  if (nearest.dist > 800) {
+  if (nearest.dist > 800 && !uncovered) {
     html +=
       `<p class="near-far">いちばん近くても およそ${escapeHtml(distanceWord(nearest.dist).replace("約", ""))} あります。` +
       `とおい場合は 下の電話番号に ごそうだんください</p>`;
