@@ -144,33 +144,24 @@ h1 {
 .geo-result { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 22px; text-align: center; }
 .geo-note { font-size: 20px; color: #444444; margin: 4px 0 0; }
 .geo-candidate { background: #fffdf5; }
+/* GPSで地区をえらんだあと「バス停はこのあと出る」ことを伝える1行 */
+.geo-next-note { font-size: 19px; color: #444444; text-align: left; line-height: 1.5; }
 
 /* ---------------- いまの場所から いちばん近いバス停(画面3) ----------------
    目的地に合わせた候補(この行き先へ行くバスが停まる停)だけを出す欄。
-   のりかたカードのすぐ下に置き(カードが主役のまま)、色は控えめにする */
+   のりかたカードの「上」に置く(2026-08-22: 下に置いたらスマホで画面外になり
+   気づけなかった)。カードを押し下げすぎないよう、行数を抑えた作りにしている */
 .near-stop-box {
-  margin: 0 0 16px;
-  padding: 12px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
   background: #fdf6e3;
   border: 3px solid var(--color-border);
   border-radius: 14px;
 }
-.near-stop-box .near-lead { margin: 0; font-size: 22px; color: #444444; }
-.near-stop-box .near-stop {
-  margin: 4px 0 0;
-  font-size: 30px;
-  font-weight: bold;
-  line-height: 1.3;
-}
-.near-stop-box .near-dist { font-size: 24px; font-weight: normal; color: #444444; }
-.near-stop-box .near-note { margin: 4px 0 0; font-size: 20px; color: #555555; }
-.near-stop-box .near-current { margin: 8px 0 0; font-size: 22px; font-weight: bold; }
-.near-stop-box .near-active {
-  margin: 0 0 6px;
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--color-outbound);
-}
+.near-stop-box .near-lead { margin: 0; font-size: 21px; color: #333333; line-height: 1.45; }
+.near-stop-box .near-stop { font-size: 26px; font-weight: bold; }
+.near-stop-box .near-dist { font-size: 21px; color: #444444; }
+.near-stop-box .near-note { margin: 2px 0 0; font-size: 18px; color: #555555; line-height: 1.45; }
 /* 800m超は色だけに頼らず文章でも「とおい」と伝える(対策1と同じ扱い) */
 .near-stop-box .near-far {
   margin: 8px 0 0;
@@ -186,7 +177,7 @@ h1 {
   display: block;
   width: 100%;
   min-height: var(--tap-size);
-  margin-top: 10px;
+  margin-top: 8px;
   font-family: inherit;
   font-size: 24px;
   font-weight: bold;
@@ -200,7 +191,8 @@ h1 {
   background: var(--color-outbound);
   border-color: var(--color-outbound);
 }
-.near-stop-box .near-remeasure { font-size: 20px; min-height: 56px; font-weight: normal; }
+/* 「測り直す」「もどす」は脇役。高さを抑えてカードを押し下げない */
+.near-stop-box .near-remeasure { font-size: 18px; min-height: 48px; font-weight: normal; }
 
 /* ---------------- タブ(市・カテゴリ) ---------------- */
 .city-tabs, .category-tabs {

@@ -246,6 +246,14 @@ function setupGeoButton() {
           b.addEventListener("click", () => { location.hash = d.id; });
           result.appendChild(b);
         });
+        // ここで出せるのは「地区」まで。バス停は行き先が決まらないと選べない
+        // (行き先によって、通るバスも乗るバス停も変わるため)。次に何が起きるかを
+        // 先に伝えておく(2026-08-22 開発者指摘「地区のままですよ」への対応)
+        const next = document.createElement("p");
+        next.className = "geo-note geo-next-note";
+        next.textContent =
+          "このあと 行き先をえらぶと、いまいる場所から いちばん近いバス停を お知らせします";
+        result.appendChild(next);
       },
       () => {
         result.textContent = "位置情報が つかえませんでした。下の一覧から えらんでください";
@@ -551,6 +559,9 @@ async function renderScreen3(did, fid) {
   document.getElementById("s3-facility-name").textContent = facility ? facility.name : "";
 
   if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
+  // 乗車バス停の選択は行き先を変えるたびに白紙に戻す。行けない行き先で下の
+  // 早い return を通る場合も残らないよう、いちばん先に消しておく
+  s3.boardPick = null;
 
   // 画面遷移の連打対策: await中に新しいrenderScreen3が始まっていたら、
   // 古い方はここで打ち切る(古いsetIntervalが残り続けるのを防ぐ)
@@ -565,11 +576,14 @@ async function renderScreen3(did, fid) {
     document.getElementById("ride-card").innerHTML =
       '<div class="card-main">この行き先へは バスで行けません</div>';
     document.getElementById("chip-hint").hidden = true;
-    document.getElementById("near-stop-box").hidden = true;
+    const nb = nearStopBoxEl();
+    if (nb) nb.hidden = true;
     dirBlocks.forEach((el) => { el.hidden = true; }); // 空の行き/帰り枠は出さない
     document.getElementById("day-type-note").textContent = "";
     document.getElementById("validity-note").textContent = "";
     document.getElementById("speak-btn").hidden = true;
+    s3.entry = null;   // 前の行き先のデータを読んでしまわないように消す
+    s3.sel = null;
     renderPhoneBox(district);
     return;
   }
@@ -588,7 +602,6 @@ async function renderScreen3(did, fid) {
   s3.showType = s3.todayType || "weekday";
   s3.manual = false;
   s3.tomorrowView = false;
-  s3.boardPick = null;   // 乗車バス停の選択は行き先を変えるたびに白紙に戻す
 
   // 初期選択 = つぎの便(くわしくは resetSelection)
   resetSelection(now);
@@ -773,23 +786,61 @@ function nearBoxButton(id, label, cls) {
   return `<button type="button" id="${id}" class="${cls}">${escapeHtml(label)}</button>`;
 }
 
+// 画面3の「いちばん近いバス停」欄を返す。index.html が古いまま(ブラウザや
+// 配信のキャッシュ)でも機能が消えないよう、無ければJSが作って
+// のりかたカードのすぐ下に差し込む
+function nearStopBoxEl() {
+  let box = document.getElementById("near-stop-box");
+  if (!box) {
+    const card = document.getElementById("ride-card");
+    const screen3 = document.getElementById("screen3");
+    if (!screen3) return null;
+    box = document.createElement("div");
+    box.id = "near-stop-box";
+    box.className = "near-stop-box";
+    box.setAttribute("aria-live", "polite");
+    if (card && card.parentNode === screen3) screen3.insertBefore(box, card);
+    else screen3.appendChild(box);
+  }
+  return box;
+}
+
+// すでに位置情報の使用を許してくれている端末では、押さなくても最寄りを出す。
+// 許可されていない端末には勝手に聞かない(ボタンのままにする)。
+// Permissions API が無い端末(Safariなど)でも、ボタンで従来どおり使える
+async function autoDetectIfAllowed() {
+  if (!navigator.permissions || !navigator.permissions.query) return;
+  let status;
+  try {
+    status = await navigator.permissions.query({ name: "geolocation" });
+  } catch (e) {
+    return;   // この端末では判定できない。ボタンのままにする
+  }
+  if (status.state === "granted" && !geoFixFresh()) measureNearStop();
+}
+
 function renderNearStopBox() {
-  const box = document.getElementById("near-stop-box");
+  const box = nearStopBoxEl();
   if (!box) return;
   // 位置情報が使えない端末では欄ごと出さない(一覧の操作だけで完結する)
   if (!("geolocation" in navigator) || !s3.entry) { box.hidden = true; return; }
-  box.hidden = false;
 
   // きょう(表示中の曜日)に行きの便が1本も無いときは、この欄を出さない
   // (のりかたカードが「きょうは 行きのバスの運行が ありません」と案内する)
   const cands = boardStopCandidates();
   if (cands.length === 0) { box.hidden = true; return; }
+  box.hidden = false;
 
+  const destName = s3.facility ? s3.facility.name : "この行き先";
+
+  // まだ測っていないとき。のりかたカードの上に置く欄なので、ボタン1つ+説明1行に抑える
   const fix = geoFixFresh();
   if (!fix) {
-    box.innerHTML = nearBoxButton("near-stop-btn",
-      "📍 いまいる場所から いちばん近いバス停をさがす", "near-btn");
+    box.innerHTML =
+      nearBoxButton("near-stop-btn", "📍 いちばん近いバス停をさがす", "near-btn near-use") +
+      `<p class="near-note">${escapeHtml(destName)}へ行くバスが とまるバス停の中から さがします</p>`;
     box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
+    autoDetectIfAllowed();   // すでに許可されている端末は押さなくても出す
     return;
   }
 
@@ -797,40 +848,36 @@ function renderNearStopBox() {
   if (list.length === 0) {
     // 停留所の座標データが無い(再生成前)環境。できないことは正直に書く
     box.innerHTML =
-      `<p class="near-lead">バス停の場所のデータが ないため、いちばん近いバス停は しらべられませんでした</p>` +
-      nearBoxButton("near-stop-btn", "📍 もういちど しらべる", "near-btn");
+      `<p class="near-note">バス停の場所のデータが ないため、いちばん近いバス停は しらべられませんでした</p>` +
+      nearBoxButton("near-stop-btn", "📍 もういちど しらべる", "near-btn near-remeasure");
     box.querySelector("#near-stop-btn").addEventListener("click", measureNearStop);
     return;
   }
 
   const nearest = list[0];
   const rec = recommendedBoard();
-  const shown = [...new Set(s3Rows("outbound").map((r) => r.board))];
-  const isShown = shown.length === 1 && shown[0] === nearest.stop;
-  const destName = s3.facility ? s3.facility.name : "この行き先";
+  const shownBoards = [...new Set(s3Rows("outbound").map((r) => r.board))];
+  const isShown = shownBoards.length === 1 && shownBoards[0] === nearest.stop;
 
-  let html = "";
-  if (s3.boardPick) {
-    html += `<p class="near-active">いま「${escapeHtml(s3.boardPick)}」から のる時刻表を 出しています</p>`;
+  let html =
+    `<p class="near-lead">いまいる場所から いちばん近いのは ` +
+    `<span class="near-stop">「${escapeHtml(nearest.stop)}」</span>` +
+    `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>`;
+  if (isShown) {
+    html += `<p class="near-note">いまの時刻表は このバス停の ものです` +
+      `(${escapeHtml(destName)}へ この日 ${nearest.trips}本)</p>`;
+  } else {
+    html += `<p class="near-note">${escapeHtml(destName)}へ行くバスが とまるバス停の中から` +
+      ` えらびました(この日 ${nearest.trips}本)</p>` +
+      nearBoxButton("near-use-btn", `「${nearest.stop}」から のる`, "near-btn near-use");
   }
-  html +=
-    `<p class="near-lead">いまいる場所から いちばん近いバス停</p>` +
-    `<p class="near-stop">「${escapeHtml(nearest.stop)}」` +
-    `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>` +
-    `<p class="near-note">${escapeHtml(destName)}へ行くバスが とまるバス停の中から えらびました` +
-    `(この日 ${nearest.trips}本)</p>`;
   if (nearest.dist > 800) {
     html +=
       `<p class="near-far">いちばん近くても およそ${escapeHtml(distanceWord(nearest.dist).replace("約", ""))} あります。` +
       `とおい場合は 下の電話番号に ごそうだんください</p>`;
   }
-  if (isShown) {
-    html += `<p class="near-current">いまの時刻表は このバス停の ものです</p>`;
-  } else {
-    html += nearBoxButton("near-use-btn", `「${nearest.stop}」から のる`, "near-btn near-use");
-  }
   if (s3.boardPick && rec && s3.boardPick !== rec) {
-    html += nearBoxButton("near-reset-btn", `おすすめの「${rec}」に もどす`, "near-btn near-reset");
+    html += nearBoxButton("near-reset-btn", `おすすめの「${rec}」に もどす`, "near-btn near-remeasure");
   }
   html += nearBoxButton("near-remeasure-btn", "📍 位置を もういちど しらべる", "near-btn near-remeasure");
 
@@ -845,7 +892,8 @@ function renderNearStopBox() {
 // GPSで位置を測り直して、いちばん近いバス停を出す。
 // 画面1の📍を押さずにQR・リンクから直接来た人も、ここだけで使えるようにする
 function measureNearStop() {
-  const box = document.getElementById("near-stop-box");
+  const box = nearStopBoxEl();
+  if (!box) return;
   box.innerHTML = `<p class="near-lead">位置を しらべています…</p>`;
   const seq = s3.seq;   // 測っている間に別の行き先へ移ったら、結果は捨てる
   navigator.geolocation.getCurrentPosition(
