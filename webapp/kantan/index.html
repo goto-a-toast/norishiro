@@ -28,7 +28,7 @@
     <p class="instruction">① おすまいの地区をえらんでください</p>
     <!-- GPSで近い地区の候補を出す(2026-07-07 開発者要望。使えない環境では一覧だけで完結する) -->
     <div class="geo-row">
-      <button id="geo-btn" class="geo-btn" type="button">📍 いまいる場所から さがす</button>
+      <button id="geo-btn" class="geo-btn" type="button">📍 いまいる場所から 地区をさがす</button>
       <div id="geo-result" class="geo-result" aria-live="polite"></div>
     </div>
 
@@ -54,14 +54,15 @@
   <main id="screen3" class="screen" hidden>
     <p class="breadcrumb"><span id="s3-district-name"></span> → <span id="s3-facility-name"></span></p>
 
+    <!-- いまの場所から いちばん近いバス停(2026-08-21 開発者要望)。この行き先へ行く
+         バスが停まるバス停の中から、GPSでいちばん近いものを出す。スマホでのりかた
+         カードの下に置くと画面外になり気づけなかったため、カードの上に置く
+         (2026-08-22)。位置情報が使えない環境ではJSが欄ごと隠す -->
+    <div id="near-stop-box" class="near-stop-box" aria-live="polite" hidden></div>
+
     <!-- のりかたカード: 「つぎのバス」の時計と、①歩く→②乗る→③降りるの案内を1枚に -->
     <div id="ride-card" class="ride-card" aria-live="polite"></div>
     <p id="chip-hint" class="chip-hint">(下の時刻をおすと、上の「のりかた」がその便にかわります)</p>
-
-    <!-- いまの場所から いちばん近いバス停(2026-08-21 開発者要望)。
-         この行き先へ行くバスが停まるバス停の中から、GPSでいちばん近いものを出す。
-         位置情報が使えない環境ではJSが欄ごと隠す(表示は従来どおりで完結する) -->
-    <div id="near-stop-box" class="near-stop-box" aria-live="polite" hidden></div>
 
     <section class="direction-block outbound">
       <div class="direction-header">
