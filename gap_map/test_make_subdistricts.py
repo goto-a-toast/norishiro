@@ -199,3 +199,78 @@ def test_apply_outputs_remove_unsplits_explicitly(tmp_path, monkeypatch):
     assert "sub" not in next(d for d in out if d["id"] == "d40")
     meshmap = pd.read_csv(data_dir / "mesh_subdistricts.csv", dtype=str).fillna("")
     assert (meshmap.loc[meshmap["district_id"] == "d40", "sub_id"] == "").all()
+
+
+# ===============================================================
+# 分割基準の調整(2026-08-22追加。docs/plan_f10_stop_select.md §6.7)
+# 「住民の最寄り停が時刻表に無い」問題に対し、基準を緩めてサブ地区を増やせるように
+# した。既定値のままなら従来と1ミリも変わらないことを、まず固定する
+# ===============================================================
+@pytest.fixture(autouse=True)
+def _restore_thresholds():
+    """テストが基準を変えても、次のテストには持ち越さない(既定値に戻す)"""
+    keep = (ms.FAR_DIST_M, ms.FAR_POP_MIN, ms.FAR_RATIO_MIN, ms.MAX_K)
+    yield
+    ms.FAR_DIST_M, ms.FAR_POP_MIN, ms.FAR_RATIO_MIN, ms.MAX_K = keep
+
+
+def test_defaults_are_the_yamagata_values():
+    """山形版の確定値。変えると出力が変わるので、うっかり変更を検知する"""
+    assert (ms.FAR_DIST_M, ms.FAR_POP_MIN, ms.FAR_RATIO_MIN, ms.MAX_K) == (2000, 300, 0.20, 3)
+
+
+def test_set_thresholds_ignores_none_and_applies_given():
+    ms.set_thresholds(far_dist=800, far_pop=None, far_ratio=None, max_k=6)
+    assert ms.FAR_DIST_M == 800
+    assert ms.MAX_K == 6
+    assert ms.FAR_POP_MIN == 300          # None の項目は既定値のまま
+    assert ms.FAR_RATIO_MIN == 0.20
+
+
+def test_lower_far_dist_marks_more_districts():
+    """基準を800m(=バス停まで歩ける上限)に下げると、2km基準では対象外だった
+    地区も分割対象になる(=住民の最寄り停が時刻表に入るようになる)"""
+    mesh = _mesh_df()
+    # 西の3メッシュだけの地区(最大440m差)は 2km 基準では対象外
+    narrow = mesh[mesh["meshcode"].str.startswith("10")].copy()
+    narrow["district_id"] = "d99"
+    d99 = {"id": "d99", "name": "せまい地区", "kana": "せまい",
+           "municipality": "山形市", "lat": LAT, "lon": WEST_LON}
+    assert not bool(ms.score_districts(narrow, [d99]).iloc[0]["対象"])
+
+    ms.set_thresholds(far_dist=300, far_pop=100, far_ratio=0.10)
+    row = ms.score_districts(narrow, [d99]).iloc[0]
+    assert row["far_pop_2km"] == 200       # 代表点から300m超に住む2メッシュぶん
+    assert bool(row["対象"])
+
+
+def test_max_k_allows_more_than_three_subdistricts():
+    """MAX_K を上げると、基準を超えるクラスタが残る限り k を増やして分けられる
+    (従来は2→3の1段だけだった)"""
+    mesh = _mesh_df()
+    ms.set_thresholds(far_dist=300, far_pop=50, far_ratio=0.05, max_k=6)
+    rows = ms.split_district(mesh, DISTRICTS[1])
+    assert len(rows) > 3
+    assert len(rows) <= 6
+    assert [r["sub_id"] for r in rows] == sorted(r["sub_id"] for r in rows)
+    # 分割してもメッシュも人口も失われない
+    assert sum(int(r["population"]) for r in rows) == 1400
+    assert sum(int(r["mesh_count"]) for r in rows) == 7
+
+
+def test_max_k_default_keeps_three_at_most():
+    """既定(MAX_K=3)では、基準をどれだけ緩めても4つには割れない"""
+    mesh = _mesh_df()
+    ms.set_thresholds(far_dist=300, far_pop=50, far_ratio=0.05)
+    rows = ms.split_district(mesh, DISTRICTS[1])
+    assert len(rows) <= 3
+
+
+def test_split_is_idempotent_with_same_thresholds():
+    """同じ基準なら何度実行しても同じ結果(冪等。再生成の前提)"""
+    mesh = _mesh_df()
+    ms.set_thresholds(far_dist=300, far_pop=50, far_ratio=0.05, max_k=5)
+    first = ms.split_district(mesh, DISTRICTS[1])
+    second = ms.split_district(mesh, DISTRICTS[1])
+    assert [r["sub_id"] for r in first] == [r["sub_id"] for r in second]
+    assert [r["rep_meshcode"] for r in first] == [r["rep_meshcode"] for r in second]

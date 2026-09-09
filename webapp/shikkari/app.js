@@ -299,6 +299,18 @@ function stopDistanceM(stopName) {
   return isFinite(dist) ? dist : null;
 }
 
+// いまの場所の「ほんとうの最寄り停」を索引の全停(約390停)から出す。
+// この時刻表の乗り場候補かどうかは問わない(正直な注記に使う)
+function trueNearestStop() {
+  if (!geoFixFresh() || !stopsIndex) return null;
+  let best = null;
+  for (const stop of Object.keys(stopsIndex)) {
+    const dist = stopDistanceM(stop);
+    if (dist !== null && (best === null || dist < best.dist)) best = { stop, dist };
+  }
+  return best;
+}
+
 function distanceWord(m) {
   // 100m未満を「約0m」と書かないよう、いちばん小さい表示は「約100m」にそろえる
   // (GPSの誤差もこの程度はあるため、それ以上細かく書くと正確そうに見えて かえって誤解を生む)
@@ -430,6 +442,23 @@ function directionSection(dir, label, entry, district, facility) {
       bf.appendChild(geo);
     }
     sec.appendChild(bf);
+
+    // この時刻表に載っていない、もっと近い停があるときは正直に言う(2026-08-22
+    // 開発者指摘「山形県立中央病院にいるのに最寄りとして出てこない」)。家側の
+    // 事前計算は「地区の代表点1点」基準なので、代表点から徒歩800m圏の外に住む人の
+    // 最寄り停は、そもそもこの時刻表に入っていない(docs/plan_f10_stop_select.md §6.7)
+    if (measured && isOutbound) {
+      const truly = trueNearestStop();
+      const top = withDist[0];
+      if (truly && top.dist !== null && truly.stop !== top.stop && truly.dist + 100 < top.dist) {
+        const note = document.createElement("p");
+        note.className = "board-filter-note no-print";
+        note.textContent =
+          `※いまいる場所のいちばん近くは「${truly.stop}」(${distanceWord(truly.dist)})ですが、` +
+          `この停から乗る時刻表はありません。この時刻表は地区の代表点から徒歩圏の停で作っています`;
+        sec.appendChild(note);
+      }
+    }
   }
 
   // 選択に応じて表示行を作る。実在停を選んだら、その停の時刻(行き=発車/帰り=到着)と
