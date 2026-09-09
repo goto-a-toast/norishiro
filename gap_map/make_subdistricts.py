@@ -50,10 +50,33 @@ MESH_SUBDISTRICTS_CSV = config.DATA_DIR / "mesh_subdistricts.csv"
 SUBDISTRICTS_MASTER_CSV = config.DATA_DIR / "subdistricts_master.csv"
 DISTRICTS_JSON = PROJECT_ROOT / "webapp" / "data" / "districts.json"
 
+# 分割基準の既定値(山形版はこの値で確定済み。変えると出力が変わるので、
+# 試すときはコードを書き換えず main() の --far-dist などのオプションを使う。
+# オプションを指定しなければ従来とまったく同じ結果になる)
 FAR_DIST_M = 2000     # 「遠い」とみなす親代表点からの距離
 FAR_POP_MIN = 300     # 分割基準: 遠くに住む人口がこの人数以上
 FAR_RATIO_MIN = 0.20  # 分割基準: かつ地区人口のこの割合以上
 MAX_K = 3             # サブ地区の最大数
+# サブ地区IDの末尾文字(d15a, d15b, …)。3個までは従来どおり a/b/c で変わらない。
+# MAX_K を増やしたときのために d 以降も用意する(上限26)
+SUB_ID_LETTERS = "abcdefghijklmnopqrstuvwxyz"
+
+# 2026-08-22 追加: 「住民の最寄り停が時刻表に無い」問題(docs/plan_f10_stop_select.md
+# §6.7)への対応を試すため、上の4つをコマンドラインから変えられるようにした。
+# 時刻表の乗り場候補は「代表点から徒歩 config.MAX_WALK_TO_STOP_M(=800m)以内」なので、
+# FAR_DIST_M を 2,000m から下げるほど、住民の最寄り停が時刻表に入るようになる
+# (そのぶんサブ地区=時刻表の数が増え、データ量と生成時間が増える)
+def set_thresholds(far_dist=None, far_pop=None, far_ratio=None, max_k=None):
+    """分割基準を差し替える(Noneの項目は既定値のまま)。テストと main() から使う"""
+    global FAR_DIST_M, FAR_POP_MIN, FAR_RATIO_MIN, MAX_K
+    if far_dist is not None: FAR_DIST_M = float(far_dist)
+    if far_pop is not None: FAR_POP_MIN = float(far_pop)
+    if far_ratio is not None: FAR_RATIO_MIN = float(far_ratio)
+    if max_k is not None:
+        MAX_K = int(max_k)
+        # IDの末尾文字が尽きる数は受け付けない(a〜zの26個まで)
+        if not 2 <= MAX_K <= len(SUB_ID_LETTERS):
+            raise SystemExit(f"--max-k は 2〜{len(SUB_ID_LETTERS)} で指定してください(指定値: {MAX_K})")
 
 
 def haversine_m(lat1, lon1, lat2, lon2):
@@ -194,10 +217,13 @@ def assign_directions(centroids: list, base_lat: float) -> list:
 def split_district(mesh: pd.DataFrame, district: dict) -> list:
     """1地区をサブ地区に分割してマスタ行のリストを返す"""
     g = mesh[mesh["district_id"] == district["id"]].copy()
+    # k=2から始め、まだ基準を超えるクラスタが残るなら MAX_K まで1つずつ増やす
+    # (従来は2→3の1段だけ。MAX_K=3のままなら結果は従来と同じ)
     k = 2
     assign = weighted_kmeans(g, k)
-    if any(cluster_needs_more_split(g[assign == ci]) for ci in range(k)) and MAX_K >= 3:
-        k = 3
+    while (k < MAX_K and k < len(g)
+           and any(cluster_needs_more_split(g[assign == ci]) for ci in range(k))):
+        k += 1
         assign = weighted_kmeans(g, k)
     g["cluster"] = assign
 
@@ -219,7 +245,7 @@ def split_district(mesh: pd.DataFrame, district: dict) -> list:
         top = c.sort_values(["population", "meshcode"], ascending=[False, True]).iloc[0]
         dir_ja, dir_kana = directions[rank]
         rows.append({
-            "sub_id": f"{district['id']}{'abc'[rank]}",
+            "sub_id": f"{district['id']}{SUB_ID_LETTERS[rank]}",
             "parent_id": district["id"],
             "municipality": district["municipality"],
             "name": f"{district['name']}({dir_ja})",
@@ -340,18 +366,32 @@ def main():
                     help="分割を実行して書き出す(無指定なら採点表の表示のみ)")
     ap.add_argument("--districts", default="",
                     help="対象地区IDをカンマ区切りで明示指定(例: d15,d40)")
+    # 分割基準の調整(既定値は従来どおり。指定しなければ結果は変わらない)
+    ap.add_argument("--far-dist", type=float, default=None,
+                    help=f"「遠い」とみなす代表点からの距離(m)。既定{FAR_DIST_M:.0f}。"
+                         "時刻表の乗り場は代表点から徒歩800m以内なので、下げるほど"
+                         "住民の最寄り停が時刻表に入る(そのぶん時刻表の数が増える)")
+    ap.add_argument("--far-pop", type=float, default=None,
+                    help=f"分割基準: 遠くに住む人口の下限。既定{FAR_POP_MIN:.0f}人")
+    ap.add_argument("--far-ratio", type=float, default=None,
+                    help=f"分割基準: 地区人口に占める割合の下限。既定{FAR_RATIO_MIN}")
+    ap.add_argument("--max-k", type=int, default=None,
+                    help=f"1地区あたりのサブ地区の最大数。既定{MAX_K}")
     ap.add_argument("--remove", default="",
                     help="分割をやめる地区IDをカンマ区切りで指定(例: d40)。"
                          "指定しない限り、既存の分割は再実行しても消えない")
     args = ap.parse_args()
+    # 指定があった項目だけ基準を差し替える(何も指定しなければ従来と同じ結果)
+    set_thresholds(args.far_dist, args.far_pop, args.far_ratio, args.max_k)
 
     mesh = load_meshes()
     districts = json.loads(DISTRICTS_JSON.read_text(encoding="utf-8"))
 
     score = score_districts(mesh, districts)
     name_of = {d["id"]: d["name"] for d in districts}
-    print(f"\n=== 採点表: 代表点から{FAR_DIST_M/1000:.0f}km超に住む人口 "
-          f"(基準: {FAR_POP_MIN}人以上かつ{FAR_RATIO_MIN:.0%}以上で分割対象) ===")
+    print(f"\n=== 採点表: 代表点から{FAR_DIST_M:.0f}m超に住む人口 "
+          f"(基準: {FAR_POP_MIN:.0f}人以上かつ{FAR_RATIO_MIN:.0%}以上で分割対象"
+          f" / サブ地区は最大{MAX_K}個) ===")
     print("地区ID | 地区名 | 人口 | メッシュ数 | 遠い人口 | 割合 | 対象")
     for _, r in score.iterrows():
         print(f"{r['district_id']} | {name_of.get(r['district_id'],'?')} | {r['population']} | "

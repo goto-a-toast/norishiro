@@ -715,6 +715,21 @@ NAVITIME照合は±10分を徒歩モデル差として許容する運用だっ�
   (F7で segno を追加予定)。geopandas・Javaは不要のまま保つ
 - PDF生成はChrome(ヘッドレス)に依存。`make_pair_timetable.py` 内の `CHROME` 定数がパス
 - 作業ディレクトリは外付けSSD。macOSが作る `._*` ゴミファイルは gitignore 済み
+- **SSDを別のMacに繋いで作業を続ける場合(2026-08-22 開発者質問)**: できる。
+  スクリプトのパスはすべてプロジェクトルート相対(`config.py` の
+  `Path(__file__).parent.parent`)なので `/Volumes/…` のどこにあっても動く。
+  - SSD側にあるもの(代えがきかない): `gtfs_*/` 9フィードの**現物**(再DLすると
+    確定数値が再現できない)・`data/` の入力一式(N03/A27/P29/P04/メッシュ人口/
+    mesh_districts.csv)・`output/` の分析確定版・リポジトリ本体
+  - **Mac側に要るもの**(SSDには入っていない): **Python 3.10以上**
+    (`build_network.py` が `pd.DataFrame | None` 記法を使うため3.9以下は起動不可)・
+    pandas/numpy/jpholiday(`pip install -r gap_map/requirements.txt`)・
+    地区を作り直すなら shapely・git。Chromeは第1部のPDF生成用で再生成には不要
+  - 繋いだ直後の確認: `python3 -V` / `python3 -c "import pandas, numpy, jpholiday"` /
+    `ls -d gtfs_*/ && ls data/mesh_districts.csv`
+  - 注意: 空き容量(成果物150MB前提でも中間ファイルで数GBの余裕がほしい)/
+    macOSが外付けボリュームへのアクセス許可を聞くことがある/
+    再生成のたびに時刻表JSONが全洗い替えになりgit履歴が肥大する
 - 実行はすべて**プロジェクトルートから** `python3 gap_map/スクリプト名.py` の形
 
 ## 9. 引き継ぎセッションの作法(開発者との取り決め)
