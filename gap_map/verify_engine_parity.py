@@ -126,11 +126,18 @@ def main():
             name = net.stops[origin]["name"]
             if act["arrivals"] != exp["arrivals"]:
                 ng += 1
-                diff = [s for s in set(exp["arrivals"]) | set(act["arrivals"])
-                        if exp["arrivals"].get(s) != act["arrivals"].get(s)]
+                diff = sorted((s for s in set(exp["arrivals"]) | set(act["arrivals"])
+                               if exp["arrivals"].get(s) != act["arrivals"].get(s)), key=int)
                 print(f"  NG 到着時刻 出発={name} 食い違い{len(diff)}停留所 例={diff[:3]}")
                 for s in diff[:3]:
-                    print(f"     添字{s}: Python={exp['arrivals'].get(s)} / JS={act['arrivals'].get(s)}")
+                    print(f"     添字{s}({net.stops[stop_ids[int(s)]]['name']}): "
+                          f"Python={exp['arrivals'].get(s)} / JS={act['arrivals'].get(s)}")
+                # 原因を追えるよう、食い違った停留所への経路を両方出す
+                # (どの区間で差がついたかが分かる。徒歩の丸めか、便の選び方かの切り分け)
+                s0 = diff[0]
+                if s0 in exp["paths"]:
+                    print(f"     [経路] Python={exp['paths'][s0]}")
+                    print(f"            JS    ={act['paths'].get(s0)}")
             elif act["paths"] != exp["paths"]:
                 ng += 1
                 diff = [s for s in exp["paths"] if exp["paths"][s] != act["paths"].get(s)]

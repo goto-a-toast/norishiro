@@ -69,9 +69,14 @@ def serialize(network, headsigns: dict) -> dict:
                           [a - base for a in t.arrivals]])
         patterns.append([[idx[s] for s in pat.stop_ids], trips])
 
+    # ★徒歩分は「分に丸めた整数」で配る(2026-09-24 実データ照合で見つけた不具合の修正)。
+    # 以前は round(w, 1) と小数1桁で配っていたが、これは丸めの判断に必要な情報を
+    # 落としていた(例: 3.49分 → 3.5分 と配ると、分に丸めたとき3分ではなく4分になる)。
+    # エンジンが徒歩分を丸めるのはここ1か所だけなので、Python側で丸め切ってしまえば
+    # JS側に丸めの判断が残らず、食い違いようがなくなる
     footpaths = {}
     for sid, lst in (network.footpaths or {}).items():
-        pairs = [[idx[o], round(w, 1)] for o, w in lst if o in idx]
+        pairs = [[idx[o], round(w)] for o, w in lst if o in idx]
         if pairs:
             footpaths[str(idx[sid])] = pairs
 
