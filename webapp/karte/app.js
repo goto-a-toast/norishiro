@@ -145,6 +145,20 @@ function setupGeoButton() {
     result.textContent = "位置を しらべています…";
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        // 測位の誤差が大きいとき(パソコンでIPから推定した位置など)は、
+        // ちがう町のカルテを「あなたの家」として出してしまう。500mメッシュの
+        // 話なので、1km以上ずれていたら出さずに正直に伝える(2026-09-24)
+        const acc = pos.coords.accuracy;
+        if (!Number.isFinite(acc) || acc > 1000) {
+          const word = Number.isFinite(acc)
+            ? (acc < 950 ? `約${Math.round(acc / 100) * 100}m` : `約${Math.round(acc / 1000)}km`)
+            : "どのくらいかも分からないほど";
+          result.innerHTML =
+            `<p class="find-error">いまいる場所が ${word} ずれているため、` +
+            `カルテを出せませんでした。パソコンでは おおよその場所しか わからないことが` +
+            `あります。じゅうしょを入れるか、したの「③ 地区から えらぶ」を おためしください。</p>`;
+          return;
+        }
         result.textContent = "";
         showCardForPoint(pos.coords.latitude, pos.coords.longitude);
       },
