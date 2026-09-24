@@ -146,6 +146,12 @@ h1 {
 .geo-candidate { background: #fffdf5; }
 /* GPSで地区をえらんだあと「バス停はこのあと出る」ことを伝える1行 */
 .geo-next-note { font-size: 19px; color: #444444; text-align: left; line-height: 1.5; }
+/* 測位の誤差が大きいときの注意(パソコンのIP推定など。2026-09-24) */
+.geo-coarse {
+  font-size: 19px; text-align: left; line-height: 1.5;
+  color: #7a2d00; background: #fdeee3;
+  border-left: 4px solid var(--color-return); padding: 8px 10px; border-radius: 4px;
+}
 
 /* ---------------- いまの場所から いちばん近いバス停(画面3) ----------------
    目的地に合わせた候補(この行き先へ行くバスが停まる停)だけを出す欄。

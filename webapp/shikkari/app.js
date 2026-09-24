@@ -46,6 +46,29 @@ function geoFixFresh() {
   return g && Date.now() - g.at < 10 * 60 * 1000 ? g : null;
 }
 
+// ---------------- 測位の誤差(coords.accuracy)の合格ライン ----------------
+// パソコンにはGPSが無く、WiFiから推定できないとIPアドレス由来の位置が返って
+// 数km〜数十kmずれる(2026-09-24 開発者報告)。誤差の大きい位置で「いちばん近い
+// バス停」を出すと嘘になるので、用途ごとに必要な精度を決めて足りなければ出さない
+const GEO_ACC_STOP_M = 300;       // バス停をえらぶのに要る精度
+const GEO_ACC_DISTRICT_M = 3000;  // 地区をえらぶのに要る精度
+
+function geoAccOf(fix) {
+  const a = fix && fix.acc;
+  return Number.isFinite(a) ? a : Infinity;
+}
+
+function accWord(m) {
+  if (!Number.isFinite(m)) return "どのくらいかも分からないほど";
+  return m < 950 ? `約${Math.max(100, Math.round(m / 100) * 100)}m` : `約${Math.round(m / 1000)}km`;
+}
+
+// バス停をえらべる精度で測れている位置だけを返す(足りなければ null)
+function geoFixForStops() {
+  const g = geoFixFresh();
+  return g && geoAccOf(g) <= GEO_ACC_STOP_M ? g : null;
+}
+
 // 地区IDから地区を探す(サブ地区=親エントリの sub 配列も対象)
 function findDistrict(did) {
   for (const d of districts) {
@@ -211,8 +234,14 @@ function setupGeoButton() {
     result.textContent = "位置をしらべています…";
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        state.geoFix = { lat: latitude, lon: longitude, at: Date.now() };
+        const { latitude, longitude, accuracy } = pos.coords;
+        state.geoFix = { lat: latitude, lon: longitude, at: Date.now(), acc: accuracy };
+        if (geoAccOf(state.geoFix) > GEO_ACC_DISTRICT_M) {
+          result.textContent =
+            `いまいる場所が${accWord(accuracy)}ずれているため、近くの地区をおしらせできません` +
+            `(パソコンではおおよその場所しか分からないことがあります)。プルダウンからえらんでください`;
+          return;
+        }
         const near = await nearestDistricts(latitude, longitude, 3);
         result.innerHTML = "";
         near.forEach(({ d, dist }) => {
@@ -288,7 +317,7 @@ async function render() {
 // 同名のバス停が遠くの別の町にもあるとき、索引は複数座標([[lat,lon],...])を持つので
 // 一番近いものを使う(2026-07-12 開発者報告「七日町が24km」の修正)
 function stopDistanceM(stopName) {
-  const fix = geoFixFresh();
+  const fix = geoFixForStops();   // 誤差が大きい測位では距離を出さない
   if (!fix || !stopsIndex || !stopsIndex[stopName]) return null;
   const v = stopsIndex[stopName];
   const pts = Array.isArray(v[0]) ? v : [v];
@@ -334,9 +363,13 @@ function measureNearStops() {
   result.textContent = "位置をしらべています…";
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
-      state.geoFix = { lat: pos.coords.latitude, lon: pos.coords.longitude, at: Date.now() };
+      state.geoFix = { lat: pos.coords.latitude, lon: pos.coords.longitude,
+                       at: Date.now(), acc: pos.coords.accuracy };
       await getStopsIndex();
-      result.textContent = "";
+      result.textContent = geoAccOf(state.geoFix) > GEO_ACC_STOP_M
+        ? `いまいる場所が${accWord(pos.coords.accuracy)}ずれているため、バス停の近い順は出せません`
+          + `(パソコンではおおよその場所しか分からないことがあります)`
+        : "";
       render();   // 各方向のバス停チップが「近い順+距離つき」で描き直される
     },
     () => {
