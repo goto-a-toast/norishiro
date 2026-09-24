@@ -287,7 +287,11 @@ async function init() {
   state.dests = dests;
 
   const now = new Date();
-  state.dayType = meta.date_table[todayKey(now)] || "weekday";
+  // きょうがダイヤ判定表(date_table)に無い日=有効期限を過ぎた日。黙って平日ダイヤを
+  // 出すと「きょう乗れる」と誤解されるので、代用であることを画面に出す
+  // (かんたん・しっかりモードのR7と同じ扱い)
+  state.todayType = meta.date_table[todayKey(now)] || null;
+  state.dayType = state.todayType || "weekday";
 
   const netJson = await fetch(`../data/network/${state.dayType}.json`).then((r) => {
     if (!r.ok) throw new Error("ネットワークデータがありません");
@@ -316,9 +320,13 @@ async function init() {
 
   const nStops = Object.keys(state.net.stops).length;
   const nTrips = state.net.patterns.reduce((a, p) => a + p.trips.length, 0);
-  $("engine-note").textContent =
-    `きょうは「${meta.day_types[state.dayType]}」ダイヤ / 停留所${nStops.toLocaleString()}・便${nTrips.toLocaleString()}本を`
-    + `この端末で探索しています（この時刻表は ${meta.valid_until} まで有効）`;
+  $("engine-note").innerHTML = state.todayType
+    ? `きょうは「${esc(meta.day_types[state.dayType])}」ダイヤ / 停留所${nStops.toLocaleString()}・`
+      + `便${nTrips.toLocaleString()}本をこの端末で探索しています`
+      + `<span class="small">（この時刻表は ${esc(meta.valid_until)} まで有効）</span>`
+    : `<span class="warn">※きょうはこの時刻表の対象外の日です（${esc(meta.valid_until)} まで有効）。`
+      + `下の結果は「平日ダイヤ」で代用した目安で、きょう乗れる便ではありません。`
+      + `市の窓口にお問い合わせください</span>`;
   $("app").hidden = false;
 }
 
