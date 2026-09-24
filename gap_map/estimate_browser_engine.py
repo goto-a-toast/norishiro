@@ -52,7 +52,8 @@ def serialize(network) -> dict:
 
     foot = {}
     for sid, lst in (network.footpaths or {}).items():
-        foot[str(idx[sid])] = [[idx[o], round(w, 1)] for o, w in lst if o in idx]
+        # 徒歩分は分に丸めた整数(export_network.py と同じ扱い。理由はそちらのコメント)
+        foot[str(idx[sid])] = [[idx[o], round(w)] for o, w in lst if o in idx]
 
     return {"stops": stops, "routes": list(routes.keys()),
             "patterns": patterns, "footpaths": foot}

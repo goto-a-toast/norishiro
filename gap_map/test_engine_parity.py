@@ -76,8 +76,15 @@ def make_random_network(seed: int):
     footpaths = {}
     for _ in range(rnd.randint(0, n_stops)):
         a, b = rnd.sample(stop_ids, 2)
-        # 徒歩分は .5 を含む値を混ぜる(Pythonの銀行家丸めとJSのMath.roundの違いを炙り出す)
-        w = rnd.choice([0.5, 1.5, 2.5, 3.5, 4.5, 1.2, 2.7, 6.0])
+        # 徒歩分の値は2種類を必ず混ぜる:
+        #  ・.5 ちょうど … Pythonの銀行家丸めとJSのMath.roundの違いを炙り出す
+        #  ・3.49 や 4.55 のような値 … 小数1桁に丸めると分への丸め結果が変わる値。
+        #    2026-09-24の実データ照合で、配布形式が小数1桁に丸めていたために
+        #    ここで1分ずれる不具合が見つかった。乱数の候補がすべて「1桁に丸めても
+        #    変わらない値」だったため、乱数テストは素通りしていた
+        w = rnd.choice([0.5, 1.5, 2.5, 3.5, 4.5, 1.2, 2.7, 6.0,
+                        3.49, 4.55, 2.55, 6.55, 0.55, 1.44, 7.45,
+                        round(rnd.uniform(0.1, 8.0), 2)])
         footpaths.setdefault(a, []).append((b, w))
         footpaths.setdefault(b, []).append((a, w))
 
