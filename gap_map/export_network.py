@@ -82,6 +82,14 @@ def serialize(network, headsigns: dict) -> dict:
 
     return {
         "format": FORMAT_VERSION,
+        # 徒歩モデルと探索の定数も一緒に配る。JS側に数値を書き写すと、config.py を
+        # 変えたときに黙ってズレる(パリティが崩れる)ため、必ずここから読ませる
+        "config": {
+            "walk_speed_m_per_min": config.WALK_SPEED_M_PER_MIN,
+            "walk_detour": config.WALK_DETOUR,
+            "max_walk_to_stop_m": config.MAX_WALK_TO_STOP_M,
+            "min_transfer_min": config.MIN_TRANSFER_MIN,
+        },
         "stop_ids": stop_ids,          # 検算用(画面には出さない)。Python版との突き合わせに使う
         "stops": stops,                # [表示名, 緯度, 経度, のりば番号]
         "routes": list(routes.keys()),

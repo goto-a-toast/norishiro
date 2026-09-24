@@ -51,7 +51,19 @@ function inflateNetwork(data) {
     footpaths[Number(sid)] = pairs.map(([o, w]) => [o, w]);
   }
 
-  return { patterns, stop_routes: stopRoutes, stops, footpaths,
+  // 便ID → 行き先表示・系統・運行主体。エンジンが返す区間(leg)には trip_id しか
+  // 入っていないので、画面はここから引く(エンジン側に表示用の情報を足さないことで、
+  // Python版との照合対象を「探索の結果」だけに保つ)
+  const tripInfo = {};
+  for (const p of patterns) {
+    for (const t of p.trips) {
+      tripInfo[t.trip_id] = { headsign: t.headsign, route_name: t.route_name, op: t.op };
+    }
+  }
+
+  return { patterns, stop_routes: stopRoutes, stops, footpaths, tripInfo,
+           config: data.config ?? { walk_speed_m_per_min: 60, walk_detour: 1.3,
+                                    max_walk_to_stop_m: 800, min_transfer_min: 3 },
            operators: data.operators ?? [] };
 }
 
