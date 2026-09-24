@@ -62,7 +62,10 @@ def serialize(network, headsigns: dict) -> dict:
         trips = []
         for t in pat.trips:
             base = t.departures[0]
-            ri = routes.setdefault(t.route_name, len(routes))
+            # 系統名は全角英数字を半角にそろえる(「Ｎ５２・Ｃ２」→「N52・C2」)。
+            # 既存の時刻表(export_web_data.py)と同じ扱い。全角英数字は禁止語彙
+            # (docs/plan_f4_ui.md §1 翻訳ルールR2)
+            ri = routes.setdefault(ew.normalize_text(t.route_name), len(routes))
             hi = hs_list.setdefault(headsigns.get(t.trip_id, ""), len(hs_list))
             trips.append([base, ri, hi, ew.operator_index(t.trip_id), t.trip_id,
                           [d - base for d in t.departures],

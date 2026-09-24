@@ -55,6 +55,12 @@ function timeWord(min) {
   return `よる${h - 12}:${mm}`;
 }
 
+// 全角英数字を半角にそろえる(「Ｎ５２・Ｃ２」→「N52・C2」)。工場側でも正規化して
+// いるが、古い配布ファイルが残っていても画面が崩れないよう、表示のときにも通す
+function nfkc(s) {
+  return String(s ?? "").normalize("NFKC");
+}
+
 function headsignLabel(hs) {
   const s = String(hs ?? "").trim();
   if (!s) return "";
@@ -168,7 +174,7 @@ function renderTrips(dest, result) {
       const op = Number.isInteger(info.op) ? (state.net.operators[info.op] || {}).name : null;
       steps.push(
         `<li>正面に <span class="headsign">${esc(headsignLabel(info.headsign))}</span> と出ているバスに のる` +
-        `<span class="small">（${esc(r.route_name || "")}${op ? " / " + esc(op) : ""}）</span><br>` +
+        `<span class="small">（${esc(nfkc(r.route_name || ""))}${op ? " / " + esc(op) : ""}）</span><br>` +
         `「${esc(state.net.stops[r.to_stop].name)}」で おりる（${timeWord(r.arrive)}着）</li>`);
       if (i < t.rides.length - 1) {
         const wait = t.rides[i + 1].depart - r.arrive;
