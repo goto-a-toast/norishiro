@@ -1,0 +1,42 @@
+/* いまいる場所からさがす(案D・実験ページ)。
+   かんたんモードほど大きくはしないが、しっかりモードと同じ読みやすさを保つ */
+:root {
+  --text: #1a1a1a; --sub: #555; --blue: #00518e; --orange: #a83200;
+  --border: #ccc; --bg: #fff; --bg-soft: #f4f7fb;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: "BIZ UDPGothic", sans-serif; color: var(--text);
+  background: var(--bg); line-height: 1.6; font-size: 17px;
+}
+@font-face { font-family: "BIZ UDPGothic"; src: url("../fonts/BIZUDPGothic-Regular.ttf"); font-weight: normal; font-display: swap; }
+@font-face { font-family: "BIZ UDPGothic"; src: url("../fonts/BIZUDPGothic-Bold.ttf"); font-weight: bold; font-display: swap; }
+#app { max-width: 760px; margin: 0 auto; padding: 16px 16px 48px; }
+h1 { font-size: 24px; margin: 8px 0; }
+h2 { font-size: 18px; margin: 0 0 10px; padding-left: 8px; border-left: 6px solid var(--blue); }
+.lead { font-size: 15px; color: var(--sub); }
+.lead a { color: var(--blue); }
+.panel { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 14px 0; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+.btn {
+  font-family: inherit; font-size: 16px; padding: 10px 14px; min-height: 44px;
+  background: var(--bg-soft); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;
+}
+.btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: bold; }
+.btn:disabled { opacity: .5; cursor: default; }
+input[type="search"] { flex: 1; min-width: 200px; font-family: inherit; font-size: 16px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; }
+input[type="time"] { font-family: inherit; font-size: 16px; padding: 8px; border: 2px solid var(--border); border-radius: 8px; }
+select { font-family: inherit; font-size: 16px; padding: 10px; width: 100%; border: 2px solid var(--border); border-radius: 8px; }
+.cat-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.cat-tab { flex: 1; min-width: 110px; font-family: inherit; font-size: 15px; padding: 8px; background: #eee; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; }
+.cat-tab[aria-selected="true"] { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: bold; }
+.result { margin-top: 8px; font-size: 15px; }
+.note { font-size: 13px; color: var(--sub); }
+.warn { color: var(--orange); font-weight: bold; }
+.trip { border: 2px solid var(--border); border-left: 8px solid var(--blue); border-radius: 8px; padding: 12px; margin: 10px 0; }
+.trip-head { font-size: 19px; font-weight: bold; }
+.trip-head .time { color: var(--blue); }
+.steps { margin: 8px 0 0; padding-left: 1.2em; }
+.steps li { margin: 4px 0; }
+.headsign { color: var(--blue); font-weight: bold; }
+.small { font-size: 13px; color: var(--sub); }

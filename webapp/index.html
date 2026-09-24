@@ -79,6 +79,9 @@ header .place { font-size: 15px; color: var(--color-sub); margin: 6px 0 0; }
 .card.map .title { color: var(--orange); }
 .card.karte { border-left-color: var(--purple); }
 .card.karte .title { color: var(--purple); }
+/* 案D(ブラウザで計算する方式)の実験ページ。試作であることが分かるよう控えめな色に */
+.card.nearby { border-left-color: #555555; }
+.card.nearby .title { color: #333333; }
 
 /* ---- 作品概要 ---- */
 .about { margin: 30px 0 0; }
@@ -126,7 +129,7 @@ footer a { color: var(--blue); }
   </header>
 
   <!-- 3つの顔への入口(大きく・押しやすく)+モビリティ・カルテ(M8。3つの顔への案内役) -->
-  <nav class="entrances" aria-label="4つの入口">
+  <nav class="entrances" aria-label="入口">
     <a class="card kantan" href="kantan/">
       <span class="emoji" aria-hidden="true">🚌</span>
       <span class="body">
@@ -159,6 +162,14 @@ footer a { color: var(--blue); }
       <span class="body">
         <span class="title">モビリティ・カルテ</span>
         <span class="desc">じゅうしょを入れると、あなたの家の<br>移動のようすが分かります</span>
+      </span>
+      <span class="go" aria-hidden="true">›</span>
+    </a>
+    <a class="card nearby" href="nearby/">
+      <span class="emoji" aria-hidden="true">🧭</span>
+      <span class="body">
+        <span class="title">いまいる場所から さがす</span>
+        <span class="desc">ためしに作った機能。あなたのいる場所を<br>出発点にして、端末の中で経路を計算します</span>
       </span>
       <span class="go" aria-hidden="true">›</span>
     </a>
