@@ -48,10 +48,36 @@ python3 gap_map/download_gtfs.py
 ### ③ 新しい有効期間を確認する
 
 ```
-for d in gtfs_*/; do echo "$d"; head -2 "$d/calendar.txt"; done | head -40
+python3 - <<'EOF'
+import csv, glob
+rows = []
+for d in sorted(glob.glob("gtfs_*/")):
+    if d.startswith("gtfs_archive"): continue
+    try:
+        with open(d + "calendar.txt", encoding="utf-8-sig") as f:
+            ends = [r["end_date"] for r in csv.DictReader(f)]
+        rows.append((min(ends), max(ends), d))
+    except FileNotFoundError:
+        rows.append(("?", "?", d + " (calendar.txt なし)"))
+for mn, mx, d in sorted(rows):
+    print(f"{d:22s} end_date {mn} 〜 {mx}")
+print("\n→ いちばん早い end_date が valid_until になる")
+EOF
 ```
 
-`end_date` がいちばん早いフィードが、全体の有効期限になる。
+**2026-09-24時点の記録**(`yamagata_gtfs_feeds.csv` による。取得し直したら実測で上書きすること):
+
+| フィード | データ有効期限 |
+|---|---|
+| **山形交通** | **2026-09-30** ← いまのボトルネック |
+| **上山市** | **2026-09-30** ← 同上 |
+| 寒河江市 | 2026-10-31 ← 次のボトルネック |
+| 山辺町 | 2027-03-17 |
+| 山形市・天童市・中山町・東根市・南陽市 | 2027-03-31 |
+
+つまり**全部が切れるわけではない**。山形交通・上山市が新しいダイヤを出せば 10-31 まで、
+寒河江市も更新されれば 2027-03-17 まで延びる。
+**応募(2027-01-11)と審査期間をカバーするには、この3つの更新が要る。**
 
 ### ④ 日付の設定を新しい期間に合わせる
 
