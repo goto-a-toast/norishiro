@@ -183,3 +183,90 @@ def test_python_round_is_bankers_rounding():
                               capture_output=True, text=True)
         assert proc.returncode == 0, proc.stderr
         assert json.loads(proc.stdout) == expected, "丸めがPythonと違う(Math.roundを使っていないか)"
+
+
+# ===============================================================
+# 配布形式(export_network.py)を経由しても答えが変わらないことの確認
+# ---------------------------------------------------------------
+# 配布形式では停留所IDが「元のstop_idを文字列順に並べて振った添字」になる。
+# Python版は同着のタイブレークで stop_id の文字列順に走査するので、
+# 「添字の数値順 = 文字列順」という不変条件が崩れると経路の選ばれ方がずれる。
+# ここではその不変条件も含めて、実際に配る形で答えが一致することを確かめる
+# ===============================================================
+WIRE_RUNNER_JS = r"""
+const { raptorSearch, reconstructPath } = require(process.argv[2]);
+const { inflateNetwork } = require(process.argv[3]);
+const cases = JSON.parse(require("fs").readFileSync(process.argv[4], "utf8"));
+const out = [];
+for (const c of cases) {
+  const net = inflateNetwork(c.wire);
+  const res = raptorSearch(net, new Map(c.initial_stops.map(([i, t]) => [i, t])),
+                           c.max_transfers, c.min_transfer_min);
+  const arrivals = {};
+  for (const [sid, v] of res) arrivals[String(sid)] = v.arrival;
+  const paths = {};
+  for (let i = 0; i < c.wire.stops.length; i++) {
+    paths[String(i)] = reconstructPath(res, i).map(
+      (l) => [l.kind, String(l.from_stop), String(l.to_stop), l.depart, l.arrive,
+              l.trip_id ?? null, l.route_name ?? null]);
+  }
+  // 行き先表示・のりばが配布形式から正しく読めているかも1件確認する
+  const sample = net.patterns[0].trips[0];
+  out.push({ arrivals, paths,
+             sample: [sample.headsign, sample.route_name, net.stops[0].platform_code] });
+}
+console.log(JSON.stringify(out));
+"""
+
+
+def test_wire_format_keeps_the_same_answers():
+    """export_network.py の配布形式に詰めて、JS側で展開して探索しても、
+    Python版と到着時刻・経路が完全一致すること"""
+    import export_network as en
+
+    seeds = list(range(1, 121))
+    cases, expected = [], []
+    for seed in seeds:
+        net = make_random_network(seed)
+        rnd = random.Random(seed * 104729)
+        stop_ids = sorted(net.stops)
+        initial = {s: rnd.randint(280, 520)
+                   for s in rnd.sample(stop_ids, rnd.randint(1, min(3, len(stop_ids))))}
+        max_transfers = rnd.choice([0, 1, 2])
+        min_transfer = rnd.choice([0, 3, 5])
+
+        result = tc.raptor_search(net, dict(initial), max_transfers=max_transfers,
+                                  min_transfer_min=min_transfer)
+        # Python側の答えを「添字」に置き換えてから比べる(JS側は添字で返すため)
+        order = {sid: i for i, sid in enumerate(stop_ids)}
+        expected.append({
+            "arrivals": {str(order[s]): v["arrival"] for s, v in result.items()},
+            "paths": {str(order[s]): [[l.kind, str(order[l.from_stop]), str(order[l.to_stop]),
+                                       l.depart, l.arrive, l.trip_id, l.route_name]
+                                      for l in tc.reconstruct_path(result, s)]
+                      for s in stop_ids},
+        })
+        headsigns = {t.trip_id: f"{t.route_name}行き"
+                     for p in net.patterns for t in p.trips}
+        wire = en.serialize(net, headsigns)
+        cases.append({"wire": wire,
+                      "initial_stops": [[order[s], t] for s, t in initial.items()],
+                      "max_transfers": max_transfers, "min_transfer_min": min_transfer})
+
+    with tempfile.TemporaryDirectory() as d:
+        runner = Path(d) / "runner.js"
+        runner.write_text(WIRE_RUNNER_JS, encoding="utf-8")
+        cases_path = Path(d) / "cases.json"
+        cases_path.write_text(json.dumps(cases, ensure_ascii=False), encoding="utf-8")
+        proc = subprocess.run(
+            ["node", str(runner), str(RAPTOR_JS),
+             str(PROJECT_ROOT / "webapp" / "engine" / "network.js"), str(cases_path)],
+            capture_output=True, text=True)
+        assert proc.returncode == 0, f"JS側が異常終了:\n{proc.stderr}"
+        got = json.loads(proc.stdout)
+
+    for seed, exp, act in zip(seeds, expected, got):
+        assert act["arrivals"] == exp["arrivals"], f"seed={seed} 配布形式で到着時刻が食い違う"
+        assert act["paths"] == exp["paths"], f"seed={seed} 配布形式で経路が食い違う"
+    # 行き先表示が配布形式を通って読めていること(R1の主役なので落とせない)
+    assert all(a["sample"][0].endswith("行き") for a in got)

@@ -26,6 +26,15 @@ function pyRound(x) {
   return f % 2 === 0 ? f : f + 1;
 }
 
+// 停留所IDの並べ替え。Python版は sorted() で stop_id の文字列順に走査し、
+// その順序が同着時のタイブレークを決めるので、JS側も同じ順序にそろえる。
+// 配布形式(network.js)では stop_id が数値の添字になっているが、その添字は
+// 「元のstop_idを文字列順に並べて振った」ものなので、数値順に並べれば同じ順序になる
+function cmpStop(a, b) {
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  return cmpStr(String(a), String(b));
+}
+
 // Python の文字列比較(コードポイント順)に合わせる。
 // JSの既定比較はUTF-16の符号単位順で、BMP内(日本語を含む)では同じ結果になるが、
 // 絵文字などの追加面の文字で食い違うため、コードポイントで比べる
@@ -138,7 +147,7 @@ function raptorSearch(network, initialStops, maxTransfers = 0, minTransferMin = 
     const nextBoardingLeg = new Map();
     // 同着のタイブレークを実行ごとに変えないため、走査順を文字列順に固定する
     // (Python版の sorted(newly_by_ride) と同じ理由・同じ順序)
-    for (const stopId of newlyByRide.slice().sort(cmpStr)) {
+    for (const stopId of newlyByRide.slice().sort(cmpStop)) {
       const arrival = bestArrival.get(stopId);
       const rideLeg = bestLeg.get(stopId);
 
@@ -195,5 +204,5 @@ function reconstructPath(result, destStopId) {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { raptorSearch, reconstructPath, pyRound, cmpStr };
+  module.exports = { raptorSearch, reconstructPath, pyRound, cmpStr, cmpStop };
 }

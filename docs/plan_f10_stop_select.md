@@ -370,6 +370,36 @@ F10フル版(296〜423MB)も**両方とも不要になる**。出発点が利用
 | 2 | しっかりモードに「いまいる場所から」を実験的に追加 | 既存の静的表示は残したまま併存 |
 | 3 | かんたんモードへ展開 | 3タップ動線を壊さない設計ができたら |
 
-配るネットワークには、いまの画面が使う情報のうち**行き先表示(headsign)・のりば・
-運行主体が入っていない**(build_network が持っていないため)。段階2の前に足す必要がある。
-数KB程度の増加で収まる見込み。
+#### 段階1の続き(2026-09-24): 配布データに表示用の情報を載せた
+
+`gap_map/export_network.py`(新規)が、探索の材料に加えて画面が要る情報も持たせる:
+
+| 情報 | 取り方 |
+|---|---|
+| **行き先表示(headsign)** | export_web_data.py の `build_headsign_map()` を**そのまま再利用**(trips.txt を読み直す。凍結資産に手を入れない既存の設計を踏襲)。空欄の便は終点名+方面で代替する保険も同じ |
+| **のりば** | `network.stops[...]["platform_code"]`(build_network が既に持っている) |
+| **運行主体** | trip_id の接頭辞から `operator_index()` で添字に。`operators` 配列も meta.json と同じものを同梱 |
+| 便ID・系統名 | 検算とデバッグのために保持 |
+
+同じ文字列を何度も書かないよう、系統名・行き先表示は辞書に外出しして添字で参照する。
+
+**添字の不変条件(パリティの要)**: 停留所の添字は「元のstop_idを文字列順に並べて」振る。
+Python版は同着のタイブレークで stop_id の文字列順に走査するため、
+「添字の数値順 = Python版の文字列順」にしておけばJS側は数値順に並べるだけで一致する。
+`webapp/engine/network.js` がこの前提で展開し、`raptor.js` の `cmpStop()` が数値順に並べる。
+
+この不変条件は `test_engine_parity.py::test_wire_format_keeps_the_same_answers` が守る。
+**わざと添字を逆順に振ってテストが落ちることも確認済み**(テストが空回りしていない証拠)。
+
+#### 実データでの照合(段階1b)
+
+`gap_map/verify_engine_parity.py`(新規。Macで実行)。本物の9フィードのネットワークで、
+出発停留所を多数試して Python版とJS版を突き合わせる:
+
+```
+python3 gap_map/verify_engine_parity.py                 # 平日・出発地60か所
+python3 gap_map/verify_engine_parity.py --origins 200   # もっと厳しく
+python3 gap_map/verify_engine_parity.py --all-day-types # 3ダイヤ種別すべて
+```
+
+1件でも食い違えば、食い違った停留所と両者の値を出して失敗で終わる。
