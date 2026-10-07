@@ -441,6 +441,27 @@ function pickOption(options, stop, timeKey, latest) {
   return best;
 }
 
+// 「すべて」の乗り場を一度に見せるときは、同じバスで同じ時刻に着く行のうち、家を
+// いちばん遅く出られる行だけ残す(2026-10-07 開発者指摘「5:50 山交ビル発・山形駅前で
+// 54分待ちは現実的でない」= 6:35 山形市役所前発でも同じバスで同じ時刻に着ける)。
+// データ工場は「同じ乗り場の中」でしか比べない(かんたんモードや乗り場の絞り込みでは
+// その乗り場の便をすべて見せるため)ので、乗り場をまたいだ比較はここで行う。
+// 時刻を比べて行を選ぶだけで、新しい経路の計算はしない
+function dropSameBusEarlierRows(rows) {
+  const lastBus = (r) => (r.transfer ? `${r.transfer.headsign2}|${r.transfer.route2}` : `${r.headsign}|${r.route}`);
+  const best = new Map();
+  rows.forEach((r, i) => {
+    const key = `${r.arr}|${r.alight}|${lastBus(r)}`;
+    const score = [hmToMin(r.dep) - (r.board_walk_min || 0), -((r.transfer && r.transfer.wait_min) || 0)];
+    const cur = best.get(key);
+    if (!cur || score[0] > cur.score[0] || (score[0] === cur.score[0] && score[1] > cur.score[1])) {
+      best.set(key, { score, i });
+    }
+  });
+  const keep = new Set([...best.values()].map((v) => v.i));
+  return rows.filter((_, i) => keep.has(i));
+}
+
 function directionSection(dir, label, entry, district, facility) {
   const rows = (entry[dir] && entry[dir][state.dayType]) || [];
   const sec = document.createElement("section");
@@ -567,7 +588,7 @@ function directionSection(dir, label, entry, district, facility) {
     }
     shown.sort((a, b) => hmToMin(a.arr) - hmToMin(b.arr));
   } else {
-    shown = rows;
+    shown = isOutbound ? dropSameBusEarlierRows(rows) : rows;   // 帰りは工場で間引き済み
   }
 
   // 詳細テーブル本体

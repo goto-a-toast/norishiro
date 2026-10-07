@@ -771,6 +771,56 @@ def _leave_home_min(row: dict) -> int:
     return hm_to_min(row["dep"]) - (row.get("board_walk_min") or 0)
 
 
+def drop_same_bus_earlier_rows(rows: list) -> list:
+    """行きの便から「同じバスで同じ時刻に着くのに、家を早く出る」だけの行を落とす(2026-10-07
+    開発者指摘「第五地区→徳洲会病院の 5:50 山交ビル発・山形駅前で54分待ちは現実的でない」)。
+    その例では 5:50・6:20(どちらも山交ビル発)・6:35 山形市役所前発の3行が、山形駅前で
+    同じべにちゃんバスに乗って 7:11 に着いていた。
+
+    最後に乗るバス(乗換なら乗換後の便)・降りる停・到着時刻が同じ行 r と s があり、
+    r で乗れる**どの停でも**(主停と board_options の全部)s でも乗れて、しかも家を同じか
+    遅く出られるときだけ r を落とす(同点なら待ちの短い方を残す)。
+    かんたんモード・乗り場の絞り込み・「◯◯から のる」は、便を選んだ停から乗る形に
+    付け替えて見せるため、どの停から見ても使える便が減らないようにこの条件にした
+    (乗り場を1つだけ見て比べると、全件試算で109〜1,552便が、その乗り場の画面から消えた)。
+    乗り場をまたいだ比較は、しっかりモードの「すべて」表示が画面側で行う"""
+    def last_bus(r):
+        t = r.get("transfer")
+        return (t["headsign2"], t["route2"]) if t else (r.get("headsign"), r.get("route"))
+
+    def leaves(r):
+        # 乗れる停 → その停から乗るときに家を出る時刻(0時からの分)
+        opts = r.get("board_options") or [
+            {"stop": r["board"], "dep": r["dep"], "walk_min": r.get("board_walk_min") or 0}]
+        out = {}
+        for o in opts:
+            t = hm_to_min(o["dep"]) - (o.get("walk_min") or 0)
+            out[o["stop"]] = max(out.get(o["stop"], t), t)
+        return out
+
+    def wait(r):
+        return (r.get("transfer") or {}).get("wait_min") or 0
+
+    groups = {}
+    for i, r in enumerate(rows):
+        groups.setdefault((r["arr"], r.get("alight"), last_bus(r)), []).append(i)
+    drop = set()
+    for idxs in groups.values():
+        if len(idxs) < 2:
+            continue
+        lv = {i: leaves(rows[i]) for i in idxs}
+        for i in idxs:
+            for j in idxs:
+                if i == j or j in drop:
+                    continue
+                if all(b in lv[j] and lv[j][b] >= t for b, t in lv[i].items()):
+                    strictly = any(lv[j][b] > t for b, t in lv[i].items())
+                    if strictly or wait(rows[j]) < wait(rows[i]) or (wait(rows[j]) == wait(rows[i]) and j < i):
+                        drop.add(i)
+                        break
+    return [r for i, r in enumerate(rows) if i not in drop]
+
+
 def frontier_rows(rows: list) -> list:
     """door-to-doorの観点でパレート最適(=他のどの便にも完全には負けていない)便だけを返す。
     比較軸は「家を出る時刻(=出発時刻−徒歩分。遅いほど良い)」と「到着時刻(早いほど良い)」。
@@ -991,6 +1041,7 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
     did, fid = district["id"], facility["id"]
     board_walk_min = None
     outbound = {}
+    outbound_all = {}   # 間引く前の行き(おすすめ乗り場の選定に使う)
     inbound = {}
     any_reachable = False
     for day_type in REFERENCE_DATES:
@@ -1007,7 +1058,8 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
         # ない便だけを落とす。単一の乗り場の時刻表は単調(遅く出る便は遅く着く)なので
         # 1本も落ちない(大郷⇔済生館で検証済み)。落ちるのは都心の冗長な並行便だけ
         inbound[day_type] = frontier_rows(rows_in) if len(rows_in) > 1 else rows_in
-        outbound[day_type] = rows_out
+        outbound_all[day_type] = rows_out
+        outbound[day_type] = drop_same_bus_earlier_rows(rows_out)
         if rows_out or rows_in:
             any_reachable = True
 
@@ -1024,7 +1076,9 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
     # 使うかは kantan_boards に書く(その停に便が無い種別だけ別の停を選び直す=2026-07-10
     # の「平日0便」対策を引き継ぐ)。データは約+24MB(圧縮後は1地区あたり+0.1MB程度)
     # ※pick_kantan_board は全乗り場(board_options)を見て選ぶ
-    kantan_board = pick_kantan_board(outbound)
+    # おすすめ乗り場は間引く前の便で選ぶ(間引いた後で選ぶと便数の数え方が変わり、
+    # 梨の木→深町のように徒歩の長い停へ替わる例が出た。2026-10-07 全件比較)
+    kantan_board = pick_kantan_board(outbound_all)
     if kantan_board is not None:
         entry["kantan_board"] = kantan_board
         boards = {}
@@ -1034,7 +1088,7 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
             chosen = kantan_board
             if not _slim_to_board(rows, chosen):
                 # この種別では kantan_board に便が無い(全種別をカバーする停が無いペア)
-                chosen = pick_kantan_board({day_type: rows})
+                chosen = pick_kantan_board({day_type: outbound_all[day_type]})
                 if chosen is not None and not _slim_to_board(rows, chosen):
                     chosen = None   # 想定外の保険: 画面側は絞らずに全便を見せる
             boards[day_type] = chosen

@@ -18,7 +18,7 @@ from export_web_data import (
     frontier_rows, keep_useful_boards, pick_kantan_board,
     make_itinerary, build_entry, collapse_transfer_alternatives,
     board_options_for, alight_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
-    attach_stop_points,
+    attach_stop_points, drop_same_bus_earlier_rows,
 )
 
 R_EARTH_M = 6371000
@@ -227,6 +227,26 @@ def test_pick_kantan_board_keeps_near_stop_that_already_has_enough_trips():
            for h in range(6, 20) for m in (0, 15, 30, 45)]                               # 56便・27分
     outbound = {"weekday": near + hub, "saturday": [], "sunday_holiday": []}
     assert pick_kantan_board(outbound) == "near"
+
+
+def test_drop_same_bus_earlier_rows_keeps_latest_departure_to_same_bus():
+    """同じ乗り場から同じバスで同じ時刻に着くなら、家をいちばん遅く出られる行だけ残す
+    (2026-10-07 第五地区→徳洲会病院: 山形駅前で54分待つ行が出ていた)"""
+    def tr(dep, board, walk, wait):
+        r = row(dep, "07:11", board, walk)
+        r.update(alight="清住公園前", headsign="仙台", route="高速",
+                 transfer={"at": "山形駅前", "wait_min": wait, "headsign2": "山形駅前",
+                           "route2": "西くるりん", "op2": 2})
+        return r
+    rows = [tr("05:50", "山交ビル", 17, 54), tr("06:20", "山交ビル", 17, 24),
+            tr("06:35", "山形市役所前", 17, 4)]
+    other_bus = row("06:40", "07:11", "保健所前", 12)          # 別のバスで同時刻に着く行は残す
+    other_bus.update(alight="清住公園前", headsign="さわやか荘前", route="W70")
+    kept = drop_same_bus_earlier_rows(rows + [other_bus])
+    # 同じ乗り場(山交ビル)の中では遅く出られる 6:20 だけ残る。乗り場の違う 山形市役所前 は
+    # 比べない(かんたんモードで山交ビルしか見せない場合に、使える便を消さないため)
+    assert [(r["dep"], r["board"]) for r in kept] == [
+        ("06:20", "山交ビル"), ("06:35", "山形市役所前"), ("06:40", "保健所前")]
 
 
 def test_pick_kantan_board_none_when_no_outbound():
