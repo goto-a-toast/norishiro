@@ -23,9 +23,11 @@ def test_defaults_match_frozen_yamagata_config():
     assert r["target_date"] == "20260610"
     assert r["gtfs_feed_dirs"][0] == "gtfs_山形交通" and len(r["gtfs_feed_dirs"]) == 9
     assert r["reference_feed"] == "山形交通"
-    assert r["reference_dates"] == {"weekday": "20260610", "saturday": "20260613",
-                                    "sunday_holiday": "20260614"}
-    assert r["date_table_start"] == "20260701" and r["valid_until"] == "20260930"
+    # 時刻表の代表日・有効期限はフィード更新のたびに変わる(docs/runbook_regenerate.md ④)。
+    # 2026-10-07 の再生成時点の値。target_date(凍結数値の分析日)は上で固定したまま
+    assert r["reference_dates"] == {"weekday": "20261014", "saturday": "20261017",
+                                    "sunday_holiday": "20261018"}
+    assert r["date_table_start"] == "20261001" and r["valid_until"] == "20261120"
     assert r["n03_geojson"].endswith("N03-23_06_230101.geojson")
     assert len(r["town_spots"]) == 5           # 山形駅・山形市役所・かみのやま温泉駅・上山市役所・上山城
     assert r["expected"]["total_population"] == 276482

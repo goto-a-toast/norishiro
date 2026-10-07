@@ -33,7 +33,10 @@ def main():
         if name not in rows:
             print(f"※ {name}: yamagata_gtfs_feeds.csv に見つからない。手動確認が必要")
             continue
-        url = rows[name]["ダウンロードURL"]
+        # 一覧CSVのURLには「?uid=◯◯」が付いていて、これがあると作成当時の版に
+        # 固定される(2026-10-07 実測: 失効済みの旧ダイヤが返ってきた)。
+        # 外すと gtfs-data.jp がいま公開中の最新版を返す
+        url = rows[name]["ダウンロードURL"].split("?")[0]
         out_dir = PROJECT_ROOT / f"gtfs_{name}"
         if out_dir.exists() and any(out_dir.iterdir()):
             print(f"{name}: gtfs_{name}/ が既にあるのでスキップ")
