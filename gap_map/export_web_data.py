@@ -1015,28 +1015,30 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
         return {"unreachable": True}
 
     entry = {"board_walk_min": board_walk_min, "outbound": outbound, "inbound": inbound}
-    # slim方式(2026-07-08)+ 乗り場の複数案内(同2026-07-08 開発者指摘): 行きは
-    # 「一番いい乗り場(kantan_board)を通るバス」の便だけに絞る。ただし各便は
-    # board_options(その同じバスが通る家の近くの停一覧)を保持しているので、
-    # かんたんモードは kantan_board を主にしつつ近隣停を併記でき、しっかりモードは
-    # board_options から実在の停を選べる。「1路線に絞る」ことでデータは~20MB台に収まり、
-    # 「地区に停が多いとき1停しか出ない」違和感は board_options で解消する。
-    # ※pick_kantan_board は全乗り場(board_options)を見て選ぶため、必ず絞り込む前に呼ぶ
+    # かんたんモードの「一番いい乗り場」(kantan_board)を選ぶ。
+    # ★2026-10-07 方式変更(開発者採用の案A): 以前は行きの便をこの1停を通る便だけに
+    # 絞って(slim)保存していたが、しっかりモードまで同じ1停しか見えず、第五地区→
+    # 徳洲会病院では諏訪町・山交ビルなど他の乗り場の便が見えなかった。そこで行きは
+    # **全部の乗り場の便を保存**し、かんたんモードは画面側でこの停の便だけを選ぶ
+    # (「◯◯から のる」と同じ付け替え=新しい計算はしない)。どのダイヤ種別でどの停を
+    # 使うかは kantan_boards に書く(その停に便が無い種別だけ別の停を選び直す=2026-07-10
+    # の「平日0便」対策を引き継ぐ)。データは約+24MB(圧縮後は1地区あたり+0.1MB程度)
+    # ※pick_kantan_board は全乗り場(board_options)を見て選ぶ
     kantan_board = pick_kantan_board(outbound)
     if kantan_board is not None:
         entry["kantan_board"] = kantan_board
+        boards = {}
         for day_type, rows in outbound.items():
-            slimmed = _slim_to_board(rows, kantan_board)
-            if rows and not slimmed:
-                # ★2026-07-10 バグ修正: kantan_board がこのダイヤ種別では1本も
-                # 便を持たない(全種別をカバーする停が存在しないペア)。
-                # この種別だけ停を選び直して絞り込む。旧実装はここで空にして
-                # しまい「平日だけ0便」の誤った時刻表を出していた
-                fallback = pick_kantan_board({day_type: rows})
-                slimmed = _slim_to_board(rows, fallback) if fallback else rows
-                if not slimmed:   # 想定外の保険(選び直した停でも空なら絞らない)
-                    slimmed = rows
-            outbound[day_type] = slimmed
+            if not rows:
+                continue
+            chosen = kantan_board
+            if not _slim_to_board(rows, chosen):
+                # この種別では kantan_board に便が無い(全種別をカバーする停が無いペア)
+                chosen = pick_kantan_board({day_type: rows})
+                if chosen is not None and not _slim_to_board(rows, chosen):
+                    chosen = None   # 想定外の保険: 画面側は絞らずに全便を見せる
+            boards[day_type] = chosen
+        entry["kantan_boards"] = boards
     direct_dist_m = haversine_m(district["lat"], district["lon"], facility["lat"], facility["lon"])
     if direct_dist_m <= config.MAX_WALK_TO_STOP_M:
         entry["direct_walk_min"] = round(walk_minutes(direct_dist_m))
@@ -1048,6 +1050,17 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
 # 徒歩が短い(=より近く、なじみのある)停を優先する。開発者の当初の要望
 # 「普段使わない停を乗り場に出さないで」と「最寄り≠最短」の折り合いをとるための値
 KANTAN_SWITCH_GAIN_MIN = 5
+
+# かんたんモードの乗り場候補に残す便の数の下限(候補の中で便が最多の停に対する割合)。
+# 速さと近さが同じくらいでも、便が半分未満の停は「ふだん使える停」とみなさない
+# (2026-10-07 第五地区→徳洲会病院: 6便の停が36便の停に勝っていた)
+KANTAN_MIN_TRIP_SHARE = 0.5
+# 1ダイヤ種別あたりこの便数以上あれば、最多の停より少なくても「ふだん使える停」とみなす。
+# 2026-10-07 に全組み合わせで試算して決めた(2/3/4/6/8/12便を比較)。3便だと乗り場が
+# 変わるのは51組・徒歩が10分以上のびるのは4組だけで、その4組はどれも元の停が3ダイヤ
+# 合計1〜7便しかない(例: 印役寺前3便→双月町57便)。6便以上にすると、1日数便ある近い停まで
+# 遠い拠点に替わり、徒歩10分以上悪化が25組を超える
+KANTAN_FREQUENT_TRIPS = 3
 
 
 def pick_kantan_board(outbound: dict):
@@ -1064,6 +1077,13 @@ def pick_kantan_board(outbound: dict):
     walk = {}      # board -> 徒歩分
     coverage = {}  # board -> その停を通る便があるダイヤ種別の集合(2026-07-10 バグ修正)
     served = {day_type for day_type, rows in outbound.items() if rows}
+    # その停を通る便の数(速さ比べで残った便ではなく、全部の便で数える。2026-10-07)
+    n_trips = {}
+    for rows in outbound.values():
+        for r in rows:
+            opts = r.get("board_options") or [{"stop": r["board"]}]
+            for b in {o["stop"] for o in opts}:
+                n_trips[b] = n_trips.get(b, 0) + 1
     for day_type, rows in outbound.items():
         for r in frontier_rows(rows):
             arr = hm_to_min(r["arr"])
@@ -1091,6 +1111,23 @@ def pick_kantan_board(outbound: dict):
     # build_entry 側の種別別フォールバックが受け持つ
     full_coverage = {b for b, c in coverage.items() if c >= served}
     candidates = {b: t for b, t in totals.items() if b in full_coverage} or totals
+
+    # ★2026-10-07 便の少ない停を外す(開発者指摘「第五地区→徳洲会病院で、十小前の方が
+    # 近いのになぜ山形交通本社前か」)。従来は速さ(中央値)と徒歩だけで選んでいたため、
+    # 1日6便の十日町角(K11)が「保健所前より5分遅いだけ・3分近い」として選ばれ、
+    # 36便ある保健所前(W70/W71 → 病院まで徒歩3分の第十小学校前)の便がかんたんモードから
+    # 全部消えていた。便の数(その停を通る全部の便)が最多の候補の KANTAN_MIN_TRIP_SHARE
+    # 未満で、しかも1ダイヤ種別あたり KANTAN_FREQUENT_TRIPS 便に届かない停を外す。
+    # 相対の基準だけだと、便が十分ある徒歩1分の停まで「最多(都心の拠点)の半分未満」として
+    # 外し、徒歩17分の停に替えてしまった(試算で45組が徒歩10分以上悪化)ため、絶対数も見る
+    most = max(n_trips.get(b, 0) for b in candidates)
+    n_types = max(1, len(served))
+
+    def too_few(b):
+        n = n_trips.get(b, 0)
+        return n < most * KANTAN_MIN_TRIP_SHARE and n / n_types < KANTAN_FREQUENT_TRIPS
+
+    candidates = {b: t for b, t in candidates.items() if not too_few(b)} or candidates
 
     typical = {b: statistics.median(v) for b, v in candidates.items()}
     fastest_time = min(typical.values())
