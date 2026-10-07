@@ -416,6 +416,17 @@ h1 {
   color: var(--color-outbound);
 }
 .ride-card .walk-note { font-size: 24px; }
+/* 曜日によって乗り場が違うときの注意(2026-10-07)。目立つが警告色にはしない */
+.ride-card .day-board-note {
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 1.45;
+  color: #5a3d00;
+  background: #fff6dd;
+  border-left: 4px solid #d9a400;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
 /* バス停の場所を地図アプリで開くリンク(2026-10-07)。指で押しやすい大きさの枠にする
    (高齢の利用者向けに、ただの下線リンクではなくボタンに見える形) */
 .map-link-row { margin-top: 8px; }

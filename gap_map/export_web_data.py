@@ -203,7 +203,15 @@ OPERATOR_CONTACT = load_operator_contact()
 
 # フィード名 → operators配列の添字(便レコードの "op"/"op2" はこの添字で運行主体を指す。
 # 文字列を毎行に持たせるよりJSONが小さく済む)。順序は config.GTFS_FEED_DIRS で固定
-FEED_NAMES = [d.name.removeprefix("gtfs_") for d in config.GTFS_FEED_DIRS]
+# 特定の行き先専用のフィード(region.py の restricted_feeds。例: 済生病院の無料シャトル)。
+# operators 配列では通常の9フィードの後ろに並べる(既存の添字=op の値を変えないため)
+RESTRICTED_FEEDS = [
+    {"dir": PROJECT_ROOT / f["dir"], "facilities": set(f["facilities"])}
+    for f in REGION.get("restricted_feeds", [])
+    if (PROJECT_ROOT / f["dir"] / "stops.txt").exists()
+]
+ALL_FEED_DIRS = list(config.GTFS_FEED_DIRS) + [f["dir"] for f in RESTRICTED_FEEDS]
+FEED_NAMES = [d.name.removeprefix("gtfs_") for d in ALL_FEED_DIRS]
 FEED_INDEX = {name: i for i, name in enumerate(FEED_NAMES)}
 
 
@@ -214,12 +222,31 @@ def operator_index(trip_id: str):
     return FEED_INDEX.get(feed)
 
 
+def build_closed_dates(date_table: dict) -> dict:
+    """行き先専用フィード(済生病院のシャトル等)が、date_table では走るダイヤ種別の日なのに
+    運休する日を {operators の添字(文字列): ["YYYY-MM-DD", ...]} で返す(2026-10-07)。
+    例: 10/15 は平日ダイヤの日だが、シャトルは病院の創立記念日で運休。通常の9フィードの
+    運休・祝日は date_table のダイヤ種別で表せるので対象外。画面はその日だけ該当する
+    運行主体の便を外す(かんたんモードはおすすめの乗り場を全曜日共通の停に戻す)"""
+    out = {}
+    for rf in RESTRICTED_FEEDS:
+        path = rf["dir"] / "calendar_dates.txt"
+        if not path.exists():
+            continue
+        cd = pd.read_csv(path, dtype=str)
+        days = sorted({f"{d[:4]}-{d[4:6]}-{d[6:]}" for d in cd.loc[cd["exception_type"] == "2", "date"]})
+        days = [d for d in days if date_table.get(d) == "weekday"]   # ダイヤ上は走る日だけ
+        if days:
+            out[str(FEED_INDEX[rf["dir"].name])] = days
+    return out
+
+
 def build_operators() -> list:
     """meta.json の operators 配列を作る。表示名・窓口・電話は OPERATOR_CONTACT
     (人間が確認して記入)を正とし、agency.txt の正式名称・電話はログに出して
     突き合わせ確認の材料にする"""
     operators = []
-    for feed_dir, feed in zip(config.GTFS_FEED_DIRS, FEED_NAMES):
+    for feed_dir, feed in zip(ALL_FEED_DIRS, FEED_NAMES):
         contact = OPERATOR_CONTACT.get(feed, {"name": feed, "desk": None, "tel": None})
         agency_path = feed_dir / "agency.txt"
         if agency_path.exists():
@@ -341,7 +368,7 @@ def load_raw_headsigns() -> dict:
     global _RAW_HEADSIGNS
     if _RAW_HEADSIGNS is None:
         _RAW_HEADSIGNS = {}
-        for feed_dir in config.GTFS_FEED_DIRS:
+        for feed_dir in ALL_FEED_DIRS:
             trips = pd.read_csv(feed_dir / "trips.txt", dtype=str)
             if "trip_headsign" not in trips.columns:
                 continue
@@ -410,6 +437,10 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         walk_between = next(
             (leg for leg in path if leg.kind == "walk" and leg.to_stop == transfer_stop_id), None)
         arrive_at_transfer = walk_between.arrive if walk_between else first.arrive
+        # 1本目を降りる停と2本目に乗る停の名前が違う(=歩いて乗り換える)ときは、降りる停の
+        # 名前も持たせる(2026-10-07 済生病院シャトル: 「山形駅前」で降りて交番前のシャトル
+        # 乗り場まで歩くのに、画面が「シャトル乗り場で おりて」と出していた)
+        first_alight_name = network.stops.get(first.to_stop, {}).get("name")
         transfer = {
             "at": network.stops[transfer_stop_id]["name"],
             "wait_min": round(second.depart - arrive_at_transfer),
@@ -417,6 +448,8 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
             "route2": normalize_text(second.route_name),
             "op2": operator_index(second.trip_id),    # のりかえ後の便の運行主体(meta.operatorsの添字)
         }
+        if first_alight_name and first_alight_name != transfer["at"]:
+            transfer["off"] = first_alight_name       # 1本目を降りる停(at まで歩いて乗り換える)
 
     total_min = final_arrival - dep
     ride_min = round(total_min - (transfer["wait_min"] if transfer else 0))
@@ -1086,8 +1119,19 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
             if not rows:
                 continue
             chosen = kantan_board
+            # ★2026-10-07 曜日ごとに選ぶ(開発者採用「平日はシャトル、土日祝はシャトルなし」)。
+            # その曜日の便だけで選んだ停が、全曜日共通の停より明らかに速い(KANTAN_SWITCH_GAIN_MIN
+            # 超)なら、その曜日だけ替える。平日しか走らないバス(済生病院のシャトル・市の
+            # コミュニティバス等)は「全曜日に便がある停を優先」の決まりで選ばれなかったため。
+            # 画面は、曜日で乗り場が違うことをカードに1行で伝える(kantan/app.js)
+            day_best = pick_kantan_board({day_type: outbound_all[day_type]})
+            if day_best is not None and day_best != chosen:
+                t_cur = _board_typical(outbound_all[day_type], chosen)
+                t_day = _board_typical(outbound_all[day_type], day_best)
+                if t_cur is None or (t_day is not None and t_cur - t_day > KANTAN_SWITCH_GAIN_MIN):
+                    chosen = day_best
             if not _slim_to_board(rows, chosen):
-                # この種別では kantan_board に便が無い(全種別をカバーする停が無いペア)
+                # この種別では選んだ停に便が無い(全種別をカバーする停が無いペア)
                 chosen = pick_kantan_board({day_type: outbound_all[day_type]})
                 if chosen is not None and not _slim_to_board(rows, chosen):
                     chosen = None   # 想定外の保険: 画面側は絞らずに全便を見せる
@@ -1115,6 +1159,20 @@ KANTAN_MIN_TRIP_SHARE = 0.5
 # 合計1〜7便しかない(例: 印役寺前3便→双月町57便)。6便以上にすると、1日数便ある近い停まで
 # 遠い拠点に替わり、徒歩10分以上悪化が25組を超える
 KANTAN_FREQUENT_TRIPS = 3
+
+
+def _board_typical(rows: list, board: str):
+    """その停から乗るときの「ふだんの所要時間」(家を出てから着くまで。パレート最適な便の
+    中央値)。pick_kantan_board と同じ物差し。その停に便が無ければ None"""
+    v = []
+    for r in frontier_rows(rows):
+        opts = r.get("board_options") or [
+            {"stop": r["board"], "dep": r["dep"], "walk_min": r.get("board_walk_min") or 0}]
+        for o in opts:
+            if o["stop"] == board:
+                v.append(hm_to_min(r["arr"]) - (hm_to_min(o["dep"]) - (o.get("walk_min") or 0)))
+                break
+    return statistics.median(v) if v else None
 
 
 def pick_kantan_board(outbound: dict):
@@ -1214,6 +1272,8 @@ def collect_stop_names(to: dict, used: set):
                     used.add(r["alight"])
                     if r.get("transfer"):
                         used.add(r["transfer"]["at"])
+                        if r["transfer"].get("off"):
+                            used.add(r["transfer"]["off"])
                     for opts in (r.get("board_options"), r.get("alight_options")):
                         for o in opts or []:
                             used.add(o["stop"])
@@ -1302,6 +1362,7 @@ def main():
         "date_table": date_table,
         "demand_phone": DEMAND_PHONE,
         "operators": build_operators(),
+        "closed_dates": build_closed_dates(date_table),
     }
     WEBAPP_DATA_DIR.mkdir(parents=True, exist_ok=True)
     # JSONは整形せずコンパクトに書く(空白・改行を省く。slim方式の一部。
@@ -1332,6 +1393,24 @@ def main():
         print(f"  地区{len(districts)}件×行き先{len(destinations)}件を計算中...")
         per_daytype[day_type] = compute_day_type_schedules(network, districts, destinations,
                                                             stop_index, headsigns)
+        # 行き先専用のフィード(済生病院のシャトル等)は、その行き先への行き・帰りだけを
+        # 「通常のフィード+専用フィード」のネットワークで計算し直して差し替える。
+        # 専用の便は「乗り場→施設」「施設→降り場」の2停だけなので、路線バスからの
+        # 乗り継ぎ(例: 路線バスで山交ビル→シャトルで病院)も、帰りの乗り継ぎも計算される
+        for rf in RESTRICTED_FEEDS:
+            rf_dests = [f for f in destinations if f["id"] in rf["facilities"]]
+            if not rf_dests:
+                continue
+            print(f"  [{rf['dir'].name}] 専用フィード入りで {len(rf_dests)}件の行き先を計算し直し中...")
+            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            networks[f"{day_type}+{rf['dir'].name}"] = net_rf
+            res = compute_day_type_schedules(net_rf, districts, rf_dests, StopIndex(net_rf),
+                                             build_headsign_map(net_rf))
+            for f in rf_dests:
+                for did in per_daytype[day_type]["outbound"]:
+                    per_daytype[day_type]["outbound"][did][f["id"]] = \
+                        res["outbound"].get(did, {}).get(f["id"], [])
+                per_daytype[day_type]["inbound"][f["id"]] = res["inbound"].get(f["id"], {})
         n_out = sum(len(v) for d in per_daytype[day_type]["outbound"].values() for v in d.values())
         n_in = sum(len(v) for d in per_daytype[day_type]["inbound"].values() for v in d.values())
         print(f"  → outbound便数合計: {n_out} / inbound便数合計: {n_in}")

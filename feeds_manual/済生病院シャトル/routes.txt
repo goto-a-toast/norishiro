@@ -1,0 +1,2 @@
+route_id,agency_id,route_short_name,route_long_name,route_type
+shuttle,saisei,シャトル,済生病院 無料シャトルバス(10/15・年末年始は運休),3

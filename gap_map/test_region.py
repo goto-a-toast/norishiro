@@ -31,6 +31,8 @@ def test_defaults_match_frozen_yamagata_config():
     assert r["n03_geojson"].endswith("N03-23_06_230101.geojson")
     assert len(r["town_spots"]) == 5           # 山形駅・山形市役所・かみのやま温泉駅・上山市役所・上山城
     assert r["expected"]["total_population"] == 276482
+    # 行き先専用フィード(2026-10-07): 済生病院(f20)の無料シャトルだけ
+    assert r["restricted_feeds"] == [{"dir": "feeds_manual/済生病院シャトル", "facilities": ["f20"]}]
     assert r["expected"]["gap_population"] == 15418
     # R2: 地区分け方式の既定値(従来のハードコードと同じ組み合わせ)
     assert r["district_methods"] == {"山形市": "a27_polygon", "上山市": "p29_nearest_school"}
@@ -63,6 +65,7 @@ def test_region_json_overrides_only_written_keys(tmp_path):
     assert r["reference_feed"] == "天童市"
     assert r["target_date"] == "20260610"        # 書いていないキーは既定値のまま
     assert r["expected"] == {}                    # 山形の確定値は引き継がない
+    assert r["restricted_feeds"] == []            # 済生病院のシャトルも引き継がない
 
 
 def test_region_expected_none_when_not_set(tmp_path, monkeypatch):
@@ -90,7 +93,8 @@ def test_master_csvs_reproduce_frozen_dicts_exactly():
          "districts": "上山市のその他全地区"},
     ]
     ops = load_operator_contact()
-    assert len(ops) == 9
+    assert len(ops) == 10                       # 9フィード+済生病院の無料シャトル(2026-10-07)
+    assert ops["済生病院シャトル"]["tel"] == "023-682-1111"
     assert ops["山形交通"] == {"name": "山交バス", "desk": "案内センター", "tel": "023-632-7272"}
     assert ops["天童市"] == {"name": "天童市営バス", "desk": "天童市役所", "tel": None}
     assert ops["南陽市"]["tel"] is None          # 未確認の電話は未記入(None)のまま
