@@ -263,8 +263,12 @@ function stopPoint(name, idx, ref) {
   return best;
 }
 
-function stopMapLinkHtml(name, ref) {
-  const pt = stopPoint(name, s3.mapIndex, ref);
+// exactIdx: 時刻表の便が持つのりばの番号(bp/ap)。データ工場が実際に乗る/降りるのりばの
+// 座標を入れているので、七日町(のりば6か所・約205m)のような停でも乗る場所を指せる。
+// 番号が無い(古いデータ/利用者が別の停を選んだ)ときだけ停名の索引で近いものを探す
+function stopMapLinkHtml(name, ref, exactIdx) {
+  const exact = Number.isInteger(exactIdx) && s3.pts ? s3.pts[exactIdx] : null;
+  const pt = exact || stopPoint(name, s3.mapIndex, ref);
   if (!pt) return "";   // 座標が無い停(データ再生成前など)ではリンクを出さない
   const url = `https://www.google.com/maps/search/?api=1&query=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
   return `<a class="map-link" href="${url}" target="_blank" rel="noopener">` +
@@ -526,6 +530,7 @@ const s3 = {
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
   mapIndex: null,    // 同じ索引。地図リンク用に、測位の有無にかかわらず読み込む
+  pts: null,         // 時刻表ファイルの「のりばの座標表」。便の bp/ap がこの番号を指す
   boardPick: null,   // 利用者が「いまの場所から近いバス停」で選んだ乗車停名
                      // (null = データ工場のおすすめ=kantan_board のまま。F10-L)
   seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
@@ -576,6 +581,8 @@ function rowsFromBoard(rows, stop) {
     out.push({
       ...r,
       board: opt.stop,
+      // 乗るのりばが変わったら工場の座標は使わない(停名の索引で探す)。同じ停・同じ発車なら元のまま
+      bp: opt.stop === r.board && opt.dep === r.dep ? r.bp : undefined,
       dep: opt.dep,
       board_walk_min: opt.walk_min != null ? opt.walk_min : r.board_walk_min,
       ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait,
@@ -635,6 +642,7 @@ async function renderScreen3(did, fid) {
   const timetable = await getTimetable(did);
   if (seq !== s3.seq) return;
   const entry = timetable.to[fid];
+  s3.pts = Array.isArray(timetable.pts) ? timetable.pts : null;
 
   // 行けない施設(画面2ではタップできないが、URL直叩きで来る場合がある)
   const dirBlocks = document.querySelectorAll("#screen3 .direction-block");
@@ -1085,7 +1093,7 @@ function rideStepsHtml(r, dir) {
     }
   }
   const boardRef = dir === "outbound" ? (preciseFix || s3.district) : s3.facility;
-  const mapLink = stopMapLinkHtml(r.board, boardRef);
+  const mapLink = stopMapLinkHtml(r.board, boardRef, r.bp);
   steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}${geoNote}` +
     (mapLink ? `<div class="map-link-row">${mapLink}</div>` : ""));
 

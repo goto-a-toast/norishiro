@@ -433,6 +433,13 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
     alight_stop_id = ride_legs[-1].to_stop
     alight_stop_name = network.stops.get(alight_stop_id, {}).get("name") or alight_place
     return {
+        # 実際に乗る/降りる**のりば**の座標(2026-10-07 地図ボタン用・開発者採用の案A)。
+        # 停名単位の stops_index.json では、七日町(のりば6か所・約205m)のように同じ町の
+        # 中でのりばが分かれる停を1点にまとめてしまうため、便ごとに本物の座標を持たせる。
+        # ファイルに書く直前に attach_stop_points() が地区ごとの座標表 "pts" への
+        # 番号("bp"/"ap")に置き換える(座標を毎行書くより小さい)
+        "board_ll": stop_latlon(network, first.from_stop),
+        "alight_ll": stop_latlon(network, alight_stop_id),
         "dep": fmt_hm(dep),
         "arr": fmt_hm(final_arrival),
         "board": board_name,
@@ -453,6 +460,45 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         # alight もこの中の1つ。行きoutboundはNone(降車=施設で1か所のため)
         "alight_options": alight_options,
     }
+
+
+def stop_latlon(network: transit_core.Network, stop_id) -> list | None:
+    """のりば(stop_id)の座標を [緯度, 経度](小数5桁=約1m)で返す。無ければ None"""
+    info = network.stops.get(stop_id)
+    if not info or info.get("lat") is None or info.get("lon") is None:
+        return None
+    return [round(float(info["lat"]), 5), round(float(info["lon"]), 5)]
+
+
+def attach_stop_points(to: dict) -> list:
+    """地区1ファイル分の全便について、make_itinerary が付けた board_ll/alight_ll を
+    ファイル共通の座標表への番号 bp/ap に置き換え、その座標表(pts)を返す。
+    同じ座標は1回だけ表に載る。座標が無い便は bp/ap を付けない(画面側は停名の
+    索引 stops_index.json にフォールバックする)。番号は出現順なので決定的"""
+    pts, index_of = [], {}
+
+    def ref(ll):
+        if ll is None:
+            return None
+        key = (ll[0], ll[1])
+        if key not in index_of:
+            index_of[key] = len(pts)
+            pts.append([ll[0], ll[1]])
+        return index_of[key]
+
+    for entry in to.values():
+        for direction in ("outbound", "inbound"):
+            for rows in (entry.get(direction) or {}).values():
+                for r in rows:
+                    b = ref(r.pop("board_ll", None))
+                    a = ref(r.pop("alight_ll", None))
+                    for o in r.get("board_options") or []:
+                        o.pop("_ll", None)   # 一時フィールド。JSONには書かない
+                    if b is not None:
+                        r["bp"] = b
+                    if a is not None:
+                        r["ap"] = a
+    return pts
 
 
 # board_options に載せる乗車停の上限(家の近い順)。都心の地区は徒歩圏に停が非常に多く
@@ -479,6 +525,9 @@ def board_options_for(network: transit_core.Network, pattern, trip,
                 "stop": network.stops[sid]["name"],
                 "dep": fmt_hm(trip.departures[p]),
                 "walk_min": round(near_home[sid]),
+                # のりばの座標(一時フィールド)。_slim_to_board が主停を付け替えるとき
+                # board_ll も一緒に替えるために使い、attach_stop_points が書き出し前に消す
+                "_ll": stop_latlon(network, sid),
             })
     opts.sort(key=lambda o: o["walk_min"])
     return opts[:MAX_BOARD_OPTIONS]
@@ -916,6 +965,9 @@ def _slim_to_board(rows: list, kantan_board: str) -> list:
             continue   # この便は featured 停に停まらない(別路線)→ slimでは落とす
         r = dict(r)
         r["board"] = kantan_board
+        # 乗るのりばも付け替える(地図ボタンが元の停を指さないように。2026-10-07)。
+        # 座標を持たない古い候補なら None にして、画面側の停名索引に任せる
+        r["board_ll"] = match.get("_ll")
         r["dep"] = match["dep"]
         r["board_walk_min"] = match["walk_min"]
         # 主停を変えたので乗車時間も合わせ直す(到着−この停の発車−乗換待ち)
@@ -1200,7 +1252,8 @@ def main():
             if entry.get("unreachable"):
                 n_unreachable += 1
         collect_stop_names(to, used_stop_names)
-        text = json.dumps({"district": d["id"], "to": to}, ensure_ascii=False,
+        pts = attach_stop_points(to)   # のりばの座標表(便の bp/ap が指す)
+        text = json.dumps({"district": d["id"], "pts": pts, "to": to}, ensure_ascii=False,
                           separators=(",", ":"))
         (TIMETABLES_DIR / f"{d['id']}.json").write_text(text, encoding="utf-8")
         size = len(text.encode("utf-8"))
