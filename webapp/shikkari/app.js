@@ -9,6 +9,12 @@
 //  - 「乗車バス停での絞り込み」= 地区JSONに入っている各便の乗車停を使った
 //    クライアント側フィルタ(新規計算なし。plan_final_sprint.md §5の要点)
 
+// データ(JSON)は毎回サーバーに「変わっていないか」を確かめてから使う(変わって
+// いなければ通信はごく小さい)。公開サイトはファイルを最大10分ブラウザに保存させるため、
+// 再生成の直後に古い時刻表が使われ、新しい画面と食い違うことがあった(2026-10-07 実例:
+// 地図ボタンがのりばでなく停の真ん中を指した)
+const DATA_FETCH = { cache: "no-cache" };
+
 let districts = [];
 let destinations = [];
 let meta = null;
@@ -29,7 +35,7 @@ let pts = null;          // 時刻表ファイルの「のりばの座標表」�
 
 async function getMeshIndex() {
   if (meshIndexCache === undefined) {
-    meshIndexCache = await fetch("../data/mesh_index.json")
+    meshIndexCache = await fetch("../data/mesh_index.json", DATA_FETCH)
       .then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return meshIndexCache;
@@ -37,7 +43,7 @@ async function getMeshIndex() {
 
 async function getStopsIndex() {
   if (stopsIndexCache === undefined) {
-    stopsIndexCache = await fetch("../data/stops_index.json")
+    stopsIndexCache = await fetch("../data/stops_index.json", DATA_FETCH)
       .then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return stopsIndexCache;
@@ -141,7 +147,7 @@ function todayKey() {
 
 async function getTimetable(did) {
   if (!timetableCache[did]) {
-    timetableCache[did] = await fetch(`../data/timetables/${did}.json`).then((r) => r.json());
+    timetableCache[did] = await fetch(`../data/timetables/${did}.json`, DATA_FETCH).then((r) => r.json());
   }
   return timetableCache[did];
 }
@@ -736,12 +742,12 @@ async function route() {
 
 async function init() {
   [districts, destinations, meta] = await Promise.all([
-    fetch("../data/districts.json").then((r) => r.json()),
-    fetch("../data/destinations.json").then((r) => r.json()),
-    fetch("../data/meta.json").then((r) => r.json()),
+    fetch("../data/districts.json", DATA_FETCH).then((r) => r.json()),
+    fetch("../data/destinations.json", DATA_FETCH).then((r) => r.json()),
+    fetch("../data/meta.json", DATA_FETCH).then((r) => r.json()),
   ]);
   // 交通空白のようす(任意)。ファイルが無い/未生成でも動くよう、失敗は握りつぶす
-  districtGap = await fetch("../data/district_gap.json")
+  districtGap = await fetch("../data/district_gap.json", DATA_FETCH)
     .then((r) => (r.ok ? r.json() : {}))
     .catch(() => ({}));
   // 初期のダイヤ種別 = きょう(有効期間外なら平日)
