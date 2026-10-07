@@ -80,7 +80,7 @@ def choose_feed(keyword: str) -> pd.Series:
         print(hits[["事業者名", "フィード名"]].to_string(index=False))
         raise SystemExit(1)
     row = hits.iloc[0]
-    print(f"フィード: {row['フィード名']}({row['事業者名']}) 有効期限 {row['データ有効期限']}")
+    print(f"フィード: {row['フィード名']}({row['事業者名']})")
     return row
 
 
@@ -134,12 +134,18 @@ def find_stop(stops: pd.DataFrame, keyword: str) -> tuple[str, set]:
 
 
 # ===============================================================
-# 「曜日タイプ」ごとのグループ化
+# ダイヤ(=1ページ)の決め方: 実際の運行日から数える
 # ===============================================================
-# 注意: service_idは「平日」「毎日」「月〜土」のように重なって運行することがある。
-# そのため service_id 単位ではなく、「その曜日に実際に走る便の集合」が同じ曜日を
-# 1つのダイヤ(=1ページ)としてまとめる。
-# 例: 月〜金の顔ぶれが同じ → 「平日」ページ(平日+毎日+月〜土 の全便が載る)
+# 以前は calendar.txt の曜日列だけでページを分けていた。しかし事業者によっては
+# 「曜日列はほぼ空で、実際の運行日は calendar_dates.txt に書く」形式のフィードがある
+# (2026-10 の山交バス新版。曜日列のままだと「月曜」と「火〜金曜」に分かれ、
+# しかも「8月1日〜10月25日は臨時ダイヤ」という誤った注記が出た)。
+# そこで、期間内の1日ずつについて「この2つのバス停を通る便のうち、その日に
+# 走るもの」を数え、走る便がまったく同じ日を1つのダイヤにまとめる。
+# この2停に関係しない便の違い(他路線の季節便など)はページを増やさない。
+
+DAY_CATEGORIES = ["平日", "土曜", "日曜・祝日"]   # ページの並び順
+
 
 def days_label(days: list[int]) -> str:
     """曜日番号のリスト(0=月〜6=日)を「平日」「土曜」等のラベルにする"""
@@ -155,95 +161,129 @@ def days_label(days: list[int]) -> str:
     return table.get(t, "・".join(DAY_KANJI[w] for w in days) + "曜")
 
 
-def build_daytype_groups(calendar: pd.DataFrame):
-    """calendar.txt から曜日ごとの運行 service_id 集合を求め、
-    同じ集合になる曜日をまとめてグループ化する。
-    返り値: (グループのリスト, 曜日ごとの通常運行集合 normal[0〜6])"""
-    svc_days = {
-        r["service_id"]: [int(r[c] == "1") for c in DAY_COLS]
-        for _, r in calendar.iterrows()
-    }
-    # normal[w] = 曜日wに走る service_id の集合(月=0 … 日=6)
-    normal = [frozenset(s for s, days in svc_days.items() if days[w])
-              for w in range(7)]
-
-    daysets: dict[frozenset, list[int]] = {}
-    for w in range(7):
-        if normal[w]:  # その曜日に走る便が1本もなければページは作らない
-            daysets.setdefault(normal[w], []).append(w)
-
-    groups = [{"days": ws, "service_ids": set(sids), "label": days_label(ws)}
-              for sids, ws in daysets.items()]
-    groups.sort(key=lambda g: g["days"][0])  # 平日 → 土曜 → 日曜 の順
-    return groups, normal
+def day_category(d, jpholiday) -> str:
+    """日付を「平日/土曜/日曜・祝日」に分類する(祝日は曜日より優先)"""
+    if d.weekday() == 6 or (jpholiday and jpholiday.is_holiday(d)):
+        return "日曜・祝日"
+    return "土曜" if d.weekday() == 5 else "平日"
 
 
-# ===============================================================
-# calendar_dates.txt(例外日)から注記を自動生成
-# ===============================================================
-def analyze_exceptions(cal_dates: pd.DataFrame | None, groups: list[dict],
-                       normal: list[frozenset]) -> list[str]:
-    """例外日を分類して人向けの注記文を作る。
+def active_services(calendar: pd.DataFrame, cal_dates: pd.DataFrame | None, d) -> set:
+    """その日に走る service_id の集合 = (calendar.txtの曜日・期間) − 取消 + 追加"""
+    ds = d.strftime("%Y%m%d")
+    col = DAY_COLS[d.weekday()]
+    running = set(calendar.loc[(calendar["start_date"] <= ds) & (calendar["end_date"] >= ds)
+                               & (calendar[col] == "1"), "service_id"])
+    if cal_dates is not None:
+        today = cal_dates[cal_dates["date"] == ds]
+        running -= set(today.loc[today["exception_type"] == "2", "service_id"])
+        running |= set(today.loc[today["exception_type"] == "1", "service_id"])
+    return running
 
-    考え方: 日付ごとに「その日に実際に走る service_id の集合」を
-        (通常の集合 − 取り消し) ∪ 追加
-    で計算し、それがどの曜日ダイヤと同じかを比べる。
-    ・別の曜日ダイヤと一致       → 「祝日は日曜ダイヤ」「8月13日〜15日は日曜ダイヤ」等
-    ・空集合(全便取り消し)     → 「運休日: 12月31日〜1月3日」
-    ・どのダイヤとも一致しない   → 「臨時ダイヤの日があります」
+
+def pair_trip_services(stop_times, trips, ids_a, ids_b) -> dict:
+    """2つのバス停の両方を通る便(行き・帰りどちらの向きでも)→ service_id の対応表"""
+    st = stop_times[stop_times["stop_id"].isin(ids_a | ids_b)]
+    hit_a = set(st.loc[st["stop_id"].isin(ids_a), "trip_id"])
+    hit_b = set(st.loc[st["stop_id"].isin(ids_b), "trip_id"])
+    both = trips[trips["trip_id"].isin(hit_a & hit_b)]
+    return dict(zip(both["trip_id"], both["service_id"]))
+
+
+def build_date_groups(calendar, cal_dates, trip_service: dict, start, end):
+    """期間内の日付を「走る便の顔ぶれ」でまとめ、ページ一覧と注記を返す。
+
+    返り値: (pages, notes)
+      pages: [{"label": 見出し, "service_ids": その日に走るservice_idの集合}, ...]
+             (build_pairs にそのまま渡せる。同じグループの日は2停の便が完全に同じ)
+      notes: 人向けの注記文のリスト
+
+    手順:
+      1. 1日ずつ、2停を通る便のうちその日に走るもの(=顔ぶれ)を求める
+      2. 平日/土曜/日曜・祝日 それぞれで、いちばん日数の多い顔ぶれをそのダイヤとする
+      3. それ以外の日は、別のダイヤと同じなら「◯日は△△ダイヤ」、便が無ければ運休日、
+         7日以上続く別の顔ぶれなら別ページ、少数なら「臨時ダイヤ」と注記する
     """
-    if cal_dates is None or cal_dates.empty:
-        return []
-
-    # 日付ごとに「追加された便」「取り消された便」を集める
-    by_date: dict[str, dict] = {}
-    for _, r in cal_dates.iterrows():
-        d = by_date.setdefault(r["date"], {"add": set(), "remove": set()})
-        d["add" if r["exception_type"] == "1" else "remove"].add(r["service_id"])
-
-    # 「service_idの集合 → ダイヤのグループ」の逆引き表
-    set2group = {frozenset(g["service_ids"]): g for g in groups}
-
-    swap_dates: dict[str, list] = {}   # 一致したダイヤのラベル → 日付リスト
-    closed_dates = []                  # 全便運休の日
-    other_dates = []                   # どのダイヤとも一致しない日
-    for d_str, x in sorted(by_date.items()):
-        d = datetime.strptime(d_str, "%Y%m%d").date()
-        running = frozenset((normal[d.weekday()] - x["remove"]) | x["add"])
-        if running == normal[d.weekday()]:
-            continue                   # 例外はあるが結果的に通常どおり
-        if not running:
-            closed_dates.append(d)
-        elif running in set2group:
-            swap_dates.setdefault(set2group[running]["label"], []).append(d)
-        else:
-            other_dates.append(d)
-
-    notes = []
     try:
         import jpholiday  # 日本の祝日判定(pip install jpholiday)
     except ImportError:
         jpholiday = None
 
-    for label, dates in swap_dates.items():
-        holidays = [d for d in dates if jpholiday and jpholiday.is_holiday(d)]
-        rest = [d for d in dates if d not in holidays]
-        # 祝日が3日以上そのダイヤに切り替わっていれば「祝日は○○ダイヤ」とまとめる
-        if len(holidays) >= 3:
-            notes.append(f"祝日は「{label}」ダイヤで運行します")
-            for g in groups:               # ページの見出しも「日曜・祝日」にする
-                if g["label"] == label and label != "毎日":
-                    g["label"] = f"{label}・祝日"
-        else:
-            rest = dates                   # まとめずに全日付を列挙する
-        if rest:
-            notes.append(f"{summarize_dates(rest)}は「{label}」ダイヤで運行します")
+    from datetime import timedelta
+    by_key: dict[frozenset, list] = {}     # 顔ぶれ → 日付のリスト
+    services_of: dict[frozenset, set] = {}  # 顔ぶれ → 代表日の service_id 集合
+    d = start
+    while d <= end:
+        running = active_services(calendar, cal_dates, d)
+        key = frozenset(t for t, sid in trip_service.items() if sid in running)
+        by_key.setdefault(key, []).append(d)
+        services_of.setdefault(key, running)
+        d += timedelta(days=1)
 
-    if closed_dates:
-        notes.append("運休日: " + summarize_dates(closed_dates))
-    if other_dates:
-        notes.append(f"{summarize_dates(other_dates)}は臨時ダイヤです(事業者にご確認ください)")
-    return notes
+    def cat(day):
+        return day_category(day, jpholiday)
+
+    # 2. 種別ごとの「ふつうのダイヤ」= その種別の日をいちばん多く占める顔ぶれ
+    main_of: dict[str, frozenset] = {}
+    for c in DAY_CATEGORIES:
+        counts = {k: sum(1 for x in ds if cat(x) == c) for k, ds in by_key.items()}
+        best = max(counts, key=counts.get, default=None)
+        if best is not None and counts[best] > 0:
+            main_of[c] = best
+
+    # 同じ顔ぶれが複数の種別のふつうのダイヤなら1ページにまとめる(例: 土曜と日祝が同じ)
+    pages, page_of_key = [], {}
+    for c in DAY_CATEGORIES:
+        k = main_of.get(c)
+        if k is None or not k:
+            continue                       # この種別は2停を通る便が無い
+        if k in page_of_key:
+            page_of_key[k]["cats"].append(c)
+        else:
+            page_of_key[k] = {"cats": [c], "service_ids": services_of[k], "key": k}
+            pages.append(page_of_key[k])
+    for pg in pages:
+        pg["label"] = ("毎日" if len(pg["cats"]) == 3
+                       else "土曜・日曜・祝日" if pg["cats"] == ["土曜", "日曜・祝日"]
+                       else "・".join(pg["cats"]))
+
+    # 3. ふつうのダイヤどおりでない日を分類する
+    notes, closed, irregular = [], [], []
+    swap: dict[str, list] = {}
+    no_service = [c for c in DAY_CATEGORIES if not main_of.get(c)]
+    for k, ds in by_key.items():
+        odd = [x for x in ds if main_of.get(cat(x)) != k]
+        if not odd:
+            continue
+        if not k:                          # 2停を通る便が1本も無い日
+            closed += [x for x in odd if cat(x) not in no_service]
+        elif k in page_of_key:             # 別の種別のダイヤで走る日(祝日に平日ダイヤ等)
+            swap.setdefault(page_of_key[k]["label"], []).extend(odd)
+        elif len(odd) >= 7:                # まとまった期間の別ダイヤ → 独立したページ
+            weekdays = sorted({x.weekday() for x in odd})
+            pg = {"label": f"{days_label(weekdays)}({summarize_dates(odd)})",
+                  "service_ids": services_of[k], "key": k, "cats": []}
+            page_of_key[k] = pg
+            pages.append(pg)
+        else:
+            irregular += odd
+
+    # 平日に当たる祝日が日祝ダイヤで走るなら、平日のページを見た人にも分かるように書く
+    hol_key = main_of.get("日曜・祝日")
+    weekday_hols = [x for x in by_key.get(hol_key, [])
+                    if x.weekday() < 5 and jpholiday and jpholiday.is_holiday(x)]
+    if weekday_hols and hol_key in page_of_key and page_of_key[hol_key]["label"] != "毎日":
+        notes.append(f"祝日は「{page_of_key[hol_key]['label']}」ダイヤで運行します"
+                     f"(この期間では{summarize_dates(weekday_hols)})")
+    for label, ds in swap.items():
+        notes.append(f"{summarize_dates(ds)}は「{label}」ダイヤで運行します")
+    if no_service and pages:
+        notes.append("・".join(no_service) + "はこの区間のバスは運行していません")
+    if closed:
+        notes.append("運休日: " + summarize_dates(closed))
+    if irregular:
+        notes.append(f"{summarize_dates(irregular)}は臨時ダイヤです(事業者にご確認ください)")
+    return pages, notes
 
 
 def summarize_dates(dates: list) -> str:
@@ -536,8 +576,6 @@ def main():
 
     if calendar is None or calendar.empty:
         raise SystemExit("calendar.txt が無いフィードにはまだ対応していません")
-    groups, normal = build_daytype_groups(calendar)
-    notes = analyze_exceptions(cal_dates, groups, normal)
 
     # 欄外の日付: feed_info.txt が無ければ calendar.txt の期間で代用
     def fmt_date(yyyymmdd):
@@ -549,6 +587,18 @@ def main():
         start_raw = calendar["start_date"].min()
         end_raw   = calendar["end_date"].max()
     validity_text = f"{fmt_date(start_raw)}現在のダイヤ / 有効期限 {fmt_date(end_raw)}"
+
+    # ページ分けに使う期間: きょう(過去のダイヤは配る紙に要らない)〜フィードの終わり。
+    # すでに期限切れのフィードなら、フィードの全期間で数える
+    feed_start = datetime.strptime(start_raw, "%Y%m%d").date()
+    feed_end = datetime.strptime(end_raw, "%Y%m%d").date()
+    span_start = max(feed_start, datetime.now().date())
+    if span_start > feed_end:
+        span_start = feed_start
+    trip_service = pair_trip_services(stop_times, trips, ids_a, ids_b)
+    groups, notes = build_date_groups(calendar, cal_dates, trip_service, span_start, feed_end)
+    print(f"  ダイヤの数え方: {span_start}〜{feed_end} の実際の運行日から"
+          f"{len(groups)}種類に分けました")
 
     # ダイヤ(曜日パターン)ごとに1ページ分のデータを集める。
     # ページ番号表示(①②③…)には全体のページ数とラベルが要るので、
