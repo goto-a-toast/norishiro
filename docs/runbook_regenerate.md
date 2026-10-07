@@ -132,8 +132,13 @@ python3 gap_map/export_web_data.py
 ### ⑦ 第1部のPDFを作り直す
 
 ```
-python3 make_pair_timetable.py
+python3 make_pair_timetable.py --feed 山交 --board 山形駅前 --alight 県立中央病院
+python3 make_pair_timetable.py --feed 上山 --board 温泉駅前 --alight ヤマザワ
 ```
+
+作り直す前に旧PDFを `gtfs_archive_◯◯/old_pdf/` にコピーしておくと比較できる。
+ページは「きょう〜フィード終了日の実際の運行日」から自動で分かれる(2026-10-07 変更)。
+**実行した日によって注記の期間が変わる**ので、配る直前に作るのがよい。
 
 ### ⑧ コミット
 
