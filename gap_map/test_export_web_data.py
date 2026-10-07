@@ -333,6 +333,28 @@ def test_make_itinerary_carries_real_platform_coordinates():
     assert it["alight_ll"] == [38.2531, 140.3302]
 
 
+def test_make_itinerary_records_walk_between_transfer_stops():
+    """降りる停と乗る停の名前が違う乗り換えは、降りる停(off)も持つ
+    (2026-10-07 済生病院シャトル: 山形駅前で降りて交番前のシャトル乗り場まで歩く)"""
+    stops = {
+        "O": {"name": "蔵王駅口", "lat": 38.20, "lon": 140.33, "platform_code": None},
+        "E": {"name": "山形駅前", "lat": 38.2490, "lon": 140.3285, "platform_code": None},
+        "K": {"name": "山形駅(シャトルバス・交番前)", "lat": 38.2489, "lon": 140.3285, "platform_code": None},
+        "H": {"name": "山形済生病院(シャトルバス)", "lat": 38.2846, "lon": 140.3350, "platform_code": None},
+    }
+    network = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    ride1 = Leg(kind="ride", from_stop="O", to_stop="E", depart=404, arrive=430,
+                trip_id="山形交通:t1", route_name="S85")
+    walk = Leg(kind="walk", from_stop="E", to_stop="K", depart=430, arrive=431)
+    ride2 = Leg(kind="ride", from_stop="K", to_stop="H", depart=453, arrive=469,
+                trip_id="済生病院シャトル:loop1_to_eki", route_name="シャトル")
+    it = make_itinerary([ride1, walk, ride2], 470, network, "蔵王駅口", "済生病院",
+                        {"山形交通:t1": "千歳公園", "済生病院シャトル:loop1_to_eki": "山形済生病院"})
+    assert it["transfer"]["at"] == "山形駅(シャトルバス・交番前)"
+    assert it["transfer"]["off"] == "山形駅前"
+    assert it["transfer"]["wait_min"] == 22          # 歩いて着いてから乗るまで
+
+
 def test_make_itinerary_coordinates_none_when_stop_unknown():
     network = _alight_network()
     leg = Leg(kind="ride", from_stop="O", to_stop="UNKNOWN", depart=390, arrive=398,
@@ -457,6 +479,24 @@ def test_build_entry_keeps_all_boards_and_names_kantan_board():
     # 行きは全部の乗り場の便が残る(near も落とさない)
     assert [r["board"] for r in entry["outbound"]["weekday"]] == ["near", "fast", "fast"]
     assert entry["outbound"]["saturday"] == []
+
+
+def test_build_entry_uses_weekday_only_stop_on_weekdays():
+    """2026-10-07「平日はシャトル、土日祝はシャトルなし」: 平日だけ走る停が平日に明らかに
+    速ければ、平日だけその停をおすすめにする(土日祝は全曜日に便がある停のまま)"""
+    district = {"id": "d01", "lat": 0.0, "lon": 0.0}
+    facility = {"id": "f01", "lat": 10.0, "lon": 10.0}
+    every = lambda: [row("08:00", "08:50", "路線停", 5), row("13:00", "13:50", "路線停", 5)]   # 55分
+    shuttle = [row("08:10", "08:40", "シャトル停", 8), row("13:10", "13:40", "シャトル停", 8)]  # 38分
+    per_daytype = {
+        "weekday": {"district_board": {}, "outbound": {"d01": {"f01": every() + shuttle}}, "inbound": {}},
+        "saturday": {"district_board": {}, "outbound": {"d01": {"f01": every()}}, "inbound": {}},
+        "sunday_holiday": {"district_board": {}, "outbound": {"d01": {"f01": every()}}, "inbound": {}},
+    }
+    entry = build_entry(district, facility, per_daytype)
+    assert entry["kantan_board"] == "路線停"
+    assert entry["kantan_boards"] == {"weekday": "シャトル停", "saturday": "路線停",
+                                      "sunday_holiday": "路線停"}
 
 
 def test_build_entry_picks_another_board_for_day_type_without_trips():

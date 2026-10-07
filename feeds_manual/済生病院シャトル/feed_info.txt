@@ -1,0 +1,2 @@
+feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version
+山形済生病院の時刻表(PDF)から手作業で作成,https://www.ameria.org/access/,ja,20261001,20270331,2026-10

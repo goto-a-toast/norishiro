@@ -446,12 +446,33 @@ async function renderScreen2(did) {
 // ため)ので、ここで entry.kantan_boards[ダイヤ種別] の停から乗る形に付け替える。
 // 「◯◯から のる」(rowsFromBoard)と同じ付け替えで、新しい計算はしない。
 // kantan_boards が無い古いデータは工場で絞り込み済みなので、そのまま返す
-function kantanOutbound(entry, dt) {
-  const rows = (entry.outbound && entry.outbound[dt]) || [];
+function kantanOutbound(entry, dt, closedOps) {
+  let rows = (entry.outbound && entry.outbound[dt]) || [];
+  if (closedOps && closedOps.size) rows = withoutClosed(rows, closedOps);
   const kb = entry.kantan_boards ? entry.kantan_boards[dt] : null;
   if (!kb) return rows;
-  const picked = rowsFromBoard(rows, kb);
+  let picked = rowsFromBoard(rows, kb);
+  // その日運休のバス(10/15 の済生病院シャトル等)の停がおすすめだった日は、
+  // 全曜日共通のおすすめの乗り場に戻す
+  if (!picked.length && entry.kantan_board && entry.kantan_board !== kb) {
+    picked = rowsFromBoard(rows, entry.kantan_board);
+  }
   return picked.length ? picked : rows;
+}
+
+// 指定の日に運休する運行主体(meta.closed_dates。済生病院シャトルの創立記念日・年末年始)の
+// 便を外す。ダイヤ種別(平日)の上では走る日なので、日付で見る必要がある
+function closedOpsOn(d) {
+  const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const out = new Set();
+  for (const [op, days] of Object.entries((meta && meta.closed_dates) || {})) {
+    if (days.includes(key)) out.add(Number(op));
+  }
+  return out;
+}
+
+function withoutClosed(rows, closedOps) {
+  return rows.filter((r) => !closedOps.has(r.op) && !(r.transfer && closedOps.has(r.transfer.op2)));
 }
 
 function bestOutboundMinutes(entry) {
@@ -543,6 +564,8 @@ const s3 = {
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
   mapIndex: null,    // 同じ索引。地図リンク用に、測位の有無にかかわらず読み込む
   pts: null,         // 時刻表ファイルの「のりばの座標表」。便の bp/ap がこの番号を指す
+  closedOps: null,   // 表示している日に運休する運行主体(meta.closed_dates)
+  closedFor: null,   // closedOps がどのダイヤ種別の表示のためのものか
   boardPick: null,   // 利用者が「いまの場所から近いバス停」で選んだ乗車停名
                      // (null = データ工場のおすすめ=kantan_board のまま。F10-L)
   seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
@@ -554,12 +577,15 @@ const s3 = {
 // 帰り(inbound)は工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
 // 便が混ざるが、どの停から乗るかは各便のステップ①が徒歩分つきで案内する)
 function rowsFor(dir, showType) {
-  const rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  let rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  // 表示している日に運休するバス(10/15 の済生病院シャトル等)の便は出さない
+  const closed = showType === s3.closedFor ? s3.closedOps : null;
+  if (closed && closed.size) rows = withoutClosed(rows, closed);
   if (dir !== "outbound" || !s3.entry) return rows;
   // 利用者が「いまの場所から近いバス停」を選んでいれば、その停から乗る形に付け替える
   // (全部の乗り場の便から選ぶので、おすすめと別の系統でも、その停を通る便はすべて出る)。
   // 選んでいなければ、おすすめの乗り場から乗る便(帰りの降車停はエンジンが選び済み)
-  return s3.boardPick ? rowsFromBoard(rows, s3.boardPick) : kantanOutbound(s3.entry, showType);
+  return s3.boardPick ? rowsFromBoard(rows, s3.boardPick) : kantanOutbound(s3.entry, showType, closed);
 }
 
 // 1本の便の中から「その名前のバス停で乗るときの発車時刻」を取り出す。
@@ -686,6 +712,8 @@ async function renderScreen3(did, fid) {
   s3.mapIndex = await getStopsIndex();
   if (seq !== s3.seq) return;
   s3.todayType = dayTypeOf(now);
+  s3.closedOps = closedOpsOn(now);
+  s3.closedFor = s3.todayType;
   // 有効期間外の日も時刻表は出したままにする(R7)。表示は平日ダイヤで代用し、
   // 「対象外の日です」の注意書きを優先表示する
   s3.showType = s3.todayType || "weekday";
@@ -778,9 +806,31 @@ function renderRideCard(now) {
       ` ${dirWord}のバス</div>`;
   }
 
-  card.innerHTML = banner + head + rideStepsHtml(ride, s3.sel.dir);
+  card.innerHTML = banner + head + otherDayBoardNote() + rideStepsHtml(ride, s3.sel.dir);
   const bbtn = card.querySelector("#back-today-btn");
   if (bbtn) bbtn.addEventListener("click", () => renderScreen3(s3.district.id, s3.facility.id));
+}
+
+// 曜日によって乗る場所が違うときに、ほかの曜日の乗り場を1行で伝える(2026-10-07)。
+// データ工場は、平日しか走らないバス(済生病院のシャトル等)が明らかに速ければ、
+// その曜日だけおすすめの乗り場を替える。いつもの曜日と違う停に行ってしまわないように、
+// 「土曜・日曜・祝日は ◯◯ から のります」と添える。利用者が乗り場を自分で選んだときは出さない
+function otherDayBoardNote() {
+  const kb = s3.entry && s3.entry.kantan_boards;
+  if (!kb || s3.boardPick || !s3.sel || s3.sel.dir !== "outbound") return "";
+  // 実際に表示している乗り場(運休日でおすすめを戻した日も正しく比べるため)
+  const shown = [...new Set(s3Rows("outbound").map((r) => r.board))];
+  const cur = shown.length === 1 ? shown[0] : kb[s3.showType];
+  const byBoard = new Map();   // 停名 → [ダイヤ種別の名前, ...]
+  for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
+    if (dt === s3.showType || !kb[dt] || kb[dt] === cur) continue;
+    if (!byBoard.has(kb[dt])) byBoard.set(kb[dt], []);
+    byBoard.get(kb[dt]).push(meta.day_types[dt]);
+  }
+  if (!byBoard.size) return "";
+  const lines = [...byBoard.entries()].map(([stop, days]) =>
+    `${escapeHtml(days.join("・"))}は「${escapeHtml(stop)}」から のります`);
+  return `<div class="day-board-note">※${lines.join("。")}</div>`;
 }
 
 // きょう運行の無い日に「あしたの時刻表」へ切り替える(2026-07-12 開発者要望)。
@@ -788,6 +838,8 @@ function renderRideCard(now) {
 function showTomorrowTimetable(tType) {
   s3.tomorrowView = true;
   s3.showType = tType;
+  s3.closedOps = closedOpsOn(new Date(Date.now() + 24 * 60 * 60 * 1000));
+  s3.closedFor = tType;
   s3.sel = { dir: "outbound", idx: 0 };
   s3.manual = true;
   renderDirection("outbound");
@@ -885,7 +937,12 @@ function trueNearestStop(fix) {
 // 「表示中の曜日で実際に使われている停」を優先し、便の無い停の名前を出さない
 function recommendedBoard() {
   const kbt = s3.entry && s3.entry.kantan_boards ? s3.entry.kantan_boards[s3.showType] : null;
-  if (kbt) return kbt;   // 2026-10-07 以降のデータ: ダイヤ種別ごとのおすすめの乗り場
+  if (kbt) {   // 2026-10-07 以降のデータ: ダイヤ種別ごとのおすすめの乗り場
+    // その日運休のバスの停だったら(10/15 の済生病院シャトル等)、実際に見せている停を返す
+    const shown = [...new Set(kantanOutbound(s3.entry, s3.showType,
+      s3.showType === s3.closedFor ? s3.closedOps : null).map((r) => r.board))];
+    return shown.length && !shown.includes(kbt) ? shown[0] : kbt;
+  }
   const base = (s3.entry && s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
   const boards = [...new Set(base.map((r) => r.board))];
   const kb = s3.entry && s3.entry.kantan_board ? s3.entry.kantan_board : null;
@@ -1138,7 +1195,10 @@ function rideStepsHtml(r, dir) {
   // のりかえ(R4): どこで降りて、次に何行きに乗るか
   if (r.transfer) {
     steps.push(
-      `「${escapeHtml(r.transfer.at)}」で おりて、<br>` +
+      // 降りる停と乗る停が違うときは、歩いて乗り換えることを書く(transfer.off。2026-10-07)
+      (r.transfer.off
+        ? `「${escapeHtml(r.transfer.off)}」で おりて、「${escapeHtml(r.transfer.at)}」まで あるいて、<br>`
+        : `「${escapeHtml(r.transfer.at)}」で おりて、<br>`) +
       `<span class="headsign">${escapeHtml(headsignLabel(r.transfer.headsign2))}</span> に ` +
       `のりかえ(${r.transfer.wait_min}分 まち)${confirmLineHtml(r.transfer.route2)}`
     );
@@ -1393,7 +1453,9 @@ function setupSpeakButton() {
       }
       if (ride.transfer) {
         const hs2Word = String(ride.transfer.headsign2).replace(/(行き|ゆき)$/, "");
-        parts.push(`${ride.transfer.at}で おりて、${hs2Word}行きに、のりかえてください。`);
+        parts.push(ride.transfer.off
+          ? `${ride.transfer.off}で おりて、${ride.transfer.at}まで あるいて、${hs2Word}行きに、のりかえてください。`
+          : `${ride.transfer.at}で おりて、${hs2Word}行きに、のりかえてください。`);
       }
       // どこで降りるかを必ず音声でも案内する(実際のバス停名。開発者指摘2026-07-08)。
       // 目的地まで歩くときは徒歩分も添える

@@ -43,6 +43,14 @@ YAMAGATA_DEFAULTS = {
         "gtfs_山形交通", "gtfs_上山市", "gtfs_山形市", "gtfs_天童市", "gtfs_山辺町",
         "gtfs_中山町", "gtfs_東根市", "gtfs_南陽市", "gtfs_寒河江市",
     ],
+    # 特定の行き先への行き・帰りの計算にだけ使うフィード(プロジェクトルートからの相対パス)。
+    # 病院の送迎バスのように「途中下車できない」「その施設へ行く人のためのバス」を、
+    # ほかの行き先の経路(市内どうしの移動や乗り継ぎ)に使わせないための仕組み。
+    # facilities は destinations_master の行き先id。2026-10-07: 山形済生病院の無料シャトル
+    # (gap_map/make_saisei_shuttle.py が病院の時刻表PDFから作る。第2部の分析には使わない)
+    "restricted_feeds": [
+        {"dir": "feeds_manual/済生病院シャトル", "facilities": ["f20"]},
+    ],
     # フィード取得先一覧CSV(download_gtfs.py が読む。gtfs-data.jp のURL一覧)
     "gtfs_feeds_csv": "yamagata_gtfs_feeds.csv",
 
@@ -133,6 +141,8 @@ def load(path: Path = None) -> dict:
         # 別地域のregion.jsonでは、書かれていない expected(山形の確定値)を
         # 引き継いではいけないので、まず expected を空にしてから上書きする
         merged["expected"] = {}
+        # 行き先専用フィード(済生病院のシャトル等)も山形だけのものなので引き継がない
+        merged["restricted_feeds"] = []
         for key, value in user.items():
             merged[key] = value
         merged["_is_default"] = False

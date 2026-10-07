@@ -610,7 +610,9 @@ function directionSection(dir, label, entry, district, facility) {
       const t = r.transfer;
       const op2 = operatorOf(t.op2);
       transferCell =
-        `「${escapeHtml(t.at)}」で のりかえ(待ち${t.wait_min}分)<br>` +
+        (t.off
+          ? `「${escapeHtml(t.off)}」で おりて「${escapeHtml(t.at)}」まで歩いて のりかえ(待ち${t.wait_min}分)<br>`
+          : `「${escapeHtml(t.at)}」で のりかえ(待ち${t.wait_min}分)<br>`) +
         `<span class="sub">→ ${escapeHtml(headsignLabel(t.headsign2))} 番号: ${escapeHtml(t.route2)}` +
         (op2 ? ` / ${escapeHtml(op2.name)}` : "") + "</span>";
     }
