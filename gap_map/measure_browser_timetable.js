@@ -17,6 +17,8 @@
 //   node gap_map/measure_browser_timetable.js weekday 38.2490 140.3274   # 任意の地点
 //   node gap_map/measure_browser_timetable.js weekday meshes  # メッシュ817点の中心(行きだけ)
 //     家は代表点とは限らない。停の集まる駅前などで重くならないかを、住む場所の全体で確かめる
+//   node gap_map/measure_browser_timetable.js screens [N]     # 3-2 の移植版(timetable.js)で、
+//     画面ごとの計算量をメッシュN個おき(既定8)で測る。★ほかの重い処理と同時に回さないこと
 
 "use strict";
 
@@ -197,7 +199,47 @@ function measureMeshes(net, facilityTargets, dests) {
               ` / 1秒超 ${outs.filter((x) => x > 1000).length}点`);
 }
 
+// 3-2 で全部移植した webapp/engine/timetable.js で、画面が実際に頼む計算の時間を測る
+//   画面2 = きょうのダイヤ1つ・行き先ぜんぶの「行き」(施設一覧の目安に使う)
+//   画面3 = 選んだ1施設の「行き+帰り」を3ダイヤぶん(おすすめ乗り場は3ダイヤを見て選ぶため)
+function measureScreens(step) {
+  const TT = require(path.join(ROOT, "webapp/engine/timetable.js"));
+  const rd = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), "utf8"));
+  const facilities = rd("webapp/data/destinations.json").filter((f) => f.id !== "f20");
+  const nets = {};
+  for (const dt of TT.DAY_TYPES) nets[dt] = TT.prepareNetwork(inflateNetwork(rd(`webapp/data/network/${dt}.json`)));
+  TT.buildHomeTimetable(nets, { lat: 38.25, lon: 140.33, name: "空回し" }, facilities.slice(0, 3));
+  const meshes = rd("webapp/data/mesh_index.json").meshes;
+  const s2 = [], s3 = [];
+  for (let i = 0; i < meshes.length; i += step) {
+    const [lat, lon] = meshes[i];
+    const home = { lat, lon, name: "わが家" };
+    let t = performance.now();
+    TT.computeDayType(nets.weekday, home, facilities, ["outbound"]);
+    s2.push([performance.now() - t, lat, lon]);
+    let worst = [0, ""];
+    for (const f of facilities) {
+      t = performance.now();
+      TT.buildHomeTimetable(nets, home, [f]);
+      const ms = performance.now() - t;
+      if (ms > worst[0]) worst = [ms, f.name];
+    }
+    s3.push([worst[0], lat, lon, worst[1]]);
+  }
+  const show = (label, a) => {
+    const v = a.map((x) => x[0]).sort((x, y) => x - y);
+    const top = a.slice().sort((x, y) => y[0] - x[0])[0];
+    console.log(`${label}: 中央値 ${v[v.length >> 1].toFixed(0)}ms / 95% ${v[Math.floor(v.length * 0.95)].toFixed(0)}ms` +
+                ` / 最大 ${top[0].toFixed(0)}ms(${top[1].toFixed(5)},${top[2].toFixed(5)}${top[3] ? " " + top[3] : ""})` +
+                ` → スマホ想定×4 最大 ${(top[0] * 4 / 1000).toFixed(1)}秒`);
+  };
+  console.log(`地点 ${s2.length}(メッシュ${step}個おき)`);
+  show("画面2 平日・行き37施設", s2);
+  show("画面3 1施設・行き+帰り・3ダイヤ(いちばん重い施設)", s3);
+}
+
 function main() {
+  if (process.argv[2] === "screens") return measureScreens(Number(process.argv[3]) || 8);
   const dayType = process.argv[2] || "weekday";
   const net = inflateNetwork(JSON.parse(fs.readFileSync(path.join(ROOT, `webapp/data/network/${dayType}.json`), "utf8")));
   const dests = JSON.parse(fs.readFileSync(path.join(ROOT, "webapp/data/destinations.json"), "utf8"));

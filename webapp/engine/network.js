@@ -61,7 +61,11 @@ function inflateNetwork(data) {
     }
   }
 
-  return { patterns, stop_routes: stopRoutes, stops, footpaths, tripInfo,
+  // 工場(export_web_data.py)が停を見る順番。無い古い配布ファイルでは添字の順で代用する
+  // (時刻表を端末で作る timetable.js が、同じ距離の停の並びを工場とそろえるのに使う)
+  const stopOrder = Array.isArray(data.stop_order) ? data.stop_order : [...Array(nStops).keys()];
+
+  return { patterns, stop_routes: stopRoutes, stops, footpaths, tripInfo, stopOrder,
            config: data.config ?? { walk_speed_m_per_min: 60, walk_detour: 1.3,
                                     max_walk_to_stop_m: 800, min_transfer_min: 3 },
            operators: data.operators ?? [] };
