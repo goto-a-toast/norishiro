@@ -10,17 +10,18 @@
 // (どちらかだけ再生成したら、もう一方も再生成してから回す)。
 //
 // 使い方(プロジェクトルートから):
-//   node gap_map/verify_timetable_parity.js            # 全地区(済生病院 f20 を除く。§注)
+//   node gap_map/verify_timetable_parity.js            # 全地区・全行き先
 //   node gap_map/verify_timetable_parity.js d24 d19    # 地区を指定
 //   node gap_map/verify_timetable_parity.js --home d24 # その地区は「わが家1軒」の入口
 //                                                      #  (buildHomeTimetable)でも照合する
 //   node gap_map/verify_timetable_parity.js --points points.jsonl
 //       代表点以外の地点(メッシュ中心)で照合する。points.jsonl は
-//       gap_map/export_point_timetables.py が工場の関数で作る。f20 も含めて
-//       「シャトル無し」どうしで比べ、わが家1軒の入口(buildHomeTimetable)を使う
+//       gap_map/export_point_timetables.py が工場の関数で作る。わが家1軒の入口
+//       (buildHomeTimetable)を使う
 //
-// 注: 済生病院(f20)の行き帰りは、工場がシャトル入りの別ネットワークで計算している
-//     (restricted_feeds)。端末側のシャトル対応は 3-3 で行うので、ここでは数えない。
+// 済生病院(f20)の行き帰りは、工場がシャトル入りの別ネットワークで計算している
+// (restricted_feeds)。端末側も配布ネットワークの restricted に書かれた専用ファイルで
+// 同じように計算して比べる(段階3-3。2026-10-07)。
 //
 // 速さのための工夫: 帰り(施設 → 家)は、工場と同じく「施設ごとに1回、全地区をまとめて」計算する。
 // 便ごとの答えは行き先どうしで独立なので、1軒ずつ計算しても同じになる(--home で確かめられる)。
@@ -35,9 +36,20 @@ const DATA = path.join(ROOT, "webapp/data");
 const { inflateNetwork } = require(path.join(ROOT, "webapp/engine/network.js"));
 const TT = require(path.join(ROOT, "webapp/engine/timetable.js"));
 
-const SKIP_FACILITIES = new Set(["f20"]);   // 3-3 で対応(上の注)
-
 function readJson(p) { return JSON.parse(fs.readFileSync(p, "utf8")); }
+
+// 配布ネットワーク3ダイヤぶんと、行き先専用のネットワーク(シャトル入り等)を読む。
+// restricted は buildHomeTimetable にそのまま渡せる形 [{facilities, nets: {ダイヤ種別: ネットワーク}}]
+function loadNets() {
+  const load = (name) => TT.prepareNetwork(inflateNetwork(readJson(path.join(DATA, "network", name))));
+  const nets = {};
+  for (const dt of TT.DAY_TYPES) nets[dt] = load(`${dt}.json`);
+  const restricted = nets.weekday.restricted.map((_r, i) => ({
+    facilities: nets.weekday.restricted[i].facilities,
+    nets: Object.fromEntries(TT.DAY_TYPES.map((dt) => [dt, load(nets[dt].restricted[i].file)])),
+  }));
+  return { nets, restricted };
+}
 
 // 比べやすい形にそろえる: 座標表の番号(bp/ap/p)を座標に戻し、キーの順番を並べ替える。
 // 工場は座標の無い便に bp を付けない。端末側の board_ll: null も「無い」にそろえる
@@ -106,11 +118,8 @@ function countRows(entry) {
 // 地点ファイル(工場の関数で作った答え。1行に1地点)と、わが家1軒の入口の答えを比べる
 async function verifyPoints(file) {
   const readline = require("readline");
-  const facilities = readJson(path.join(DATA, "destinations.json"));   // f20 も含める(上の注)
-  const nets = {};
-  for (const dt of TT.DAY_TYPES) {
-    nets[dt] = TT.prepareNetwork(inflateNetwork(readJson(path.join(DATA, "network", `${dt}.json`))));
-  }
+  const facilities = readJson(path.join(DATA, "destinations.json"));
+  const { nets, restricted } = loadNets();
   let nPoints = 0, nPairs = 0, nRows = 0, nBad = 0;
   const t0 = Date.now();
   const lines = readline.createInterface({ input: fs.createReadStream(file, "utf8"), crlfDelay: Infinity });
@@ -118,7 +127,7 @@ async function verifyPoints(file) {
     if (!line.trim()) continue;
     const py = JSON.parse(line);
     nPoints++;
-    const tt = TT.buildHomeTimetable(nets, py.home, facilities);
+    const tt = TT.buildHomeTimetable(nets, py.home, facilities, undefined, restricted);
     for (const f of facilities) {
       const theirs = stable(canonEntry(py.to[f.id], py.pts));
       nPairs++;
@@ -145,34 +154,39 @@ function main() {
   // export_web_data.flatten_districts と同じ(サブ地区も同格の計算対象)
   const districts = districtsRaw.flatMap((d) => [d, ...((d.sub || []).map((s) => ({ ...s, parent_id: d.id })))]);
   const targetsD = wanted.size ? districts.filter((d) => wanted.has(d.id)) : districts;
-  const facilities = readJson(path.join(DATA, "destinations.json")).filter((f) => !SKIP_FACILITIES.has(f.id));
-
-  const nets = {};
-  for (const dt of TT.DAY_TYPES) {
-    nets[dt] = TT.prepareNetwork(inflateNetwork(readJson(path.join(DATA, "network", `${dt}.json`))));
-  }
+  const facilities = readJson(path.join(DATA, "destinations.json"));
+  const { nets, restricted } = loadNets();
   const cfg = nets.weekday.config;
+  const special = new Set(restricted.flatMap((r) => r.facilities));
 
-  // ダイヤ種別ごとに、工場と同じまとめ方で計算する
-  const perDayAll = {};
-  for (const dt of TT.DAY_TYPES) {
-    const net = nets[dt];
-    process.stdout.write(`[${dt}] 計算中…`);
-    const t0 = Date.now();
-    const facilityTargets = Object.fromEntries(facilities.map((f) => [f.id, TT.buildTargets(net, f.lat, f.lon, f.name)]));
+  // 1つのネットワークで、地区 → 行き先(行き)と 行き先 → 地区(帰り)をまとめて計算する
+  // (工場の compute_day_type_schedules と同じまとめ方)
+  function computeGroup(net, facs, outbound, inbound, homeBoard) {
+    const facilityTargets = Object.fromEntries(facs.map((f) => [f.id, TT.buildTargets(net, f.lat, f.lon, f.name)]));
     const districtTargets = Object.fromEntries(targetsD.map((d) => [d.id, TT.buildTargets(net, d.lat, d.lon, d.name)]));
-    const outbound = {}, homeBoard = {};
     for (const d of targetsD) {
       const origins = TT.buildOrigins(net, d.lat, d.lon, d.name);
-      homeBoard[d.id] = origins.length ? origins[0].slice(0, 2) : null;
-      outbound[d.id] = origins.length
+      if (homeBoard) homeBoard[d.id] = origins.length ? origins[0].slice(0, 2) : null;
+      const res = origins.length
         ? TT.scanFromOrigin(net, origins, facilityTargets, new Map(TT.nearbyStops(net, d.lat, d.lon)), false)
         : {};
+      outbound[d.id] = { ...(outbound[d.id] || {}), ...res };
     }
-    const inbound = {};
-    for (const f of facilities) {
+    for (const f of facs) {
       const fo = TT.buildOrigins(net, f.lat, f.lon, f.name);
       inbound[f.id] = fo.length ? TT.scanFromOrigin(net, fo, districtTargets, null, true) : {};
+    }
+  }
+
+  const perDayAll = {};
+  for (const dt of TT.DAY_TYPES) {
+    process.stdout.write(`[${dt}] 計算中…`);
+    const t0 = Date.now();
+    const outbound = {}, inbound = {}, homeBoard = {};
+    // 乗り場までの徒歩(homeBoard)は、工場と同じく通常のネットワークで決める
+    computeGroup(nets[dt], facilities.filter((f) => !special.has(f.id)), outbound, inbound, homeBoard);
+    for (const r of restricted) {
+      computeGroup(r.nets[dt], facilities.filter((f) => r.facilities.includes(f.id)), outbound, inbound, null);
     }
     perDayAll[dt] = { outbound, inbound, homeBoard };
     console.log(` ${((Date.now() - t0) / 1000).toFixed(1)}秒`);
@@ -211,7 +225,7 @@ function main() {
   if (homeMode) {
     for (const d of targetsD) {
       const t0 = Date.now();
-      const tt = TT.buildHomeTimetable(nets, d, facilities);
+      const tt = TT.buildHomeTimetable(nets, d, facilities, undefined, restricted);
       const file = readJson(path.join(DATA, "timetables", `${d.id}.json`));
       let bad1 = 0;
       for (const f of facilities) {

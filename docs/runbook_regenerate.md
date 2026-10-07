@@ -118,9 +118,16 @@ python3 gap_map/make_subdistricts.py --apply --far-dist 1200 --far-pop 150 --far
 python3 gap_map/make_mesh_index.py
 
 python3 gap_map/export_web_data.py
+python3 gap_map/export_network.py     # 端末で計算するための配布ネットワーク(案D。数秒)
 ```
 
+**時刻表と配布ネットワークは必ず両方作り直す**。片方だけだと、端末で作る時刻表(わが家から)と
+地区ファイルの答えが食い違う(下の⑥の照合で落ちる)。
+
 ### ⑥ 検算
+
+- **`node gap_map/verify_timetable_parity.js` が「すべて一致」**(端末の計算が工場と同じ答えを出すか。
+  全地区・全行き先・済生病院シャトル込み。約20秒)
 
 - `webapp/data/meta.json` の `valid_until` が新しい日付になっているか
 - 合計サイズと1地区あたりの大きさ(サブ地区を増やしたなら見込みと合うか)
@@ -148,6 +155,7 @@ python3 make_pair_timetable.py --feed 上山 --board 温泉駅前 --alight ヤ�
 ## 3. 罠
 
 - **画面のプログラムを変えたら、各ページの index.html にある `?v=` の数字を上げる**
+  (`webapp/engine/` のファイルを変えたら、kantan/app.js の `ENGINE_VER` と engine/worker.js の `?v=` も上げる)
   (例: `app.js?v=20261007` → 更新日)。公開サイトはファイルを最大10分ブラウザに
   保存させる設定で、数字を変えないと古い app.js が使われ続けることがある
   (2026-10-07 実例: 地図ボタンを公開したのに「見えない」)
