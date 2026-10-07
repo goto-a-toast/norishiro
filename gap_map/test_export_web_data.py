@@ -340,6 +340,26 @@ def test_slim_to_board_moves_platform_coordinates_with_the_stop():
     r = to["f"]["outbound"]["weekday"][0]
     assert pts[r["bp"]] == [38.24454, 140.33981]
     assert all("_ll" not in o for o in r["board_options"])   # 一時フィールドは消える
+    # 候補停にも、そのバスが実際に止まるのりばの番号 p が付く
+    opt = {o["stop"]: o for o in r["board_options"]}
+    assert pts[opt["諏訪町"]["p"]] == [38.24454, 140.33981]
+    assert pts[opt["山形市役所前"]["p"]] == [38.25502, 140.34033]
+
+
+def test_attach_stop_points_numbers_alight_options():
+    """帰りの「同じバスは◯◯でも降りられます」の候補停にも、実際ののりばの番号 p を付ける
+    (2026-10-07 開発者指摘: 帰りのバス停を七日町に指定すると別ののりばを指した)"""
+    to = {"f": {"inbound": {"weekday": [{
+        "alight": "保健所前", "alight_ll": [38.24895, 140.33425],
+        "alight_options": [
+            {"stop": "保健所前", "arr": "06:53", "walk_min": 12, "_ll": [38.24895, 140.33425]},
+            {"stop": "七日町", "arr": "06:52", "walk_min": 14, "_ll": [38.25272, 140.33651]},
+        ]}]}}}
+    pts = attach_stop_points(to)
+    r = to["f"]["inbound"]["weekday"][0]
+    opt = {o["stop"]: o for o in r["alight_options"]}
+    assert pts[opt["七日町"]["p"]] == [38.25272, 140.33651]
+    assert opt["保健所前"]["p"] == r["ap"]          # 同じのりばは同じ番号
 
 
 # ===============================================================

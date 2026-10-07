@@ -544,7 +544,10 @@ function directionSection(dir, label, entry, district, facility) {
       const opt = pickOption(r.board_options, active, "dep", true);
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
-      shown.push({ ...r, board: active, bp: active === r.board && opt.dep === r.dep ? r.bp : undefined, dep: opt.dep, board_walk_min: opt.walk_min,
+      shown.push({ ...r, board: active,
+                   // 候補停が持つ「このバスが実際に止まるのりば」の番号を使う(無い古いデータは停名の索引)
+                   bp: Number.isInteger(opt.p) ? opt.p : (active === r.board && opt.dep === r.dep ? r.bp : undefined),
+                   dep: opt.dep, board_walk_min: opt.walk_min,
                    ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait });
     }
     shown.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
@@ -557,7 +560,9 @@ function directionSection(dir, label, entry, district, facility) {
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
       const homeArr = hmToMin(opt.arr) + opt.walk_min;
-      shown.push({ ...r, alight: opt.stop, ap: opt.stop === r.alight && minToHm(homeArr) === r.arr ? r.ap : undefined, arr: minToHm(homeArr), alight_walk_min: opt.walk_min,
+      shown.push({ ...r, alight: opt.stop,
+                   ap: Number.isInteger(opt.p) ? opt.p : (opt.stop === r.alight && minToHm(homeArr) === r.arr ? r.ap : undefined),
+                   arr: minToHm(homeArr), alight_walk_min: opt.walk_min,
                    ride_min: homeArr - hmToMin(r.dep) - wait });
     }
     shown.sort((a, b) => hmToMin(a.arr) - hmToMin(b.arr));
