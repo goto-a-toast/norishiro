@@ -587,8 +587,9 @@ function rowsFromBoard(rows, stop) {
     out.push({
       ...r,
       board: opt.stop,
-      // 乗るのりばが変わったら工場の座標は使わない(停名の索引で探す)。同じ停・同じ発車なら元のまま
-      bp: opt.stop === r.board && opt.dep === r.dep ? r.bp : undefined,
+      // 候補停が持つ「このバスが実際に止まるのりば」の番号を使う。無い古いデータでは
+      // 同じ停・同じ発車なら元のまま、それ以外は停名の索引で探す
+      bp: Number.isInteger(opt.p) ? opt.p : (opt.stop === r.board && opt.dep === r.dep ? r.bp : undefined),
       dep: opt.dep,
       board_walk_min: opt.walk_min != null ? opt.walk_min : r.board_walk_min,
       ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait,
@@ -806,11 +807,11 @@ function showTomorrowTimetable(tType) {
 // 便が1本も無い停は候補にしない(選んだとたん「運行がありません」になるのを防ぐ)
 function boardStopCandidates() {
   const base = (s3.entry && s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
-  const map = new Map();   // 停名 → { stop, trips(この日の本数), walk_min }
+  const map = new Map();   // 停名 → { stop, trips(この日の本数), walk_min, ps(実際に止まるのりばの番号) }
   for (const r of base) {
     const opts = Array.isArray(r.board_options) && r.board_options.length
       ? r.board_options
-      : [{ stop: r.board, walk_min: r.board_walk_min }];
+      : [{ stop: r.board, walk_min: r.board_walk_min, p: r.bp }];
     // 同じ便の中に同じ名前の停が2回出ることがある(のりば違い)。本数は便の数で数える
     const seen = new Set();
     for (const o of opts) {
@@ -819,21 +820,37 @@ function boardStopCandidates() {
       const cur = map.get(o.stop);
       if (cur) {
         cur.trips += 1;
+        if (Number.isInteger(o.p)) cur.ps.add(o.p);
         if (o.walk_min != null) {
           cur.walk_min = cur.walk_min == null ? o.walk_min : Math.min(cur.walk_min, o.walk_min);
         }
       } else {
-        map.set(o.stop, { stop: o.stop, trips: 1, walk_min: o.walk_min != null ? o.walk_min : null });
+        map.set(o.stop, { stop: o.stop, trips: 1, walk_min: o.walk_min != null ? o.walk_min : null,
+                          ps: new Set(Number.isInteger(o.p) ? [o.p] : []) });
       }
     }
   }
   return [...map.values()];
 }
 
-// 候補を「いまの場所から近い順」に並べる。座標が索引に無い停は出さない(距離を偽らない)
+// 候補を「いまの場所から近い順」に並べる。座標が索引に無い停は出さない(距離を偽らない)。
+// 距離は「この行き先へのバスが実際に止まるのりば」(候補停の p)のうち一番近いものまで測り、
+// そののりばの番号を p に入れる(地図ボタンが道路の反対側ののりばを指さないように。2026-10-07)
 function nearBoardStops(fix) {
   return boardStopCandidates()
-    .map((c) => ({ ...c, dist: stopDistanceM(c.stop, fix, s3.stopsIndex) }))
+    .map((c) => {
+      if (fix && s3.pts && c.ps.size) {
+        let best = null;
+        for (const p of c.ps) {
+          const pt = s3.pts[p];
+          if (!pt) continue;
+          const d = distanceM(fix.lat, fix.lon, pt[0], pt[1]);
+          if (!best || d < best.dist) best = { dist: d, p };
+        }
+        if (best) return { ...c, dist: best.dist, p: best.p };
+      }
+      return { ...c, dist: stopDistanceM(c.stop, fix, s3.stopsIndex), p: null };
+    })
     .filter((c) => c.dist !== null)
     .sort((a, b) => a.dist - b.dist);
 }
@@ -978,7 +995,7 @@ function renderNearStopBox() {
     `<p class="near-lead">${uncovered ? "この時刻表で のれるバス停のうち、いちばん近いのは " : "いまいる場所から いちばん近いのは "}` +
     `<span class="near-stop">「${escapeHtml(nearest.stop)}」</span>` +
     `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>`;
-  const nearMap = stopMapLinkHtml(nearest.stop, fix);
+  const nearMap = stopMapLinkHtml(nearest.stop, fix, nearest.p);
   if (nearMap) html += `<p class="map-link-row">${nearMap}</p>`;
   if (uncovered) {
     html +=

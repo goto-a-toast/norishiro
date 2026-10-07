@@ -472,7 +472,8 @@ def stop_latlon(network: transit_core.Network, stop_id) -> list | None:
 
 def attach_stop_points(to: dict) -> list:
     """地区1ファイル分の全便について、make_itinerary が付けた board_ll/alight_ll を
-    ファイル共通の座標表への番号 bp/ap に置き換え、その座標表(pts)を返す。
+    ファイル共通の座標表への番号 bp/ap に、候補停(board_options/alight_options)の
+    一時座標 _ll を番号 p に置き換え、その座標表(pts)を返す。
     同じ座標は1回だけ表に載る。座標が無い便は bp/ap を付けない(画面側は停名の
     索引 stops_index.json にフォールバックする)。番号は出現順なので決定的"""
     pts, index_of = [], {}
@@ -492,8 +493,15 @@ def attach_stop_points(to: dict) -> list:
                 for r in rows:
                     b = ref(r.pop("board_ll", None))
                     a = ref(r.pop("alight_ll", None))
-                    for o in r.get("board_options") or []:
-                        o.pop("_ll", None)   # 一時フィールド。JSONには書かない
+                    # 候補停(同じバスが止まる近くの停)にも、そのバスが実際に止まる
+                    # のりばの番号 p を付ける(2026-10-07 開発者指摘「帰りのバス停を七日町に
+                    # 指定すると別ののりばを指す」。停名からの推定では道路の反対側や別の
+                    # 通りののりばを選んでしまうため)
+                    for key in ("board_options", "alight_options"):
+                        for o in r.get(key) or []:
+                            p = ref(o.pop("_ll", None))
+                            if p is not None:
+                                o["p"] = p
                     if b is not None:
                         r["bp"] = b
                     if a is not None:
@@ -526,7 +534,7 @@ def board_options_for(network: transit_core.Network, pattern, trip,
                 "dep": fmt_hm(trip.departures[p]),
                 "walk_min": round(near_home[sid]),
                 # のりばの座標(一時フィールド)。_slim_to_board が主停を付け替えるとき
-                # board_ll も一緒に替えるために使い、attach_stop_points が書き出し前に消す
+                # board_ll も一緒に替えるために使い、attach_stop_points が番号 p に置き換える
                 "_ll": stop_latlon(network, sid),
             })
     opts.sort(key=lambda o: o["walk_min"])
@@ -551,6 +559,7 @@ def alight_options_for(network: transit_core.Network, pattern, trip,
                 "stop": network.stops[sid]["name"],
                 "arr": fmt_hm(trip.arrivals[p]),
                 "walk_min": round(home_walks[sid]),
+                "_ll": stop_latlon(network, sid),   # のりばの座標(一時。attach_stop_points が p に置き換える)
             })
     opts.sort(key=lambda o: o["walk_min"])
     return opts[:MAX_BOARD_OPTIONS]
