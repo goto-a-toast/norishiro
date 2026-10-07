@@ -52,14 +52,18 @@ YAMAGATA_DEFAULTS = {
 
     # 分析する日と、ダイヤ種別ごとの代表日
     "target_date": "20260610",
+    # 2026-10-07 再生成: 10月ダイヤの普通の週(祝日なし)から選び直した。
+    # target_date は第2部の凍結数値の再現用なので変えない(docs/runbook_regenerate.md)
     "reference_dates": {
-        "weekday": "20260610",
-        "saturday": "20260613",
-        "sunday_holiday": "20260614",
+        "weekday": "20261014",
+        "saturday": "20261017",
+        "sunday_holiday": "20261018",
     },
-    # date_table(きょうのダイヤ判定表)の収録範囲と有効期限
-    "date_table_start": "20260701",
-    "valid_until": "20260930",
+    # date_table(きょうのダイヤ判定表)の収録範囲と有効期限。
+    # valid_until は山交バスの主な便がそろう最終日。寒河江市(10/31で失効)は
+    # 停留所がすべて寒河江市内で2市の利用者に関係しないため、期限の計算から外した
+    "date_table_start": "20261001",
+    "valid_until": "20261120",
 
     # 手動ダウンロードする地図・統計データの置き場所(data/ からの相対パス)
     "pop_mesh_files": ["tblT001101H5740/tblT001101H5740.txt"],

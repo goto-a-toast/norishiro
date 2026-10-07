@@ -97,10 +97,13 @@ def main():
             # 経路の照合は到達できた停留所すべてで行う(多いので上限を設ける)
             reached = sorted(result.keys())
             check = reached if len(reached) <= 400 else rnd.sample(reached, 400)
+            # 系統名は配布時に normalize_text で半角にそろえる(export_network.py)ので、
+            # Python側も同じ正規化をしてから比べる(「～」と「~」の違いは食い違いではない)
             expected.append({
                 "arrivals": {str(order[s]): v["arrival"] for s, v in result.items()},
                 "paths": {str(order[s]): [[l.kind, str(order[l.from_stop]), str(order[l.to_stop]),
-                                           l.depart, l.arrive, l.trip_id, l.route_name]
+                                           l.depart, l.arrive, l.trip_id,
+                                           ew.normalize_text(l.route_name) if l.route_name else l.route_name]
                                           for l in tc.reconstruct_path(result, s)]
                           for s in check},
             })
