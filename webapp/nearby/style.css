@@ -40,3 +40,6 @@ select { font-family: inherit; font-size: 16px; padding: 10px; width: 100%; bord
 .steps li { margin: 4px 0; }
 .headsign { color: var(--blue); font-weight: bold; }
 .small { font-size: 13px; color: var(--sub); }
+/* バス停の場所を地図アプリで開くリンク(2026-10-07) */
+.map-link { display: inline-block; margin-left: 4px; padding: 2px 8px; font-size: 15px;
+            border: 1px solid var(--blue); border-radius: 6px; color: var(--blue); text-decoration: none; white-space: nowrap; }

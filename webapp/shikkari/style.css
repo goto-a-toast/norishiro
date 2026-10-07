@@ -156,6 +156,17 @@ table.tt {
 .tt .sub { font-size: 13px; color: #555555; }
 .tt .sub.far { color: #7a2d00; font-weight: bold; }  /* GPS距離が800m超(対策1) */
 .tt td.note { font-size: 14px; color: #444444; }
+/* バス停の場所を地図アプリで開くリンク(2026-10-07)。表の中なので小さめの枠にする */
+.tt .map-link {
+  display: inline-block;
+  font-size: 13px;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border: 1px solid #8aa4b8;
+  border-radius: 6px;
+  color: var(--color-outbound);
+  text-decoration: none;
+}
 .no-service-note { font-size: 16px; color: #555555; text-align: center; padding: 10px 0; }
 .unreachable-note {
   font-size: 20px; font-weight: bold; text-align: center;

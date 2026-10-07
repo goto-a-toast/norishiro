@@ -416,6 +416,23 @@ h1 {
   color: var(--color-outbound);
 }
 .ride-card .walk-note { font-size: 24px; }
+/* バス停の場所を地図アプリで開くリンク(2026-10-07)。指で押しやすい大きさの枠にする
+   (高齢の利用者向けに、ただの下線リンクではなくボタンに見える形) */
+.map-link-row { margin-top: 8px; }
+.map-link {
+  display: inline-block;
+  font-size: 20px;
+  line-height: 1.4;
+  padding: 8px 14px;
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 2px solid var(--color-outbound);
+  border-radius: 8px;
+  color: var(--color-outbound);
+  background: #ffffff;
+  text-decoration: none;
+}
+.map-link:focus-visible { outline: 3px solid #f0a000; outline-offset: 2px; }
 /* 同じバスが停まる近くの停の併記(A案)。①の下に小さめの補足として出す */
 .ride-card .sibling-note {
   margin-top: 6px;
@@ -661,7 +678,7 @@ h1 {
    ひとまわり縮める。色が出ない印刷でも読めるよう、枠線と記号(※)は残る
    ===================================================================== */
 @media print {
-  #app-header, .action-row, .chip-hint, .near-stop-box { display: none; }
+  #app-header, .action-row, .chip-hint, .near-stop-box, .map-link-row { display: none; }
 
   body { font-size: 18px; }
   /* 便数が多いペア(例: 全便乗換で行き23本)でも1枚に収まるよう全体を少し縮める。

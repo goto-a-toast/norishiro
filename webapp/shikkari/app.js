@@ -24,6 +24,7 @@ const timetableCache = {};
 let meshIndexCache;
 let stopsIndexCache;
 let stopsIndex = null;   // render() が geoFix の鮮度を見て入れる
+let mapIndex = null;     // 同じ索引。地図リンク用に、測位の有無にかかわらず入れる
 
 async function getMeshIndex() {
   if (meshIndexCache === undefined) {
@@ -282,6 +283,7 @@ async function render() {
 
   // GPSで測ったばかりの位置があれば、乗車停までの距離の正直表示に使う(対策1)
   stopsIndex = geoFixFresh() ? await getStopsIndex() : null;
+  mapIndex = await getStopsIndex();
 
   const timetable = await getTimetable(state.did);
   const entry = timetable.to[state.fid];
@@ -338,6 +340,33 @@ function trueNearestStop() {
     if (dist !== null && (best === null || dist < best.dist)) best = { stop, dist };
   }
   return best;
+}
+
+// ---------------- バス停の場所を地図アプリで開く(2026-10-07 開発者要望) ----------------
+// 画面の中に地図は描かない(外部ライブラリを読み込まない設計原則)。Google マップの公開URL形式
+// (キー不要)へのリンクにして、スマートフォンでは地図アプリが開く。外へ出ていくのは
+// バス停の座標だけで、利用者の位置は送らない。同じ名前のバス停が離れた場所に複数ある
+// とき(七日町など)は、基準点(いまの場所/地区の代表点/行き先の施設)に近いものを選ぶ
+function stopPoint(name, ref) {
+  if (!mapIndex || !mapIndex[name]) return null;
+  const v = mapIndex[name];
+  const pts = Array.isArray(v[0]) ? v : [v];
+  if (pts.length === 1 || !ref) return pts[0];
+  let best = pts[0];
+  let bestD = Infinity;
+  for (const p of pts) {
+    const d = distanceM(ref.lat, ref.lon, p[0], p[1]);
+    if (d < bestD) { bestD = d; best = p; }
+  }
+  return best;
+}
+
+function stopMapLinkHtml(name, ref) {
+  const pt = stopPoint(name, ref);
+  if (!pt) return "";   // 座標が無い停ではリンクを出さない
+  const url = `https://www.google.com/maps/search/?api=1&query=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+  return `<a class="map-link no-print" href="${url}" target="_blank" rel="noopener"` +
+    ` aria-label="${escapeHtml(name)}の場所を地図で見る">🗺 地図</a>`;
 }
 
 function distanceWord(m) {
@@ -534,6 +563,9 @@ function directionSection(dir, label, entry, district, facility) {
     "<th>のるバス停</th>" + (hasPlatform ? "<th>のりば</th>" : "") +
     "<th>行き先表示(前面)</th><th>番号</th>" + (hasOp ? "<th>運行</th>" : "") +
     "<th>のりつぎ</th><th>おりるバス停</th><th>補足</th></tr>";
+  const homeRef = geoFixForStops() || district;
+  const boardRef = isOutbound ? homeRef : facility;
+  const alightRef = isOutbound ? facility : homeRef;
   const body = shown.map((r) => {
     let transferCell = "直通";
     if (r.transfer) {
@@ -560,13 +592,13 @@ function directionSection(dir, label, entry, district, facility) {
       "<tr>" +
       `<td class="dep">${timeWord(r.dep)}</td>` +
       `<td class="arr">${timeWord(r.arr)}</td>` +
-      `<td>${escapeHtml(r.board)}${geoDistNote(r.board, dir)}</td>` +
+      `<td>${escapeHtml(r.board)}${geoDistNote(r.board, dir)} ${stopMapLinkHtml(r.board, boardRef)}</td>` +
       (hasPlatform ? `<td>${r.platform ? escapeHtml(platformText(r.platform)) + "番" : ""}</td>` : "") +
       `<td>${escapeHtml(headsignLabel(r.headsign))}</td>` +
       `<td class="num">${escapeHtml(r.route)}</td>` +
       (hasOp ? `<td>${op ? escapeHtml(op.name) : ""}</td>` : "") +
       `<td>${transferCell}</td>` +
-      `<td>${escapeHtml(r.alight)}</td>` +
+      `<td>${escapeHtml(r.alight)} ${stopMapLinkHtml(r.alight, alightRef)}</td>` +
       `<td class="note">${notes.join("・")}</td>` +
       "</tr>"
     );

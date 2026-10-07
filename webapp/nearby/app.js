@@ -151,6 +151,17 @@ function findTrips(lat, lon, dest, startMin, maxTrips = 4) {
 }
 
 // ---------------- 表示 ----------------
+// バス停の場所を地図アプリで開くリンク(2026-10-07 開発者要望)。画面の中に地図は描かない
+// (外部ライブラリを読み込まない設計原則)。Google マップの公開URL形式(キー不要)で、
+// スマートフォンでは地図アプリが開く。配布ネットワークはのりばごとの座標を持つので、
+// 同じ名前ののりばが複数ある場所(山形駅前など)でも実際に乗るのりばを指せる。
+// 外へ出ていくのはバス停の座標だけで、利用者の位置は送らない
+function stopMapLink(stop) {
+  if (!stop || !Number.isFinite(stop.lat) || !Number.isFinite(stop.lon)) return "";
+  const url = `https://www.google.com/maps/search/?api=1&query=${stop.lat.toFixed(5)},${stop.lon.toFixed(5)}`;
+  return ` <a class="map-link" href="${url}" target="_blank" rel="noopener">🗺 地図でみる</a>`;
+}
+
 function renderTrips(dest, result) {
   const panel = $("result-panel");
   const box = $("results");
@@ -167,8 +178,9 @@ function renderTrips(dest, result) {
   for (const t of result.trips) {
     const total = t.best.total - t.homeDepart;
     const steps = [];
-    steps.push(`<li>いまいる場所から「${esc(state.net.stops[t.rides[0].from_stop].name)}」まで` +
-               ` あるいて約${t.boardWalk}分（${timeWord(t.rides[0].depart)}発）</li>`);
+    const boardStop = state.net.stops[t.rides[0].from_stop];
+    steps.push(`<li>いまいる場所から「${esc(boardStop.name)}」まで` +
+               ` あるいて約${t.boardWalk}分（${timeWord(t.rides[0].depart)}発）${stopMapLink(boardStop)}</li>`);
     t.rides.forEach((r, i) => {
       const info = state.net.tripInfo[r.trip_id] || {};
       const op = Number.isInteger(info.op) ? (state.net.operators[info.op] || {}).name : null;

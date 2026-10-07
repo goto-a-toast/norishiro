@@ -243,6 +243,34 @@ function stopDistanceM(name, fix, idx) {
   return isFinite(best) ? best : null;
 }
 
+// ---------------- バス停の場所を地図アプリで開く(2026-10-07 開発者要望) ----------------
+// 画面の中に地図は描かない(外部ライブラリを読み込まない設計原則)。Google マップの公開URL形式
+// (キー不要)へのリンクにして、スマートフォンでは地図アプリが開き、そのまま道案内にも使える。
+// 外へ出ていくのは「バス停の座標」だけで、利用者の位置は送らない。
+// 同じ名前のバス停が離れた場所に複数あるとき(七日町など)は、基準点(いまの場所/
+// 地区の代表点/行き先の施設)にいちばん近いものを選ぶ
+function stopPoint(name, idx, ref) {
+  if (!idx || !idx[name]) return null;
+  const v = idx[name];
+  const pts = Array.isArray(v[0]) ? v : [v];
+  if (pts.length === 1 || !ref) return pts[0];
+  let best = pts[0];
+  let bestD = Infinity;
+  for (const p of pts) {
+    const d = distanceM(ref.lat, ref.lon, p[0], p[1]);
+    if (d < bestD) { bestD = d; best = p; }
+  }
+  return best;
+}
+
+function stopMapLinkHtml(name, ref) {
+  const pt = stopPoint(name, s3.mapIndex, ref);
+  if (!pt) return "";   // 座標が無い停(データ再生成前など)ではリンクを出さない
+  const url = `https://www.google.com/maps/search/?api=1&query=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
+  return `<a class="map-link" href="${url}" target="_blank" rel="noopener">` +
+    `🗺 「${escapeHtml(name)}」の ばしょを 地図でみる</a>`;
+}
+
 function setupGeoButton() {
   const btn = document.getElementById("geo-btn");
   const result = document.getElementById("geo-result");
@@ -497,6 +525,7 @@ const s3 = {
   tomorrowView: false, // きょう運行が無い日に「あしたの時刻表」へ切り替えたか
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
+  mapIndex: null,    // 同じ索引。地図リンク用に、測位の有無にかかわらず読み込む
   boardPick: null,   // 利用者が「いまの場所から近いバス停」で選んだ乗車停名
                      // (null = データ工場のおすすめ=kantan_board のまま。F10-L)
   seq: 0,            // renderScreen3の世代番号(連打時に古い処理を打ち切る)
@@ -632,6 +661,7 @@ async function renderScreen3(did, fid) {
   s3.facility = facility;
   // GPSで測ったばかりの位置があれば、停留所までの距離の正直表示に使う(対策1)
   s3.stopsIndex = geoFixFresh() ? await getStopsIndex() : null;
+  s3.mapIndex = await getStopsIndex();
   if (seq !== s3.seq) return;
   s3.todayType = dayTypeOf(now);
   // 有効期間外の日も時刻表は出したままにする(R7)。表示は平日ダイヤで代用し、
@@ -934,6 +964,8 @@ function renderNearStopBox() {
     `<p class="near-lead">${uncovered ? "この時刻表で のれるバス停のうち、いちばん近いのは " : "いまいる場所から いちばん近いのは "}` +
     `<span class="near-stop">「${escapeHtml(nearest.stop)}」</span>` +
     `<span class="near-dist">${escapeHtml(distanceWord(nearest.dist))}</span></p>`;
+  const nearMap = stopMapLinkHtml(nearest.stop, fix);
+  if (nearMap) html += `<p class="map-link-row">${nearMap}</p>`;
   if (uncovered) {
     html +=
       `<p class="near-far">いまいる場所の すぐ近くには「${escapeHtml(truly.stop)}」` +
@@ -1052,7 +1084,10 @@ function rideStepsHtml(r, dir) {
         `<div class="geo-dist">いまの場所から およそ${escapeHtml(distanceWord(dist).replace("約", ""))}</div>`;
     }
   }
-  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}${geoNote}`);
+  const boardRef = dir === "outbound" ? (preciseFix || s3.district) : s3.facility;
+  const mapLink = stopMapLinkHtml(r.board, boardRef);
+  steps.push(`「${escapeHtml(r.board)}」バス停へ${walk}${platform}${siblingNote}${geoNote}` +
+    (mapLink ? `<div class="map-link-row">${mapLink}</div>` : ""));
 
   // ② 正面表示(headsign)が主役。系統番号は小さな「かくにん」(R1・R2)
   steps.push(
