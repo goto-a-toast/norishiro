@@ -441,11 +441,17 @@ async function renderScreen2(did) {
   renderFacilityList(timetable);
 }
 
-// かんたんモードが「行き」で見せる便。データ工場が entry.kantan_board の便に
-// 絞り込み済みなので、ここでは絞らずそのまま返す(その停に便が無いダイヤ種別は
-// 工場が別の停で埋めており、名前で再フィルタすると落としてしまう)
+// かんたんモードが「行き」で見せる便 = おすすめの乗り場(1か所)から乗る便。
+// ★2026-10-07 案A: データは全部の乗り場の便を持つ(しっかりモードで全乗り場を見せる
+// ため)ので、ここで entry.kantan_boards[ダイヤ種別] の停から乗る形に付け替える。
+// 「◯◯から のる」(rowsFromBoard)と同じ付け替えで、新しい計算はしない。
+// kantan_boards が無い古いデータは工場で絞り込み済みなので、そのまま返す
 function kantanOutbound(entry, dt) {
-  return (entry.outbound && entry.outbound[dt]) || [];
+  const rows = (entry.outbound && entry.outbound[dt]) || [];
+  const kb = entry.kantan_boards ? entry.kantan_boards[dt] : null;
+  if (!kb) return rows;
+  const picked = rowsFromBoard(rows, kb);
+  return picked.length ? picked : rows;
 }
 
 function bestOutboundMinutes(entry) {
@@ -543,16 +549,17 @@ const s3 = {
 };
 
 // かんたんモードは行き先ごとに「一番いい乗り場」1つだけを見せる(見慣れないバス停を
-// 混ぜない。設計C)。その絞り込みはデータ工場(export_web_data.py)が済ませて
-// JSON に入れているので、ここでは絞らずそのまま返す。kantan_board の停に便が無い
-// ダイヤ種別は工場が別の停の便で埋めるため、停名で再フィルタしてはいけない。
-// 帰り(inbound)も工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
+// 混ぜない。設計C)。データ工場がダイヤ種別ごとに選んだ停(kantan_boards)の便だけを
+// kantanOutbound() が選ぶ(2026-10-07 までは工場が絞り込み済みのデータを配っていた)。
+// 帰り(inbound)は工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
 // 便が混ざるが、どの停から乗るかは各便のステップ①が徒歩分つきで案内する)
 function rowsFor(dir, showType) {
   const rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
+  if (dir !== "outbound" || !s3.entry) return rows;
   // 利用者が「いまの場所から近いバス停」を選んでいれば、その停から乗る形に付け替える
-  // (行きだけ。帰りの降車停はエンジンが「バス+徒歩の合計が最短」の停を選び済み)
-  return dir === "outbound" && s3.boardPick ? rowsFromBoard(rows, s3.boardPick) : rows;
+  // (全部の乗り場の便から選ぶので、おすすめと別の系統でも、その停を通る便はすべて出る)。
+  // 選んでいなければ、おすすめの乗り場から乗る便(帰りの降車停はエンジンが選び済み)
+  return s3.boardPick ? rowsFromBoard(rows, s3.boardPick) : kantanOutbound(s3.entry, showType);
 }
 
 // 1本の便の中から「その名前のバス停で乗るときの発車時刻」を取り出す。
@@ -877,6 +884,8 @@ function trueNearestStop(fix) {
 // (export_web_data.py の _slim_to_board のフォールバック)。そのため
 // 「表示中の曜日で実際に使われている停」を優先し、便の無い停の名前を出さない
 function recommendedBoard() {
+  const kbt = s3.entry && s3.entry.kantan_boards ? s3.entry.kantan_boards[s3.showType] : null;
+  if (kbt) return kbt;   // 2026-10-07 以降のデータ: ダイヤ種別ごとのおすすめの乗り場
   const base = (s3.entry && s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
   const boards = [...new Set(base.map((r) => r.board))];
   const kb = s3.entry && s3.entry.kantan_board ? s3.entry.kantan_board : null;

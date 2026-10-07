@@ -209,6 +209,26 @@ def test_pick_kantan_board_stays_near_when_gain_is_marginal():
     assert pick_kantan_board(outbound) == "near"
 
 
+def test_pick_kantan_board_skips_stop_with_far_fewer_trips():
+    """2026-10-07 第五地区→徳洲会病院: 1日数便の近い停(十日町角)が「5分遅いだけ・近い」
+    として選ばれ、便の多い停(保健所前)の便がかんたんモードから全部消えていた。
+    便の数が最多の候補の半分に満たない停は、近くても選ばない"""
+    many = [row(f"{h:02d}:00", f"{h:02d}:28", "many", 12) for h in range(7, 19)]   # 12便・40分
+    few = [row("08:00", "08:35", "few", 9), row("15:00", "15:35", "few", 9)]       # 2便・44分
+    outbound = {"weekday": many + few, "saturday": [], "sunday_holiday": []}
+    assert pick_kantan_board(outbound) == "many"
+
+
+def test_pick_kantan_board_keeps_near_stop_that_already_has_enough_trips():
+    """便が十分ある(1時間に1本以上)近い停は、もっと便の多い遠い停があっても替えない
+    (相対の基準だけだと徒歩1分の停が徒歩17分の拠点に替わった。2026-10-07 試算)"""
+    near = [row(f"{h:02d}:00", f"{h:02d}:30", "near", 1) for h in range(6, 20)]        # 14便・31分
+    hub = [row(f"{h:02d}:{m:02d}", f"{h:02d}:{m + 10:02d}", "hub", 17)
+           for h in range(6, 20) for m in (0, 15, 30, 45)]                               # 56便・27分
+    outbound = {"weekday": near + hub, "saturday": [], "sunday_holiday": []}
+    assert pick_kantan_board(outbound) == "near"
+
+
 def test_pick_kantan_board_none_when_no_outbound():
     assert pick_kantan_board({"weekday": [], "saturday": [], "sunday_holiday": []}) is None
 
@@ -391,10 +411,9 @@ def test_build_entry_prunes_dominated_inbound_rows():
     assert kept == [("08:05", "nanoka"), ("09:00", "honcho")]
 
 
-def test_build_entry_slims_outbound_to_kantan_board():
-    """build_entry は行き(outbound)を pick_kantan_board が選んだ1停の便だけに絞る。
-    帰り(inbound)は間引かない(フロンティアに残る便はすべて保持)。
-    かんたん・しっかり とも同じ1停の時刻表を見せる"""
+def test_build_entry_keeps_all_boards_and_names_kantan_board():
+    """2026-10-07 案A: 行きは全部の乗り場の便を保存する(しっかりモードで全乗り場を見せる)。
+    かんたんモードが使う停は kantan_board / kantan_boards(ダイヤ種別ごと)で示す"""
     district = {"id": "d01", "lat": 0.0, "lon": 0.0}
     facility = {"id": "f01", "lat": 10.0, "lon": 10.0}   # 遠方=直接徒歩(direct_walk)は付かない
     out_rows = [
@@ -414,14 +433,15 @@ def test_build_entry_slims_outbound_to_kantan_board():
     }
     entry = build_entry(district, facility, per_daytype)
     assert entry["kantan_board"] == "fast"
-    # 行きは fast の便だけ(near便は落ちる)。帰りは空のまま
-    assert [r["board"] for r in entry["outbound"]["weekday"]] == ["fast", "fast"]
+    assert entry["kantan_boards"] == {"weekday": "fast"}       # 便の無い種別は書かない
+    # 行きは全部の乗り場の便が残る(near も落とさない)
+    assert [r["board"] for r in entry["outbound"]["weekday"]] == ["near", "fast", "fast"]
     assert entry["outbound"]["saturday"] == []
 
 
-def test_build_entry_keeps_weekday_when_kantan_board_runs_only_on_weekend():
+def test_build_entry_picks_another_board_for_day_type_without_trips():
     """2026-07-10 バグ修正の保険側: 全ダイヤ種別をカバーする停が無く、選ばれた停に
-    便が無いダイヤ種別は、その種別だけ停を選び直して絞る(平日を空にしない)"""
+    便が無いダイヤ種別は、その種別だけ停を選び直す(平日を空にしない)"""
     district = {"id": "d01", "lat": 0.0, "lon": 0.0}
     facility = {"id": "f01", "lat": 10.0, "lon": 10.0}
     week_rows = [row("08:00", "08:40", "平日停", 3), row("10:00", "10:40", "平日停", 3)]
@@ -435,9 +455,9 @@ def test_build_entry_keeps_weekday_when_kantan_board_runs_only_on_weekend():
     }
     entry = build_entry(district, facility, per_daytype)
     assert entry["kantan_board"] == "土曜停"
-    # 旧実装はここが [] になり「平日0便」の誤った時刻表を出していた
-    assert [r["board"] for r in entry["outbound"]["weekday"]] == ["平日停", "平日停"]
-    assert [r["board"] for r in entry["outbound"]["saturday"]] == ["土曜停"]
+    # 旧実装は平日が空になり「平日0便」の誤った時刻表を出していた
+    assert entry["kantan_boards"] == {"weekday": "平日停", "saturday": "土曜停"}
+    assert len(entry["outbound"]["weekday"]) == 2
 
 
 # ===============================================================
