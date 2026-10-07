@@ -18,6 +18,7 @@ from export_web_data import (
     frontier_rows, keep_useful_boards, pick_kantan_board,
     make_itinerary, build_entry, collapse_transfer_alternatives,
     board_options_for, alight_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
+    attach_stop_points,
 )
 
 R_EARTH_M = 6371000
@@ -272,6 +273,73 @@ def test_make_itinerary_alight_falls_back_to_place_when_stop_unknown():
     it = make_itinerary([leg], 398, network, "八日町一丁目", "みゆき会病院",
                         headsigns, alight_walk_min=0)
     assert it["alight"] == "みゆき会病院"
+
+
+# ===============================================================
+# のりばの座標(2026-10-07 地図ボタン・案A)
+# ===============================================================
+def test_make_itinerary_carries_real_platform_coordinates():
+    """乗る/降りるのりばの座標を便ごとに持つ(同名で離れたのりばを取り違えないため)"""
+    stops = {
+        "O1": {"name": "七日町", "lat": 38.252501234, "lon": 140.337519, "platform_code": None},
+        "A": {"name": "済生館前", "lat": 38.2531, "lon": 140.3302, "platform_code": None},
+    }
+    network = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    leg = Leg(kind="ride", from_stop="O1", to_stop="A", depart=390, arrive=398,
+              trip_id="山形交通:t1", route_name="N52")
+    it = make_itinerary([leg], 398, network, "七日町", "山形市立病院済生館",
+                        {"山形交通:t1": "済生館ゆき"})
+    assert it["board_ll"] == [38.2525, 140.33752]   # 小数5桁(約1m)に丸める
+    assert it["alight_ll"] == [38.2531, 140.3302]
+
+
+def test_make_itinerary_coordinates_none_when_stop_unknown():
+    network = _alight_network()
+    leg = Leg(kind="ride", from_stop="O", to_stop="UNKNOWN", depart=390, arrive=398,
+              trip_id="山形交通:t1", route_name="N52")
+    it = make_itinerary([leg], 398, network, "八日町一丁目", "みゆき会病院",
+                        {"山形交通:t1": "x"})
+    assert it["alight_ll"] is None
+    assert it["board_ll"] == [0.0, 0.0]
+
+
+def test_attach_stop_points_dedupes_and_replaces_with_indices():
+    """座標はファイル共通の表に1回だけ載り、便は番号(bp/ap)で指す。座標の無い便は番号なし"""
+    to = {
+        "f01": {"outbound": {"weekday": [
+            {"board_ll": [1.0, 2.0], "alight_ll": [3.0, 4.0]},
+            {"board_ll": [1.0, 2.0], "alight_ll": None},
+        ]}, "inbound": {"weekday": [
+            {"board_ll": [3.0, 4.0], "alight_ll": [5.0, 6.0]},
+        ]}},
+        "f02": {"unreachable": True},
+    }
+    pts = attach_stop_points(to)
+    assert pts == [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
+    ob = to["f01"]["outbound"]["weekday"]
+    assert ob[0] == {"bp": 0, "ap": 1}
+    assert ob[1] == {"bp": 0}                      # 座標なしの降車は番号を付けない
+    assert to["f01"]["inbound"]["weekday"][0] == {"bp": 1, "ap": 2}
+    assert "board_ll" not in str(to)               # 一時フィールドは残さない
+
+
+def test_slim_to_board_moves_platform_coordinates_with_the_stop():
+    """主停を kantan_board に付け替えたら、のりばの座標もその停のものに替える
+    (2026-10-07 実データで見つけた不具合: 停名は「諏訪町」なのに座標は山形市役所前のまま)"""
+    rows = [{"board": "山形市役所前", "board_ll": [38.25502, 140.34033], "dep": "07:10",
+             "arr": "07:32", "board_walk_min": 15, "ride_min": 22, "transfer": None,
+             "board_options": [
+                 {"stop": "諏訪町", "dep": "07:15", "walk_min": 8, "_ll": [38.24454, 140.33981]},
+                 {"stop": "山形市役所前", "dep": "07:10", "walk_min": 15, "_ll": [38.25502, 140.34033]},
+             ]}]
+    out = _slim_to_board(rows, "諏訪町")
+    assert out[0]["board"] == "諏訪町"
+    assert out[0]["board_ll"] == [38.24454, 140.33981]
+    to = {"f": {"outbound": {"weekday": out}}}
+    pts = attach_stop_points(to)
+    r = to["f"]["outbound"]["weekday"][0]
+    assert pts[r["bp"]] == [38.24454, 140.33981]
+    assert all("_ll" not in o for o in r["board_options"])   # 一時フィールドは消える
 
 
 # ===============================================================

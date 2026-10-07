@@ -25,6 +25,7 @@ let meshIndexCache;
 let stopsIndexCache;
 let stopsIndex = null;   // render() が geoFix の鮮度を見て入れる
 let mapIndex = null;     // 同じ索引。地図リンク用に、測位の有無にかかわらず入れる
+let pts = null;          // 時刻表ファイルの「のりばの座標表」。便の bp/ap がこの番号を指す
 
 async function getMeshIndex() {
   if (meshIndexCache === undefined) {
@@ -287,6 +288,7 @@ async function render() {
 
   const timetable = await getTimetable(state.did);
   const entry = timetable.to[state.fid];
+  pts = Array.isArray(timetable.pts) ? timetable.pts : null;
   const content = document.getElementById("content");
 
   // きょうのダイヤ種別の注記(選んでいる種別が今日と違うときは注意を出す)
@@ -361,8 +363,12 @@ function stopPoint(name, ref) {
   return best;
 }
 
-function stopMapLinkHtml(name, ref) {
-  const pt = stopPoint(name, ref);
+// exactIdx: 便が持つのりばの番号(bp/ap)。データ工場が実際に乗る/降りるのりばの座標を
+// 入れているので、七日町(のりば6か所)のような停でも乗る場所を指せる。番号が無い
+// (古いデータ/絞り込みで停を付け替えた)ときだけ停名の索引で近いものを探す
+function stopMapLinkHtml(name, ref, exactIdx) {
+  const exact = Number.isInteger(exactIdx) && pts ? pts[exactIdx] : null;
+  const pt = exact || stopPoint(name, ref);
   if (!pt) return "";   // 座標が無い停ではリンクを出さない
   const url = `https://www.google.com/maps/search/?api=1&query=${pt[0].toFixed(5)},${pt[1].toFixed(5)}`;
   return `<a class="map-link no-print" href="${url}" target="_blank" rel="noopener"` +
@@ -532,7 +538,7 @@ function directionSection(dir, label, entry, district, facility) {
       const opt = pickOption(r.board_options, active, "dep", true);
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
-      shown.push({ ...r, board: active, dep: opt.dep, board_walk_min: opt.walk_min,
+      shown.push({ ...r, board: active, bp: active === r.board && opt.dep === r.dep ? r.bp : undefined, dep: opt.dep, board_walk_min: opt.walk_min,
                    ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait });
     }
     shown.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
@@ -545,7 +551,7 @@ function directionSection(dir, label, entry, district, facility) {
       if (!opt) continue;
       const wait = r.transfer ? r.transfer.wait_min : 0;
       const homeArr = hmToMin(opt.arr) + opt.walk_min;
-      shown.push({ ...r, alight: opt.stop, arr: minToHm(homeArr), alight_walk_min: opt.walk_min,
+      shown.push({ ...r, alight: opt.stop, ap: opt.stop === r.alight && minToHm(homeArr) === r.arr ? r.ap : undefined, arr: minToHm(homeArr), alight_walk_min: opt.walk_min,
                    ride_min: homeArr - hmToMin(r.dep) - wait });
     }
     shown.sort((a, b) => hmToMin(a.arr) - hmToMin(b.arr));
@@ -592,13 +598,13 @@ function directionSection(dir, label, entry, district, facility) {
       "<tr>" +
       `<td class="dep">${timeWord(r.dep)}</td>` +
       `<td class="arr">${timeWord(r.arr)}</td>` +
-      `<td>${escapeHtml(r.board)}${geoDistNote(r.board, dir)} ${stopMapLinkHtml(r.board, boardRef)}</td>` +
+      `<td>${escapeHtml(r.board)}${geoDistNote(r.board, dir)} ${stopMapLinkHtml(r.board, boardRef, r.bp)}</td>` +
       (hasPlatform ? `<td>${r.platform ? escapeHtml(platformText(r.platform)) + "番" : ""}</td>` : "") +
       `<td>${escapeHtml(headsignLabel(r.headsign))}</td>` +
       `<td class="num">${escapeHtml(r.route)}</td>` +
       (hasOp ? `<td>${op ? escapeHtml(op.name) : ""}</td>` : "") +
       `<td>${transferCell}</td>` +
-      `<td>${escapeHtml(r.alight)} ${stopMapLinkHtml(r.alight, alightRef)}</td>` +
+      `<td>${escapeHtml(r.alight)} ${stopMapLinkHtml(r.alight, alightRef, r.ap)}</td>` +
       `<td class="note">${notes.join("・")}</td>` +
       "</tr>"
     );
