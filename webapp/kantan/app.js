@@ -1619,6 +1619,7 @@ function renderDirection(dir) {
         s3.manual = true;
         updateChipSelection();
         renderRideCard(new Date());
+        showRideCard();
       });
       chips.appendChild(chip);
     });
@@ -1633,6 +1634,21 @@ function renderDirection(dir) {
     legend.textContent = "※印 = のりかえ1回の便";
     table.appendChild(legend);
   }
+}
+
+// 時刻を押したら、のりかたカードまで画面を動かす(2026-10-08 開発者要望。時刻の段組は
+// カードより下にあり、とくにスマホでは押しても上のカードが変わったことが見えなかった)。
+// カードの上端がもう見えているときは動かさない。上に固定された見出しに隠れない位置は
+// CSS の scroll-margin-top で決める。「動きを減らす」設定の端末では一度に移動する
+function showRideCard() {
+  const card = document.getElementById("ride-card");
+  if (!card || !card.scrollIntoView) return;
+  const header = document.getElementById("app-header");
+  const top = header ? header.getBoundingClientRect().bottom : 0;
+  const rect = card.getBoundingClientRect();
+  if (rect.top >= top && rect.top < window.innerHeight * 0.5) return;
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  card.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
 }
 
 // 選択中のチップに枠と aria-pressed を付け直す

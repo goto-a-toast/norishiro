@@ -34,10 +34,13 @@
 
 * { box-sizing: border-box; }
 
-html, body {
-  margin: 0;
-  overflow-x: hidden;   /* 横スクロール禁止 */
-}
+html, body { margin: 0; }
+/* 横スクロール禁止。html だけに hidden を付ける(画面全体に効く)。body にも hidden を付けると
+   body が独立したスクロールの枠になり、上の見出し(#app-header の position: sticky)が固定されず、
+   時刻を押したときの「のりかたへ移動」(showRideCard)も効かなかった(2026-10-08 発見)。
+   body の clip はスクロールの枠を作らずにはみ出しだけ切る(古いブラウザは無視=従来どおり) */
+html { overflow-x: hidden; }
+body { overflow-x: clip; }
 
 body {
   font-family: "BIZ UDPGothic", sans-serif;
@@ -58,6 +61,9 @@ noscript {
 #app { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; }
 
 /* ---------------- ヘッダー(もどる + ステップ表示) ---------------- */
+/* 時刻を押したとき、のりかたカードが上の固定の見出しに隠れない位置まで動かす(showRideCard) */
+#ride-card { scroll-margin-top: 96px; }
+
 #app-header {
   display: flex;
   align-items: center;
@@ -71,7 +77,9 @@ noscript {
 
 .back-btn {
   height: var(--back-size);
-  padding: 0 20px;
+  padding: 0 14px;
+  white-space: nowrap;   /* 狭い画面で「←/もど/る」と縦に折れて見出しの下にはみ出していた(2026-10-08) */
+  flex-shrink: 0;
   font-size: 24px;
   font-family: inherit;
   font-weight: bold;
@@ -103,6 +111,21 @@ noscript {
   font-weight: bold;
   color: var(--color-disabled);
   margin-left: auto;
+}
+/* スマホ幅では見出しの3つ(もどる・①→②→③・玄関)が1行に収まるよう、①→②→③を小さくする */
+@media (max-width: 430px) {
+  .steps { font-size: 22px; gap: 4px; }
+  .home-link { padding: 8px 8px; white-space: nowrap; }
+}
+/* さらに狭い画面(幅360px前後)では矢印を消す(①②③だけでも今どこかは分かる) */
+@media (max-width: 380px) {
+  .steps .step-arrow { display: none; }
+  #app-header { gap: 8px; }
+}
+/* 幅320pxの小さなスマホでは①②③も消す(飾りで、読み上げもしない。もどる・玄関を優先) */
+@media (max-width: 340px) {
+  .steps { display: none; }
+  .home-link { margin-left: auto; }
 }
 .step-arrow { color: var(--color-disabled); }
 .step.current { color: var(--color-outbound); }
@@ -384,7 +407,9 @@ h1 {
   white-space: nowrap;       /* 「ごぜん9:38」を途中で改行させない */
 }
 .no-wrap { white-space: nowrap; }
-.ride-card .card-wait { margin-left: 8px; white-space: nowrap; } /* 「あと8分」も途中で切らない */
+/* 「あと8分」も途中で切らない。inline-block にして、幅が足りないときは時刻の次の行に回す
+   (幅360pxで「(あと24分)」がカードの右にはみ出して切れていた。2026-10-08) */
+.ride-card .card-wait { margin-left: 8px; white-space: nowrap; display: inline-block; }
 .ride-card .card-sub {
   font-size: 24px;
   text-align: center;
