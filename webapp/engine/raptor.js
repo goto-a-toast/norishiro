@@ -107,7 +107,15 @@ function scanPattern(pattern, boardingTimes, boardingLeg, roundUpdates) {
 //   network      : {patterns, stop_routes, stops, footpaths}(Python版と同じ構造)
 //   initialStops : Map または オブジェクト {stop_id: その停留所に立てる時刻(分)}
 // 戻り値: Map(stop_id → {arrival, leg})
-function raptorSearch(network, initialStops, maxTransfers = 0, minTransferMin = 3) {
+//
+// targetStops(省略可・段階3で追加): 答えを読む停がこの集合だけと分かっているとき渡す。
+//   **最後のラウンドでは、この停を通るパターンだけを走査する**。最後のラウンドの結果は
+//   次のラウンドの乗車に使われないので、目的の停を通らないパターンを走査しても、目的の停の
+//   到着時刻と経路は1つも変わらない(変わるのは読まない停の値だけ)。
+//   時刻表を端末で作るとき(timetable.js)、便ごとの乗換探索がこれで数分の1になる。
+//   目的の停の答えが Python 版と同じであることは gap_map/verify_timetable_parity.js が全件で確かめる。
+//   省略すると従来どおり全部を走査する(全停の答えを Python 版と照合するテストはこちら)
+function raptorSearch(network, initialStops, maxTransfers = 0, minTransferMin = 3, targetStops = null) {
   const init = initialStops instanceof Map ? initialStops : new Map(Object.entries(initialStops));
 
   const bestArrival = new Map(init);
@@ -125,6 +133,11 @@ function raptorSearch(network, initialStops, maxTransfers = 0, minTransferMin = 
     const touched = new Set();
     for (const stopId of boardingTimes.keys()) {
       for (const [patternIdx] of network.stop_routes[stopId] ?? []) touched.add(patternIdx);
+    }
+    // 最後のラウンド: 目的の停を通らないパターンは走査しない(上の targetStops の説明)
+    if (targetStops !== null && roundNo === maxTransfers) {
+      const useful = targetPatterns(network, targetStops);
+      for (const patternIdx of touched) if (!useful.has(patternIdx)) touched.delete(patternIdx);
     }
 
     const roundUpdates = new Map();
@@ -187,6 +200,22 @@ function raptorSearch(network, initialStops, maxTransfers = 0, minTransferMin = 
     out.set(stopId, { arrival, leg: bestLeg.get(stopId) ?? null });
   }
   return out;
+}
+
+// 目的の停を通るパターンの集合。同じ目的の停の集合で何百回も探索するので、集合ごとに覚えておく
+const targetPatternCache = new WeakMap();
+function targetPatterns(network, targetStops) {
+  let byNet = targetPatternCache.get(network);
+  if (!byNet) { byNet = new WeakMap(); targetPatternCache.set(network, byNet); }
+  let pats = byNet.get(targetStops);
+  if (!pats) {
+    pats = new Set();
+    for (const sid of targetStops) {
+      for (const [patternIdx] of network.stop_routes[sid] ?? []) pats.add(patternIdx);
+    }
+    byNet.set(targetStops, pats);
+  }
+  return pats;
 }
 
 // 結果から、指定した停留所までの経路(出発→到着の順)を復元する

@@ -54,7 +54,10 @@ def serialize(network, headsigns: dict) -> dict:
         platform = info.get("platform_code")
         if not isinstance(platform, str) or not platform.strip():
             platform = None      # stops.txtに列が無い/空欄の行は NaN が入るため
-        stops.append([info["name"], round(info["lat"], 5), round(info["lon"], 5), platform])
+        # 座標は丸めずに配る(2026-10-07 段階3)。端末で「わが家」からの徒歩分を出すとき、
+        # 工場(export_web_data.py)と同じ値から計算しないと、徒歩分の四捨五入が境目で
+        # 1分ずれる(段階1bの「徒歩分を小数1桁に丸めて1分ずれた」と同じ種類の罠)
+        stops.append([info["name"], float(info["lat"]), float(info["lon"]), platform])
 
     routes, hs_list = {}, {}
     patterns = []
@@ -94,6 +97,10 @@ def serialize(network, headsigns: dict) -> dict:
             "min_transfer_min": config.MIN_TRANSFER_MIN,
         },
         "stop_ids": stop_ids,          # 検算用(画面には出さない)。Python版との突き合わせに使う
+        # 工場が停を見る順番(network.stops の並び)。添字は文字列順なので別に持つ。
+        # 工場は「徒歩圏の停を近い順」に並べるとき、同じ距離の停をこの順に置く
+        # (Python の並べ替えは同点の順番を保つ)。端末でも同じ並びにして同じ答えを出すため
+        "stop_order": [idx[s] for s in network.stops.keys()],
         "stops": stops,                # [表示名, 緯度, 経度, のりば番号]
         "routes": list(routes.keys()),
         "headsigns": list(hs_list.keys()),
