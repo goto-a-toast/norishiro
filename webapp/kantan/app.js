@@ -10,6 +10,12 @@
 // 路線ID・経路数などの計算機の内部語は出さない。
 // alt_routes キーは、かんたんモードでは読むこと自体を禁止(R3)。
 
+// データ(JSON)は毎回サーバーに「変わっていないか」を確かめてから使う(変わって
+// いなければ通信はごく小さい)。公開サイトはファイルを最大10分ブラウザに保存させるため、
+// 再生成の直後に古い時刻表が使われ、新しい画面と食い違うことがあった(2026-10-07 実例:
+// 地図ボタンがのりばでなく停の真ん中を指した)
+const DATA_FETCH = { cache: "no-cache" };
+
 let districts = [];
 let destinations = [];
 let meta = null;
@@ -26,7 +32,7 @@ let stopsIndexCache;
 
 async function getMeshIndex() {
   if (meshIndexCache === undefined) {
-    meshIndexCache = await fetch("../data/mesh_index.json")
+    meshIndexCache = await fetch("../data/mesh_index.json", DATA_FETCH)
       .then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return meshIndexCache;
@@ -34,7 +40,7 @@ async function getMeshIndex() {
 
 async function getStopsIndex() {
   if (stopsIndexCache === undefined) {
-    stopsIndexCache = await fetch("../data/stops_index.json")
+    stopsIndexCache = await fetch("../data/stops_index.json", DATA_FETCH)
       .then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return stopsIndexCache;
@@ -186,7 +192,7 @@ function dateJa(iso) {
 // ===============================================================
 async function getTimetable(did) {
   if (!timetableCache[did]) {
-    timetableCache[did] = await fetch(`../data/timetables/${did}.json`).then((r) => r.json());
+    timetableCache[did] = await fetch(`../data/timetables/${did}.json`, DATA_FETCH).then((r) => r.json());
   }
   return timetableCache[did];
 }
@@ -1441,9 +1447,9 @@ function wireStaticHandlers() {
 
 async function init() {
   [districts, destinations, meta] = await Promise.all([
-    fetch("../data/districts.json").then((r) => r.json()),
-    fetch("../data/destinations.json").then((r) => r.json()),
-    fetch("../data/meta.json").then((r) => r.json()),
+    fetch("../data/districts.json", DATA_FETCH).then((r) => r.json()),
+    fetch("../data/destinations.json", DATA_FETCH).then((r) => r.json()),
+    fetch("../data/meta.json", DATA_FETCH).then((r) => r.json()),
   ]);
   document.getElementById("app").hidden = false;
   wireStaticHandlers();

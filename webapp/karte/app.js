@@ -7,27 +7,33 @@
 // じゅうしょの検索は国土地理院の住所検索API(無料・キー不要)をブラウザから直接呼ぶ。
 // じゅうしょ・座標はどこにも保存しない(このページのメモリ上だけで使う)。
 
+// データ(JSON)は毎回サーバーに「変わっていないか」を確かめてから使う(変わって
+// いなければ通信はごく小さい)。公開サイトはファイルを最大10分ブラウザに保存させるため、
+// 再生成の直後に古い時刻表が使われ、新しい画面と食い違うことがあった(2026-10-07 実例:
+// 地図ボタンがのりばでなく停の真ん中を指した)
+const DATA_FETCH = { cache: "no-cache" };
+
 let karteData = null;    // 遅延fetch(webapp/data/karte.json)
 let districtsData = null; // 遅延fetch(webapp/data/districts.json)
 let metaData = null;      // 遅延fetch(webapp/data/meta.json。有効期限の表示にだけ使う)
 
 async function getKarte() {
   if (!karteData) {
-    karteData = await fetch("../data/karte.json").then((r) => r.json());
+    karteData = await fetch("../data/karte.json", DATA_FETCH).then((r) => r.json());
   }
   return karteData;
 }
 
 async function getDistricts() {
   if (!districtsData) {
-    districtsData = await fetch("../data/districts.json").then((r) => r.json());
+    districtsData = await fetch("../data/districts.json", DATA_FETCH).then((r) => r.json());
   }
   return districtsData;
 }
 
 async function getMeta() {
   if (!metaData) {
-    metaData = await fetch("../data/meta.json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    metaData = await fetch("../data/meta.json", DATA_FETCH).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return metaData;
 }

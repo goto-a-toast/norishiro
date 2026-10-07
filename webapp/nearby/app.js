@@ -14,6 +14,12 @@
 
 "use strict";
 
+// データ(JSON)は毎回サーバーに「変わっていないか」を確かめてから使う(変わって
+// いなければ通信はごく小さい)。公開サイトはファイルを最大10分ブラウザに保存させるため、
+// 再生成の直後に古い時刻表が使われ、新しい画面と食い違うことがあった(2026-10-07 実例:
+// 地図ボタンがのりばでなく停の真ん中を指した)
+const DATA_FETCH = { cache: "no-cache" };
+
 const state = { origin: null, net: null, dayType: null, meta: null, dests: [], cat: "hospital" };
 
 // 測位の誤差の合格ライン(かんたん・しっかりと同じ考え方)。
@@ -298,8 +304,8 @@ function todayKey(d) {
 
 async function init() {
   const [meta, dests] = await Promise.all([
-    fetch("../data/meta.json").then((r) => r.json()),
-    fetch("../data/destinations.json").then((r) => r.json()),
+    fetch("../data/meta.json", DATA_FETCH).then((r) => r.json()),
+    fetch("../data/destinations.json", DATA_FETCH).then((r) => r.json()),
   ]);
   state.meta = meta;
   state.dests = dests;
@@ -311,7 +317,7 @@ async function init() {
   state.todayType = meta.date_table[todayKey(now)] || null;
   state.dayType = state.todayType || "weekday";
 
-  const netJson = await fetch(`../data/network/${state.dayType}.json`).then((r) => {
+  const netJson = await fetch(`../data/network/${state.dayType}.json`, DATA_FETCH).then((r) => {
     if (!r.ok) throw new Error("ネットワークデータがありません");
     return r.json();
   });

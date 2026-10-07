@@ -1142,32 +1142,31 @@ def _cluster_stop_points(pts: list, radius_m: float = 1000) -> list:
 
 
 def build_stops_index(networks: dict, used_names: set) -> dict:
-    """停留所名→座標 の索引を作る。同名の停(のりば違い・フィード重複)は
-    座標の平均を代表点にする(表示は「およそ◯m/km」の丸めなので十分)。
-    ただし別の町に同じ名前の停がある場合(例: 七日町が山形市と他市に存在)、
-    全部を平均すると「どちらでもない空中の一点」になり距離表示が大きく狂う
-    (2026-07-12 開発者報告「七日町が24km」)。そこで1km超離れたものは別の
-    かたまりとして [[lat,lon],...] の複数座標で出力し、JS側が一番近いものを使う。
+    """停留所名→座標 の索引を作る。値は**実在ののりばの座標そのもの**
+    (1か所なら [lat,lon]、複数なら [[lat,lon],...]。重複は除き、並びは決定的)。
+
+    経緯: 以前は1km以内ののりばを平均して代表点にしていたが、地図ボタン(2026-10-07)で
+    「七日町が交差点の真ん中を指す」と開発者から指摘された(のりば6か所・約205m)。
+    平均点はどののりばでもない場所になるため、のりばを全部載せ、JS側が基準点
+    (いまの場所/地区の代表点/施設)に一番近いのりばを選ぶ。別の町の同名停
+    (2026-07-12「七日町が24km」)も同じ仕組みで正しく選ばれる。
     3ダイヤ種別のどれかにしか現れない停に備え、全ネットワークのunionから引く"""
     points = {}
     for network in networks.values():
         for info in network.stops.values():
             name = info["name"]
             if name in used_names:
-                points.setdefault(name, []).append((float(info["lat"]), float(info["lon"])))
+                points.setdefault(name, set()).add(
+                    (round(float(info["lat"]), 5), round(float(info["lon"]), 5)))
     index = {}
     n_multi = 0
     for name in sorted(points):   # 名前順=冪等
-        centers = []
-        for c in _cluster_stop_points(points[name]):
-            centers.append([round(sum(p[0] for p in c) / len(c), 5),
-                            round(sum(p[1] for p in c) / len(c), 5)])
-        index[name] = centers[0] if len(centers) == 1 else centers
-        if len(centers) > 1:
+        pts = [list(p) for p in sorted(points[name])]
+        index[name] = pts[0] if len(pts) == 1 else pts
+        if len(pts) > 1:
             n_multi += 1
-            print(f"  同名停「{name}」は{len(centers)}か所の別地点として収録しました")
     if n_multi:
-        print(f"  (複数地点の停名: {n_multi}件。JSは一番近い地点までの距離を表示)")
+        print(f"  のりばが複数ある停名: {n_multi}件(JSは基準点に一番近いのりばを使う)")
     return index
 
 

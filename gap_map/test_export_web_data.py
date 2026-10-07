@@ -516,7 +516,9 @@ def test_collect_stop_names_walks_all_fields():
     assert used == {"A停", "B停", "C停", "D停", "E停"}
 
 
-def test_build_stops_index_averages_same_name_and_sorts():
+def test_build_stops_index_lists_real_platforms_and_sorts():
+    """同名の停は平均せず、実在ののりばを全部載せる(2026-10-07 地図ボタンの指摘
+    「七日町が真ん中を指す」。平均点はどののりばでもない場所になる)"""
     net1 = SimpleNamespace(stops={
         "s1": {"name": "A停", "lat": 38.0, "lon": 140.0},
         "s2": {"name": "A停", "lat": 38.001, "lon": 140.001},  # のりば違い
@@ -524,30 +526,25 @@ def test_build_stops_index_averages_same_name_and_sorts():
     })
     net2 = SimpleNamespace(stops={
         "s4": {"name": "B停", "lat": 38.5, "lon": 140.5},
+        "s5": {"name": "A停", "lat": 38.0, "lon": 140.0},     # 別ダイヤに同じのりば(重複は1つに)
     })
     index = build_stops_index({"weekday": net1, "saturday": net2}, {"A停", "B停"})
     assert list(index) == ["A停", "B停"]           # 名前順=冪等
-    assert index["A停"] == [38.0005, 140.0005]     # 同名は座標平均
-    assert index["B停"] == [38.5, 140.5]
+    assert index["A停"] == [[38.0, 140.0], [38.001, 140.001]]
+    assert index["B停"] == [38.5, 140.5]           # 1か所なら従来どおり [lat,lon]
     assert "使わない停" not in index
 
 
 def test_build_stops_index_keeps_distant_same_name_stops_apart():
-    """2026-07-12 開発者報告「七日町が24km」の修正: 別の町にある同名停を平均すると
-    「どちらでもない空中の一点」になる。1km超離れた同名停は複数座標で出力し、
-    近い(1km以内の)のりば違いだけを平均する"""
+    """別の町にある同名停(2026-07-12「七日町が24km」)も、のりばごとに残る"""
     net = SimpleNamespace(stops={
         "s1": {"name": "七日町", "lat": 38.255, "lon": 140.340},   # 山形市
         "s2": {"name": "七日町", "lat": 38.256, "lon": 140.341},   # 山形市(のりば違い)
         "s3": {"name": "七日町", "lat": 38.670, "lon": 140.335},   # 遠くの別の町(約46km北)
     })
     index = build_stops_index({"weekday": net}, {"七日町"})
-    v = index["七日町"]
-    assert isinstance(v[0], list) and len(v) == 2          # 2か所の別地点
-    assert v[0] == [38.2555, 140.3405]                     # 山形市側は2のりばの平均
-    assert v[1] == [38.67, 140.335]
-    # 再実行しても同じ並び(冪等)
-    assert build_stops_index({"weekday": net}, {"七日町"})["七日町"] == v
+    assert index["七日町"] == [[38.255, 140.34], [38.256, 140.341], [38.67, 140.335]]
+    assert build_stops_index({"weekday": net}, {"七日町"})["七日町"] == index["七日町"]   # 冪等
 
 
 def test_flatten_districts_appends_subs_with_parent_info():
