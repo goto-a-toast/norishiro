@@ -1065,7 +1065,7 @@ function renderRideCard(now) {
       ` ${dirWord}のバス</div>`;
   }
 
-  card.innerHTML = banner + head + otherDayBoardNote() + rideStepsHtml(ride, s3.sel.dir);
+  card.innerHTML = banner + head + otherDayBoardNote() + freeShuttleNote() + rideStepsHtml(ride, s3.sel.dir);
   const bbtn = card.querySelector("#back-today-btn");
   if (bbtn) bbtn.addEventListener("click", () => renderScreen3(s3.district.id, s3.facility.id));
 }
@@ -1074,6 +1074,47 @@ function renderRideCard(now) {
 // データ工場は、平日しか走らないバス(済生病院のシャトル等)が明らかに速ければ、
 // その曜日だけおすすめの乗り場を替える。いつもの曜日と違う停に行ってしまわないように、
 // 「土曜・日曜・祝日は ◯◯ から のります」と添える。利用者が乗り場を自分で選んだときは出さない
+// 無料の送迎バス(病院のシャトル等)の運行主体。meta.operators の feed 名で見分ける。
+// ★地域ごとの設定: 新しい送迎バスを region.py の restricted_feeds に足したら、ここにも足す
+const FREE_SHUTTLE_FEEDS = new Set(["済生病院シャトル"]);
+
+// おすすめの乗り場が路線バスでも、歩いて行ける停から無料シャトルで行ける便があれば1行で知らせる
+// (2026-10-08 開発者採用の案A)。例: 十日町(紅の蔵)→済生病院。シャトルは「病院→市役所前→山交ビル→
+// 山形駅→北山形駅西口→病院」の一方向の循環なので、帰りは市役所前まで13分だが、行きは市内を1周して
+// 24分かかり、速さで選ぶおすすめの乗り場(本町の路線バス)に負ける。無料で病院へ行く人のためのバスなので、
+// 少し遅くても使いたい人のために、乗り場と発車時刻を添える。おすすめの乗り場そのものは変えない
+function freeShuttleNote() {
+  if (!s3.entry || !s3.sel || s3.sel.dir !== "outbound" || !meta || !Array.isArray(meta.operators)) return "";
+  const isShuttle = (op) => Number.isInteger(op) && meta.operators[op] && FREE_SHUTTLE_FEEDS.has(meta.operators[op].feed);
+  // いま見せている便にシャトルが入っていれば(おすすめがシャトルの乗り場など)、言わなくてよい
+  if (s3Rows("outbound").some((r) => isShuttle(r.op) || (r.transfer && isShuttle(r.transfer.op2)))) return "";
+  // 表示している日の全部の乗り場の便から、シャトルに家の近くで直接乗る便(その日運休の分は除く)
+  let all = (s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
+  const closed = s3.showType === s3.closedFor ? s3.closedOps : null;
+  if (closed && closed.size) all = withoutClosed(all, closed);
+  const rides = all.filter((r) => isShuttle(r.op));
+  if (!rides.length) return "";
+  // 乗り場が複数あるときは、便のいちばん多い停を案内する
+  const byBoard = new Map();
+  for (const r of rides) {
+    if (!byBoard.has(r.board)) byBoard.set(r.board, []);
+    byBoard.get(r.board).push(r);
+  }
+  const [board, rows] = [...byBoard.entries()].sort((a, b) => b[1].length - a[1].length)[0];
+  // 案内する発車時刻は「これから出る便」。きょうの表示で全部出たあとなら、本数だけ伝える
+  // (午後に開いて「ごぜん8:13」と出ると、乗れる便のように見えてしまうため)
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const later = s3.tomorrowView ? rows : rows.filter((r) => hmToMin(r.dep) >= nowMin);
+  const walk = rows[0].board_walk_min >= 1 ? `あるいて約${rows[0].board_walk_min}分。` : "";
+  const when = later.length
+    ? `${later.slice(0, 2).map((r) => timeWord(r.dep)).join("・")}${later.length > 2 ? " ほか" : ""}`
+    : "きょうの便は おわりました";
+  return `<div class="day-board-note shuttle-note">※無料の シャトルバスも あります:` +
+    `「${escapeHtml(board)}」から ${escapeHtml(when)}` +
+    `(${walk}この日 ${rows.length}本)</div>`;
+}
+
 function otherDayBoardNote() {
   const kb = s3.entry && s3.entry.kantan_boards;
   if (!kb || s3.boardPick || !s3.sel || s3.sel.dir !== "outbound") return "";
