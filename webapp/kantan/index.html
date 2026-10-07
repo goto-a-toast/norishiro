@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>バスの時刻表 - かんたんモード</title>
 <!-- ?v= は更新日。app.js/style.css を変えたら数字を上げる(ブラウザに残った古いファイルを使わせないため。docs/runbook_regenerate.md) -->
-<link rel="stylesheet" href="style.css?v=20261007g">
+<link rel="stylesheet" href="style.css?v=20261008b">
 </head>
 <body>
 <noscript>この機能にはJavaScriptが必要です</noscript>
@@ -26,6 +26,11 @@
   <!-- 画面1: 地区をえらぶ -->
   <main id="screen1" class="screen">
     <h1>バスの時刻表を<br>つくります</h1>
+    <!-- わが家から しらべる(案D 段階3。docs/plan_stage3_kantan.md §3)。家の場所を この端末に
+         おぼえておき、地区の代表点のかわりに家から時刻表を つくる。位置情報か端末の保存が
+         使えない環境では JS が欄ごと隠す(下の地区の一覧だけで完結する) -->
+    <div id="home-row" class="home-row" aria-live="polite" hidden></div>
+
     <p class="instruction">① おすまいの地区をえらんでください</p>
     <!-- GPSで近い地区の候補を出す(2026-07-07 開発者要望。使えない環境では一覧だけで完結する) -->
     <div class="geo-row">
@@ -49,6 +54,12 @@
       <button class="cat-tab" type="button" role="tab" data-cat="town" aria-selected="false">🏛 まちなか</button>
     </div>
     <div id="facility-list" class="facility-list"></div>
+    <!-- どの行き先へもバスで行けないとき(近くにバス停が無い家・地区)の案内と電話番号。
+         行き先のボタンが全部押せないと画面3の電話番号欄にたどり着けないため、ここに出す -->
+    <div id="s2-none-box" class="s2-none-box" hidden>
+      <p id="s2-none-note" class="s2-none-note"></p>
+      <div id="s2-phone-box" class="phone-box"></div>
+    </div>
   </main>
 
   <!-- 画面3: 時刻表(F4-2で全面改訂。設計= docs/plan_f4_ui.md §3) -->
@@ -94,6 +105,6 @@
   </main>
 </div>
 
-<script src="app.js?v=20261007g"></script>
+<script src="app.js?v=20261008b"></script>
 </body>
 </html>

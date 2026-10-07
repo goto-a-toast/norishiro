@@ -141,6 +141,39 @@ h1 {
   border: 3px solid var(--color-border);
   border-radius: 14px;
 }
+/* ---------------- わが家から しらべる(画面1。案D 段階3) ---------------- */
+.home-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.home-btn {
+  width: 100%;
+  min-height: var(--tap-size);
+  font-family: inherit;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+  background: var(--color-outbound);
+  border: 3px solid var(--color-outbound);
+  border-radius: 14px;
+}
+.home-set-btn { background: #fdf6e3; color: var(--color-text); border-color: var(--color-border); font-size: 26px; }
+.home-note { font-size: 19px; color: #444444; margin: 0; line-height: 1.5; text-align: left; }
+.home-sub { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.home-small-btn {
+  min-height: 48px;
+  padding: 4px 12px;
+  font-family: inherit;
+  font-size: 18px;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 2px solid #888888;
+  border-radius: 10px;
+}
+.home-warn {
+  font-size: 19px; text-align: left; line-height: 1.5; margin: 0;
+  color: #7a2d00; background: #fdeee3;
+  border-left: 4px solid var(--color-return); padding: 8px 10px; border-radius: 4px;
+}
+.calc-note { font-size: 22px; text-align: center; color: #444444; padding: 16px 0; }
+
 .geo-result { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 22px; text-align: center; }
 .geo-note { font-size: 20px; color: #444444; margin: 4px 0 0; }
 .geo-candidate { background: #fffdf5; }
@@ -312,6 +345,14 @@ h1 {
   color: var(--color-disabled);
   background: var(--color-disabled-bg);
   border-color: var(--color-disabled);
+}
+
+/* どの行き先へも行けないときの案内(画面2) */
+.s2-none-box { margin-top: 8px; }
+.s2-none-note {
+  font-size: 20px; text-align: left; line-height: 1.5; margin: 0 0 8px;
+  color: #7a2d00; background: #fdeee3;
+  border-left: 4px solid var(--color-return); padding: 8px 10px; border-radius: 4px;
 }
 
 .no-facility-note {

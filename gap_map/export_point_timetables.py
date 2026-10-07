@@ -8,8 +8,8 @@ JS と突き合わせる材料にする。
 
 ★工場(export_web_data.py)の関数を import して呼ぶだけで、計算を書き直さない。
   地区ファイル・配布データには何も書き込まない(出力は指定したファイルだけ)。
-★済生病院のシャトル(restricted_feeds)は入れない。JS 側も通常の配布ネットワークで計算するので、
-  ここでは f20 も含めて「シャトル無し」どうしで比べる(シャトル入りの照合は 3-3)。
+★済生病院のシャトル(restricted_feeds)は、工場の main() と同じく、その行き先の行き・帰りだけを
+  「通常のフィード+専用フィード」のネットワークで計算し直して差し替える(段階3-3。2026-10-07)。
 
 使い方(GTFSのある環境=Macで。プロジェクトルートから):
   python3 gap_map/export_point_timetables.py --every 4 --out /tmp/points.jsonl
@@ -54,6 +54,19 @@ def main():
         network = build_network(config.GTFS_FEED_DIRS, ref_date)
         per_daytype[day_type] = ew.compute_day_type_schedules(
             network, points, destinations, ew.StopIndex(network), ew.build_headsign_map(network))
+        # 行き先専用のフィード: export_web_data.main() と同じ差し替え
+        for rf in ew.RESTRICTED_FEEDS:
+            rf_dests = [f for f in destinations if f["id"] in rf["facilities"]]
+            if not rf_dests:
+                continue
+            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            res = ew.compute_day_type_schedules(net_rf, points, rf_dests, ew.StopIndex(net_rf),
+                                                ew.build_headsign_map(net_rf))
+            for f in rf_dests:
+                for pid in per_daytype[day_type]["outbound"]:
+                    per_daytype[day_type]["outbound"][pid][f["id"]] = \
+                        res["outbound"].get(pid, {}).get(f["id"], [])
+                per_daytype[day_type]["inbound"][f["id"]] = res["inbound"].get(f["id"], {})
         print(f"[{day_type}] {time.time() - t0:.0f}秒")
 
     with open(args.out, "w", encoding="utf-8") as fh:

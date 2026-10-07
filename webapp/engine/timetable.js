@@ -18,10 +18,13 @@
 //   3. 徒歩圏の停を近い順に並べるとき、同じ距離の停は工場が停を見る順番(stopOrder)に置く
 //   4. 距離の式は工場と同じ haversine(地球半径6371km)。座標は丸めない値を使う
 
+// Node(照合スクリプト)からも、ブラウザ(<script> や Web Worker の importScripts で raptor.js の
+// 後に読む)からも使う。ブラウザでは画面のプログラム(kantan/app.js など)と関数名がぶつからないよう、
+// 外には TimetableEngine という名前1つだけを出す
+(function (root) {
 "use strict";
 
 /* global pyRound, cmpStr, raptorSearch, reconstructPath */
-// Node(照合スクリプト)からも、ブラウザ(<script> で raptor.js の後に読む)からも使う
 const TT_ENGINE = (typeof module !== "undefined" && module.exports)
   ? require("./raptor.js")
   : { pyRound, cmpStr, raptorSearch, reconstructPath };
@@ -657,27 +660,62 @@ function computeDayType(net, home, facilities, dirs = ["outbound", "inbound"]) {
   return res;
 }
 
-// nets: {ダイヤ種別: 展開済みネットワーク}。戻り値は地区ファイルと同じ {pts, to}
-function buildHomeTimetable(nets, home, facilities, dirs = ["outbound", "inbound"]) {
-  const perDayRaw = {};
-  for (const dt of DAY_TYPES) if (nets[dt]) perDayRaw[dt] = computeDayType(nets[dt], home, facilities, dirs);
+// わが家から、ダイヤ種別ごとの「生の答え」(エントリにまとめる前の便の一覧)を計算する。
+// nets: {ダイヤ種別: 展開済みネットワーク}
+// restricted: 行き先専用のネットワーク(済生病院のシャトル入り等)。
+//   [{facilities: [行き先id...], nets: {ダイヤ種別: 展開済みネットワーク}}]。
+//   工場と同じく、その行き先への行き・帰りだけをこのネットワークで計算する。
+//   乗り場までの徒歩(board_walk_min)は工場と同じく通常のネットワークの最寄り停で決める
+// 戻り値: {ダイヤ種別: {outbound: {行き先id: [便]}, inbound: {行き先id: [便]}, homeBoard}}
+function computeHomeRaw(nets, home, facilities, dirs = ["outbound", "inbound"], restricted = []) {
+  const special = new Map();   // 行き先id → {ダイヤ種別: ネットワーク}
+  for (const r of restricted) for (const fid of r.facilities) special.set(fid, r.nets);
+  const normal = facilities.filter((f) => !special.has(f.id));
+  const raw = {};
+  for (const dt of DAY_TYPES) {
+    if (!nets[dt]) continue;
+    raw[dt] = computeDayType(nets[dt], home, normal, dirs);
+    for (const f of facilities) {
+      if (!special.has(f.id)) continue;
+      const rNet = special.get(f.id)[dt];
+      if (!rNet) throw new Error(`${f.id} の専用ネットワーク(${dt})がありません`);
+      const r = computeDayType(rNet, home, [f], dirs);
+      if (dirs.includes("outbound")) raw[dt].outbound[f.id] = r.outbound[f.id] || [];
+      if (dirs.includes("inbound")) raw[dt].inbound[f.id] = r.inbound[f.id] || [];
+    }
+  }
+  return raw;
+}
+
+// 生の答えを、地区ファイルと同じ {pts, to} にまとめる。
+// 生の答えは書き換えない(画面2で計算した行きを画面3でも使い回すため。
+// attachStopPoints は便の座標を番号に置き換えるので、まとめる前に写しを作る)
+function assembleHomeTimetable(raw, home, facilities, cfg) {
   const to = {};
   for (const f of facilities) {
     const perDay = {};
-    for (const dt of Object.keys(perDayRaw)) {
-      const r = perDayRaw[dt];
+    for (const dt of Object.keys(raw)) {
+      const r = raw[dt];
       perDay[dt] = { outbound: r.outbound[f.id] || [], inbound: r.inbound[f.id] || [], homeBoard: r.homeBoard };
     }
-    to[f.id] = buildEntry(home, f, perDay, nets[Object.keys(perDayRaw)[0]].config);
+    to[f.id] = JSON.parse(JSON.stringify(buildEntry(home, f, perDay, cfg)));
   }
   const pts = attachStopPoints(to);
   return { pts, to };
 }
 
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = {
-    buildHomeTimetable, computeDayType, buildEntry, attachStopPoints, prepareNetwork,
-    nearbyStops, buildOrigins, buildTargets, scanFromOrigin, pickKantanBoard,
-    dropSameBusEarlierRows, frontierRows, haversineM, DAY_TYPES,
-  };
+// まとめて計算する入口(照合スクリプトはこれで地区ファイルと突き合わせる)。戻り値は {pts, to}
+function buildHomeTimetable(nets, home, facilities, dirs = ["outbound", "inbound"], restricted = []) {
+  const raw = computeHomeRaw(nets, home, facilities, dirs, restricted);
+  const cfg = nets[Object.keys(raw)[0]].config;
+  return assembleHomeTimetable(raw, home, facilities, cfg);
 }
+
+const api = {
+  buildHomeTimetable, computeHomeRaw, assembleHomeTimetable, computeDayType, buildEntry,
+  attachStopPoints, prepareNetwork, nearbyStops, buildOrigins, buildTargets, scanFromOrigin,
+  pickKantanBoard, dropSameBusEarlierRows, frontierRows, haversineM, DAY_TYPES,
+};
+if (typeof module !== "undefined" && module.exports) module.exports = api;
+else root.TimetableEngine = api;
+})(typeof self !== "undefined" ? self : globalThis);

@@ -68,7 +68,10 @@ function inflateNetwork(data) {
   return { patterns, stop_routes: stopRoutes, stops, footpaths, tripInfo, stopOrder,
            config: data.config ?? { walk_speed_m_per_min: 60, walk_detour: 1.3,
                                     max_walk_to_stop_m: 800, min_transfer_min: 3 },
-           operators: data.operators ?? [] };
+           operators: data.operators ?? [],
+           // 行き先専用のネットワーク(済生病院のシャトル入り等)の一覧。
+           // [{file, facilities: [行き先id...], feed}]。無い古い配布ファイルでは空
+           restricted: data.restricted ?? [] };
 }
 
 if (typeof module !== "undefined" && module.exports) {

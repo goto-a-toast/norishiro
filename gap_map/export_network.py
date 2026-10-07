@@ -136,10 +136,31 @@ def main():
         print(f"  停留所{len(net.stops):,} / パターン{len(net.patterns):,} / 便{n_trips:,}"
               f" / 行き先表示{len(data['headsigns'])}種")
         print(f"  そのまま {len(raw)/1024/1024:.2f}MB / gzip後 {len(gz)/1024/1024:.2f}MB")
+        # 行き先専用のフィード(済生病院のシャトル等。region.py の restricted_feeds)。
+        # 工場(export_web_data.py)は、その行き先への行き・帰りだけを「通常のフィード+専用
+        # フィード」のネットワークで計算し直している。端末でも同じにするため、その組み合わせの
+        # ネットワークを別ファイルで配り、通常のファイルに「どの行き先にどのファイルを使うか」を
+        # 書いておく(2026-10-07 段階3-3)。専用の便を通常のファイルに混ぜないのは、
+        # ほかの行き先の経路(市内どうしの移動・乗り継ぎ)に使わせないため
+        restricted = []
+        for i, rf in enumerate(ew.RESTRICTED_FEEDS):
+            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            data_rf = serialize(net_rf, ew.build_headsign_map(net_rf))
+            raw_rf, gz_rf = sizes(data_rf)
+            total_raw += len(raw_rf); total_gz += len(gz_rf)
+            name = f"{day_type}_r{i}.json"
+            restricted.append({"file": name, "facilities": sorted(rf["facilities"]),
+                               "feed": rf["dir"].name})
+            print(f"  [{rf['dir'].name}] 入り: 便{sum(len(p.trips) for p in net_rf.patterns):,}"
+                  f" / gzip後 {len(gz_rf)/1024/1024:.2f}MB → {name}")
+            if not args.dry_run:
+                (OUT_DIR / name).write_bytes(raw_rf)
+        data["restricted"] = restricted
+        raw, _gz = sizes(data)
+
         if not args.dry_run:
             out = OUT_DIR / f"{day_type}.json"
-            out.write_bytes(json.dumps(data, ensure_ascii=False,
-                                       separators=(",", ":")).encode("utf-8"))
+            out.write_bytes(raw)
             print(f"  → {out.relative_to(PROJECT_ROOT)}")
 
     print(f"\n合計: そのまま {total_raw/1024/1024:.2f}MB / gzip後 {total_gz/1024/1024:.2f}MB")

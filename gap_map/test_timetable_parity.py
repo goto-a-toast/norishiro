@@ -1,8 +1,9 @@
 """案D 段階3-2: 端末で作る時刻表(webapp/engine/timetable.js)が地区ファイルと一致することの自動検査。
 
 全件の照合(全62地区・約15万便)は gap_map/verify_timetable_parity.js を直接回す(約20秒)。
-ここでは、pytest をいつ回しても崩れに気づけるよう、性質の違う3地区だけを照合する:
+ここでは、pytest をいつ回しても崩れに気づけるよう、性質の違う4地区だけを照合する:
   d19 第一地区   … 都心。乗り場が多く、乗換・乗り場の絞り込みがいちばん効く
+  d23 第二地区   … 済生病院(f20)へ平日はシャトルで行く(専用ネットワーク restricted の照合)
   d24 第五地区   … 曜日ごとにおすすめ乗り場が変わる組を含む
   d01 みはらしの丘 … 郊外。便が少なく、行けない行き先がある
 
@@ -26,8 +27,8 @@ pytestmark = pytest.mark.skipif(
 
 
 def test_home_timetable_matches_district_files():
-    # --home d24: 画面が実際に呼ぶ「わが家1軒」の入口でも同じ答えになることを確かめる
-    proc = subprocess.run(["node", str(VERIFY_JS), "d19", "d24", "d01", "--home"],
+    # --home: 画面が実際に呼ぶ「わが家1軒」の入口でも同じ答えになることを確かめる
+    proc = subprocess.run(["node", str(VERIFY_JS), "d19", "d23", "d24", "d01", "--home"],
                           capture_output=True, text=True, timeout=600, cwd=ROOT)
     assert proc.returncode == 0, proc.stdout[-3000:] + proc.stderr[-2000:]
     assert "すべて一致" in proc.stdout
