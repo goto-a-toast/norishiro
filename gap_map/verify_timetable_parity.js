@@ -59,6 +59,14 @@ function canonRow(r, pts) {
   if ("ap" in o) { o.alight_ll = pts[o.ap]; delete o.ap; }
   if (o.board_ll == null) delete o.board_ll;
   if (o.alight_ll == null) delete o.alight_ll;
+  if (o.transfer) {
+    const t = { ...o.transfer };
+    if ("atp" in t) { t._at_ll = pts[t.atp]; delete t.atp; }
+    if ("offp" in t) { t._off_ll = pts[t.offp]; delete t.offp; }
+    if (t._at_ll == null) delete t._at_ll;
+    if (t._off_ll == null) delete t._off_ll;
+    o.transfer = t;
+  }
   for (const key of ["board_options", "alight_options"]) {
     if (!Array.isArray(o[key])) continue;
     o[key] = o[key].map((x) => {

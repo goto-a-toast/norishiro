@@ -193,10 +193,15 @@ function renderTrips(dest, result) {
       steps.push(
         `<li>正面に <span class="headsign">${esc(headsignLabel(info.headsign))}</span> と出ているバスに のる` +
         `<span class="small">（${esc(nfkc(r.route_name || ""))}${op ? " / " + esc(op) : ""}）</span><br>` +
-        `「${esc(state.net.stops[r.to_stop].name)}」で おりる（${timeWord(r.arrive)}着）</li>`);
+        `「${esc(state.net.stops[r.to_stop].name)}」で おりる（${timeWord(r.arrive)}着）` +
+        `${stopMapLink(state.net.stops[r.to_stop])}</li>`);
       if (i < t.rides.length - 1) {
         const wait = t.rides[i + 1].depart - r.arrive;
-        steps.push(`<li>のりかえ（${wait}分まち）</li>`);
+        // 乗り換えで別ののりばへ歩くときは、乗るのりばの地図も出す(2026-10-08)
+        const next = t.rides[i + 1].from_stop;
+        const walkTo = next !== r.to_stop
+          ? `「${esc(state.net.stops[next].name)}」まで あるいて ${stopMapLink(state.net.stops[next])}` : "";
+        steps.push(`<li>のりかえ（${wait}分まち）${walkTo}</li>`);
       }
     });
     if (t.best.walk >= 1) {

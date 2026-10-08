@@ -614,7 +614,10 @@ function directionSection(dir, label, entry, district, facility) {
           ? `「${escapeHtml(t.off)}」で おりて「${escapeHtml(t.at)}」まで歩いて のりかえ(待ち${t.wait_min}分)<br>`
           : `「${escapeHtml(t.at)}」で のりかえ(待ち${t.wait_min}分)<br>`) +
         `<span class="sub">→ ${escapeHtml(headsignLabel(t.headsign2))} 番号: ${escapeHtml(t.route2)}` +
-        (op2 ? ` / ${escapeHtml(op2.name)}` : "") + "</span>";
+        (op2 ? ` / ${escapeHtml(op2.name)}` : "") + "</span>" +
+        // 乗り換えのバス停の地図(2026-10-08)。offp / atp = 実際に降りる/乗るのりばの番号
+        (t.off ? ` ${stopMapLinkHtml(t.off, alightRef, t.offp)}` : "") +
+        ` ${stopMapLinkHtml(t.at, alightRef, t.atp)}`;
     }
     const notes = [];
     // おりるバス停は実停名(列「おりるバス停」)。目的地まで歩くなら補足に徒歩分を出す
