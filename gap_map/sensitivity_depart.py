@@ -38,13 +38,16 @@ def hm_to_min(hm: str) -> int:
     return int(h) * 60 + int(m)
 
 
-def recompute(depart_minutes: list) -> pd.DataFrame:
-    """compute_access.main() のメッシュごとの計算を、出発時刻だけ差し替えて行う。
-    is_gap の判定式も main() と同じ(確定版との一致で確かめる)"""
+def recompute(depart_minutes: list, facilities: pd.DataFrame = None) -> pd.DataFrame:
+    """compute_access.main() のメッシュごとの計算を、出発時刻(と病院の一覧)だけ差し替えて行う。
+    is_gap の判定式も main() と同じ(確定版との一致で確かめる)。
+    facilities: 使う施設の一覧(省略すると確定版と同じ data/facilities.csv。sensitivity_hospital.py が
+    「内科のある病院だけ」を渡す)。戻り値には③の通院先の病院名(visit_hospital)も入れる"""
     ca.DEPART_MINUTES = depart_minutes   # compute_indicator1 / compute_hospital_visit が参照する
     network = ca.load_network()
     meshes = pd.read_csv(config.TARGET_MESHES_CSV)
-    facilities = pd.read_csv(config.FACILITIES_CSV)
+    if facilities is None:
+        facilities = pd.read_csv(config.FACILITIES_CSV)
     stop_ids = list(network.stops.keys())
     stop_lats = np.array([network.stops[s]["lat"] for s in stop_ids])
     stop_lons = np.array([network.stops[s]["lon"] for s in stop_ids])
@@ -54,14 +57,14 @@ def recompute(depart_minutes: list) -> pd.DataFrame:
     for mesh in meshes.itertuples():
         mesh_stops = ca.nearby_stops(mesh.lat, mesh.lon, stop_ids, stop_lats, stop_lons,
                                      config.MAX_WALK_TO_STOP_M)
-        hosp_min, _ = ca.compute_indicator1(mesh.lat, mesh.lon, mesh_stops, network, hospital_index)
+        hosp_min, hosp_name = ca.compute_indicator1(mesh.lat, mesh.lon, mesh_stops, network, hospital_index)
         visit_ok, visit_total = ca.compute_hospital_visit(mesh.lat, mesh.lon, mesh_stops, network,
                                                           hospital_index)
         _, walk_direct_min = hospital_index.nearest_by_distance(mesh.lat, mesh.lon)
         walkable_by_foot = walk_direct_min is not None and walk_direct_min <= config.WALKABLE_FACILITY_MIN
         is_gap = (mesh.population > 0 and not walkable_by_foot
                   and (hosp_min is None or hosp_min > config.GAP_THRESHOLD_MIN or visit_ok == "No"))
-        rows.append({"meshcode": mesh.meshcode, "time_to_hospital_min": hosp_min,
+        rows.append({"meshcode": mesh.meshcode, "time_to_hospital_min": hosp_min, "hospital_name": hosp_name,
                      "hospital_visit_ok": visit_ok, "visit_total_min": visit_total, "is_gap": is_gap})
     return pd.DataFrame(rows)
 
