@@ -30,7 +30,7 @@ OSM Overpass(スーパー)┴─→ fetch_facilities.py ────────
 network.pkl + target_meshes
   + facilities ─────────────→ compute_access.py ★───────────→ output/access_mesh.csv ★
 access_mesh + facilities ───→ make_map.py ───────────────────→ output/gap_map.html ★
-access_mesh + target_meshes → analyze_demographics.py ───────→ 高齢化率(43.2%等)
+access_mesh + target_meshes → analyze_demographics.py ───────→ 高齢化率(43.5%等)
 access_mesh ────────────────→ make_destinations.py ──────────→ webapp/data/destinations.json ●
 districts + destinations
   + network ────────────────→ export_web_data.py ────────────→ webapp/data/timetables/*.json ● + meta.json ●
