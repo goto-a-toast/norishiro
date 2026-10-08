@@ -233,6 +233,9 @@ function makeItinerary(net, path, finalArrival, boardName, alightPlace,
       op2: Number.isInteger(m2.op) ? m2.op : null,
     };
     if (firstAlightName && firstAlightName !== transfer.at) transfer.off = firstAlightName;
+    // 乗り換えで乗る/降りるのりばの座標(工場と同じ一時フィールド。attachStopPoints が atp / offp に)
+    transfer._at_ll = stopLatLon(net, transferStop);
+    if (transfer.off) transfer._off_ll = stopLatLon(net, first.to_stop);
   }
 
   const totalMin = finalArrival - dep;
@@ -617,6 +620,12 @@ function attachStopPoints(to) {
           }
           if (b !== null) r.bp = b;
           if (a !== null) r.ap = a;
+          if (r.transfer) {
+            const tp = ref(r.transfer._at_ll); delete r.transfer._at_ll;
+            const op = ref(r.transfer._off_ll); delete r.transfer._off_ll;
+            if (tp !== null) r.transfer.atp = tp;
+            if (op !== null) r.transfer.offp = op;
+          }
         }
       }
     }

@@ -45,7 +45,7 @@ const HOME_KEY = "norishiro.home.v1";      // 保存領域の名前
 const HOME_NAME = "わが家";
 // 家として登録してよい場所: 人の住むメッシュの中心からこの距離以内(=山形市・上山市の中)
 const HOME_AREA_M = 1000;
-const ENGINE_VER = "20261008a";            // engine/ のファイルの版(古いものを使わせないため)
+const ENGINE_VER = "20261008b";            // engine/ のファイルの版(古いものを使わせないため)
 
 // 保存領域は、プライベートブラウズ・設定で止められているときなどに使えない(読み書きで例外)。
 // 使えなくても地区の一覧で今までどおり使えるよう、失敗は「登録なし」として扱う
@@ -1499,13 +1499,20 @@ function rideStepsHtml(r, dir) {
 
   // のりかえ(R4): どこで降りて、次に何行きに乗るか
   if (r.transfer) {
+    // 乗り換えのバス停の地図(2026-10-08 開発者要望「経由するバス停にも地図のリンクを」)。
+    // データ工場が実際に降りる/乗るのりばの番号(offp / atp)を入れている。歩いて乗り換えるときは両方
+    const tRef = dir === "outbound" ? s3.facility : s3.district;
+    const tLinks = [
+      r.transfer.off ? stopMapLinkHtml(r.transfer.off, tRef, r.transfer.offp) : "",
+      stopMapLinkHtml(r.transfer.at, tRef, r.transfer.atp),
+    ].filter(Boolean).map((a) => `<div class="map-link-row">${a}</div>`).join("");
     steps.push(
       // 降りる停と乗る停が違うときは、歩いて乗り換えることを書く(transfer.off。2026-10-07)
       (r.transfer.off
         ? `「${escapeHtml(r.transfer.off)}」で おりて、「${escapeHtml(r.transfer.at)}」まで あるいて、<br>`
         : `「${escapeHtml(r.transfer.at)}」で おりて、<br>`) +
       `<span class="headsign">${escapeHtml(headsignLabel(r.transfer.headsign2))}</span> に ` +
-      `のりかえ(${r.transfer.wait_min}分 まち)${confirmLineHtml(r.transfer.route2)}`
+      `のりかえ(${r.transfer.wait_min}分 まち)${confirmLineHtml(r.transfer.route2)}` + tLinks
     );
   }
 
@@ -1538,8 +1545,13 @@ function rideStepsHtml(r, dir) {
         `ちかいバス停で おりてください</div>`;
     }
   }
+  // 降りるバス停の地図(2026-10-08 開発者要望)。ap = 実際に降りるのりばの番号。
+  // 行きは施設の近く、帰りは家(地区)の近くの停なので、停名だけのときはそれを基準に近いのりばを選ぶ
+  const alightRef = dir === "outbound" ? s3.facility : (preciseFix || s3.district);
+  const alightMap = stopMapLinkHtml(r.alight, alightRef, r.ap);
   steps.push(`「${escapeHtml(r.alight)}」で おりる${placeNote} <span class="ride-note">${rideNote}</span>` +
-    ` <span class="arr-note">${timeWord(r.arr)} 着</span>${alightSiblingNote}`);
+    ` <span class="arr-note">${timeWord(r.arr)} 着</span>${alightSiblingNote}` +
+    (alightMap ? `<div class="map-link-row">${alightMap}</div>` : ""));
 
   const lis = steps
     .map((s, i) => `<li><span class="step-mark">${marks[i]}</span><span class="step-body">${s}</span></li>`)

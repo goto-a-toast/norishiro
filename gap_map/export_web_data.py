@@ -450,6 +450,12 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         }
         if first_alight_name and first_alight_name != transfer["at"]:
             transfer["off"] = first_alight_name       # 1本目を降りる停(at まで歩いて乗り換える)
+        # 乗り換えで乗る/降りるのりばの座標(一時フィールド。2026-10-08 開発者要望「経由するバス停にも
+        # 地図のリンクを」)。山形駅前のようにのりばが多い停で、停名から推定すると別ののりばを指すため
+        # 実際ののりばを持たせる。attach_stop_points が座標表への番号 atp / offp に置き換える
+        transfer["_at_ll"] = stop_latlon(network, transfer_stop_id)
+        if "off" in transfer:
+            transfer["_off_ll"] = stop_latlon(network, first.to_stop)
 
     total_min = final_arrival - dep
     ride_min = round(total_min - (transfer["wait_min"] if transfer else 0))
@@ -535,6 +541,15 @@ def attach_stop_points(to: dict) -> list:
                             p = ref(o.pop("_ll", None))
                             if p is not None:
                                 o["p"] = p
+                    # 乗り換えののりば(乗る at / 降りる off)。2026-10-08 追加
+                    t = r.get("transfer")
+                    if t:
+                        tp = ref(t.pop("_at_ll", None))
+                        op_ = ref(t.pop("_off_ll", None))
+                        if tp is not None:
+                            t["atp"] = tp
+                        if op_ is not None:
+                            t["offp"] = op_
                     if b is not None:
                         r["bp"] = b
                     if a is not None:
