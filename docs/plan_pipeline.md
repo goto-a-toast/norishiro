@@ -30,7 +30,7 @@ OSM Overpass(スーパー)┴─→ fetch_facilities.py ────────
 network.pkl + target_meshes
   + facilities ─────────────→ compute_access.py ★───────────→ output/access_mesh.csv ★
 access_mesh + facilities ───→ make_map.py ───────────────────→ output/gap_map.html ★
-access_mesh + target_meshes → analyze_demographics.py ───────→ 高齢化率(43.5%等)
+access_mesh + target_meshes → analyze_demographics.py ───────→ 高齢化率(45.5%等。第2版)
 access_mesh ────────────────→ make_destinations.py ──────────→ webapp/data/destinations.json ●
 districts + destinations
   + network ────────────────→ export_web_data.py ────────────→ webapp/data/timetables/*.json ● + meta.json ●
@@ -89,7 +89,7 @@ districts + destinations
 - `gap_map/run_pipeline.py`(新規): A〜J を正しい順で実行。各段で
   - 入力の有無をチェックし、無ければ「どのデータをどこに置くか」を案内して停止、
   - 出力が既にあれば既定でスキップ(`--force` で再生成)、
-  - 最後に**検算**(access_mesh の空白人口=15,418人 等、[[handover]] §4.1 と一致するか)を表示。
+  - 最後に**検算**(access_mesh の空白人口=11,455人 等(第2版)、[[handover]] §4.1 と一致するか)を表示。
 - これで **`python gap_map/run_pipeline.py` → 空白マップまで再現**。他自治体版も
   `config.TARGET_MUNICIPALITIES` とGTFS追加だけで回せる(横展開の土台)。
 
@@ -167,7 +167,7 @@ Mac環境で以下を行えば完成する。
    - `output/access_mesh.csv`(compute_access.py)
    - `data/target_meshes.csv`(prepare_meshes.py)
 3. **G4 実データ生成**: `python gap_map/make_district_gap.py`
-   → `webapp/data/district_gap.json`。**検算**: 空白人口合計=15,418人・隠れ空白=571人と
+   → `webapp/data/district_gap.json`。**検算**: 空白人口合計=11,455人・隠れ空白=314人(第2版)と
    一致するか(標準出力に出る。[[handover]] §4.1)
 4. **空白マップ生成・配置**: `python gap_map/make_map.py` → `output/gap_map.html` を
    `webapp/gap_map.html` にコピー(F6の `map.html` がここを iframe 参照する)

@@ -212,9 +212,23 @@ function minutesSentence(minutes, grade, placeName, kind) {
   return `バスでの${kind}は、少し行きにくいようです。下の「じかんひょうを見る」で くわしく しらべてください。`;
 }
 
+// 大きな病院(救急告示病院)までのめやす(2026-10-08 空白分析 第2版で追加)。検査や専門の診察、
+// 急に具合が悪くなったときの病院。古い karte.json(この項目が無い)では行ごと出さない
+function majorRow(mesh) {
+  if (!("major_min" in mesh)) return "";
+  const text = mesh.major_min !== null
+    ? `${escapeHtml(mesh.major_name || "大きな病院")}まで、バスと あるいてで およそ${mesh.major_min}分です。`
+    : "バスでは、大きな病院へは 少し行きにくいようです。";
+  return `
+    <div class="karte-row">
+      <h3>🏨 大きな病院(救急の病院)までのめやす</h3>
+      <p>${text}</p>
+    </div>`;
+}
+
 function visitSentence(visitOk, visitTotalMin) {
   if (visitOk && visitTotalMin !== null) {
-    return `ごぜん中に病院へ行き、お昼をはさんで、ゆうがたまでに かえってこられる` +
+    return `ごぜん中に内科(病院・医院)へ行き、お昼をはさんで、ゆうがたまでに かえってこられる` +
       `めやすです(いえを出てから かえるまで、あわせて約${visitTotalMin}分)。`;
   }
   return `日帰りの通院は、少し むずかしいようです。よやくして のるバスなど、` +
@@ -258,10 +272,11 @@ async function renderMeshCard(mesh, meta, districts) {
     </div>
 
     <div class="karte-row">
-      <h3>🏥 病院までのめやす</h3>
-      <p>${minutesSentence(mesh.hospital_min, mesh.grade, mesh.hospital_name, "病院")}</p>
+      <h3>🏥 内科(病院・医院)までのめやす</h3>
+      <p>${minutesSentence(mesh.hospital_min, mesh.grade, mesh.hospital_name, "内科の病院・医院")}</p>
       <p class="karte-compare">${compareSentence(mesh.hospital_min, meta.city_avg.hospital_min)}</p>
     </div>
+${majorRow(mesh)}
 
     <div class="karte-row">
       <h3>🛒 スーパーまでのめやす</h3>
@@ -302,7 +317,7 @@ async function renderDistrictAvgCard(unitId, meta, districts) {
       正確な数字を知りたいときは、①または②で しらべてください。</p>
 
     <div class="karte-row">
-      <h3>🏥 病院までのめやす(地区平均)</h3>
+      <h3>🏥 内科(病院・医院)までのめやす(地区平均)</h3>
       <p>${avg.hospital_min !== null
         ? `バスと あるいてで、およそ${avg.hospital_min}分です。`
         : "この地区の平均は、算出できませんでした。"}</p>
