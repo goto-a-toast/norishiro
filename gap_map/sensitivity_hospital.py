@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+★第1版(gap-map-analysis-v1)の時代の感度分析。この結果で第2版の行き先が決まった(docs/plan_gap_map.md §7.1)。
+
 交通空白マップの感度分析: 行き先の病院を「内科のある病院」だけにすると、確定数値がどう変わるか。
 
 確定版(git tag gap-map-analysis-v1)は、国土数値情報 P04(医療機関・2014年)の「病院」68か所を
@@ -62,7 +64,7 @@ def main():
     meshes = pd.read_csv(config.TARGET_MESHES_CSV)
     base_minutes = list(ca.DEPART_MINUTES)
     print("\n[1/2] 確定版と同じ条件(病院68か所)で計算…")
-    base = recompute(base_minutes)
+    base = recompute(base_minutes, facilities)   # 第1版の病院68か所(2026-10-08 第2版で既定が変わったため明示)
     print(f"[2/2] 内科のある病院 {int((is_hosp & naika).sum())}か所だけで計算…")
     alt = recompute(base_minutes, alt_facilities)
 

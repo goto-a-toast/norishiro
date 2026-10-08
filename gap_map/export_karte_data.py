@@ -110,6 +110,11 @@ def build_karte(access: pd.DataFrame, mesh_table: pd.DataFrame) -> dict:
     df["walk_to_stop_min_num"] = pd.to_numeric(df["walk_to_stop_min"], errors="coerce")
     df["visit_ok_bool"] = df["hospital_visit_ok"].astype(str).str.strip().str.lower() == "yes"
     df["visit_total_min_num"] = pd.to_numeric(df["visit_total_min"], errors="coerce")
+    # 第2版(2026-10-08)で増えた「大きな病院(救急告示)」の列。第1版の CSV には無いので、無ければ空にする
+    df["major_min_num"] = (_to_minutes(df["time_to_major_hospital_min"])
+                           if "time_to_major_hospital_min" in df else float("nan"))
+    if "major_hospital_name" not in df:
+        df["major_hospital_name"] = None
 
     meshes = []
     for r in df.itertuples():
@@ -122,6 +127,8 @@ def build_karte(access: pd.DataFrame, mesh_table: pd.DataFrame) -> dict:
             "walk_to_stop_min": _none_if_nan(r.walk_to_stop_min_num),
             "hospital_min": _none_if_nan(r.hospital_min_num),
             "hospital_name": _none_if_nan(r.hospital_name),
+            "major_min": _none_if_nan(r.major_min_num),
+            "major_name": _none_if_nan(r.major_hospital_name),
             "super_min": _none_if_nan(r.super_min_num),
             "super_name": _none_if_nan(r.super_name),
             "visit_ok": bool(r.visit_ok_bool),

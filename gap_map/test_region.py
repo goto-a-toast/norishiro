@@ -33,7 +33,7 @@ def test_defaults_match_frozen_yamagata_config():
     assert r["expected"]["total_population"] == 276482
     # 行き先専用フィード(2026-10-07): 済生病院(f20)の無料シャトルだけ
     assert r["restricted_feeds"] == [{"dir": "feeds_manual/済生病院シャトル", "facilities": ["f20"]}]
-    assert r["expected"]["gap_population"] == 15418
+    assert r["expected"]["gap_population"] == 11455   # 第2版(2026-10-08)
     # R2: 地区分け方式の既定値(従来のハードコードと同じ組み合わせ)
     assert r["district_methods"] == {"山形市": "a27_polygon", "上山市": "p29_nearest_school"}
     assert r["a27_shp"].endswith("A27-16_06.shp") and r["p29_shp"].endswith("P29-21_06.shp")

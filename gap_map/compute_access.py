@@ -3,6 +3,14 @@
 メッシュ×施設(病院・スーパー)の到達しやすさを計算し、output/access_mesh.csv を作る。
 詳しい定義は docs/plan_gap_map.md §7 を参照。
 
+★第2版(2026-10-08。git tag gap-map-analysis-v2):「病院」の行き先を変えた(§7.1)。
+  第1版(gap-map-analysis-v1)は P04 2014年版の「病院」すべて(眼科だけ・精神科中心の病院も含み、
+  内科の診療所は含まない)だった。第2版は P04 2020年版から make_medical.py が作る data/medical.csv の
+    かかりつけ = 内科のある病院・診療所(一般の人がかからない施設の診療所は除く)… 指標①②・空白判定
+    大きな病院 = 救急告示病院 … 補助の指標(time_to_major_hospital_min。地図の補助レイヤ)
+  を使う。列 hospital_name / time_to_hospital_min は「かかりつけ」を指す(列名は互換のため据え置き)。
+  あわせて③の通院先(visit_hospital_name)も出すようにした。スーパーは第1版と同じ。
+
 指標①(最短所要時間): そのメッシュから最寄りの病院/スーパーそれぞれへ、
   平日午前(config.DEPART_TIMESの30分刻み)のどこかに出発して公共交通+徒歩で
   行くときの最短所要時間。徒歩だけで行ける場合はその時間を使う。
@@ -32,6 +40,21 @@ HOSPITAL_ARRIVE_BY_MIN = int(config.HOSPITAL_ARRIVE_BY[:2]) * 60 + int(config.HO
 HOME_RETURN_BY_MIN = int(config.HOME_RETURN_BY[:2]) * 60 + int(config.HOME_RETURN_BY[3:])
 
 UNREACHABLE = "到達不能"
+
+
+def load_facilities() -> pd.DataFrame:
+    """第2版の行き先の一覧。FacilityIndex は category で絞るので、1つの表にまとめて返す:
+      hospital    … かかりつけ(内科のある病院・診療所。data/medical.csv の kakaritsuke)
+      major       … 大きな病院(救急告示病院。data/medical.csv の major)
+      supermarket … スーパー(data/facilities.csv。第1版と同じ)"""
+    fac = pd.read_csv(config.FACILITIES_CSV)
+    med = pd.read_csv(config.MEDICAL_CSV)
+    cols = ["name", "category", "lat", "lon"]
+    return pd.concat([
+        fac[fac["category"] == "supermarket"][cols],
+        med[med["kakaritsuke"]].assign(category="hospital")[cols],
+        med[med["major"]].assign(category="major")[cols],
+    ], ignore_index=True)
 
 
 def haversine_m_vec(lat1: float, lon1: float, lats2: np.ndarray, lons2: np.ndarray) -> np.ndarray:
@@ -153,7 +176,8 @@ def compute_hospital_visit(mesh_lat: float, mesh_lon: float, mesh_stops: list,
                             network: transit_core.Network,
                             hospital_index: "FacilityIndex") -> tuple:
     """指標②: 「11:00までに病院へ着き、90分滞在して17:00までに帰宅できるか」を判定する。
-    戻り値: (Yes/No, 拘束時間(分。家を出てから帰るまでの合計。できない場合はNone))
+    戻り値: (Yes/No, 拘束時間(分。家を出てから帰るまでの合計。できない場合はNone),
+             通院先の施設名(行きで着く施設。できない場合はNone。第2版で追加))
 
     行き: 出発時刻を1つずつ試し、11:00までに病院へ着ける中で一番遅い(=無駄なく出発できる)
           出発を採用する。
@@ -161,27 +185,29 @@ def compute_hospital_visit(mesh_lat: float, mesh_lon: float, mesh_stops: list,
           自宅メッシュの最寄り停留所へ向けて、同じエンジンで「もう一度順方向に」探索する。
     """
     if not mesh_stops:
-        return "No", None
+        return "No", None, None
 
     # ---- 行き: 11:00までに着ける中で、一番遅く出発できる(=無駄のない)組み合わせを探す ----
     best_go_depart_min = None
     best_go_arrival = None
     best_go_hospital_stop = None
+    best_go_name = None
     for depart_min in DEPART_MINUTES:
         if depart_min > HOSPITAL_ARRIVE_BY_MIN:
             continue
         initial_stops = {sid: depart_min + round(wm) for sid, wm in mesh_stops}
         result = transit_core.raptor_search(
             network, initial_stops, config.MAX_TRANSFERS, config.MIN_TRANSFER_MIN)
-        _, arrival, hospital_stop = hospital_index.best_from_result(result)
+        name, arrival, hospital_stop = hospital_index.best_from_result(result)
         if arrival is not None and arrival <= HOSPITAL_ARRIVE_BY_MIN:
             if best_go_depart_min is None or depart_min > best_go_depart_min:
                 best_go_depart_min = depart_min
                 best_go_arrival = arrival
                 best_go_hospital_stop = hospital_stop
+                best_go_name = name
 
     if best_go_depart_min is None:
-        return "No", None
+        return "No", None, None
 
     # ---- 帰り: (到着+滞在時間)を出発時刻として、病院→自宅メッシュへ向けて探索する ----
     return_depart_min = best_go_arrival + config.HOSPITAL_STAY_MIN
@@ -198,17 +224,17 @@ def compute_hospital_visit(mesh_lat: float, mesh_lon: float, mesh_stops: list,
                 best_home_arrival = arrival
 
     if best_home_arrival is None or best_home_arrival > HOME_RETURN_BY_MIN:
-        return "No", None
+        return "No", None, None
 
     visit_total_min = best_home_arrival - best_go_depart_min
-    return "Yes", visit_total_min
+    return "Yes", visit_total_min, best_go_name
 
 
 def main():
     print("ネットワーク・メッシュ・施設データを読み込み中...")
     network = load_network()
     meshes = pd.read_csv(config.TARGET_MESHES_CSV)
-    facilities = pd.read_csv(config.FACILITIES_CSV)
+    facilities = load_facilities()
 
     stop_ids = list(network.stops.keys())
     stop_lats = np.array([network.stops[s]["lat"] for s in stop_ids])
@@ -217,7 +243,9 @@ def main():
     print("施設の索引(最寄り停留所)を作成中...")
     hospital_index = FacilityIndex(facilities, "hospital", stop_ids, stop_lats, stop_lons)
     super_index = FacilityIndex(facilities, "supermarket", stop_ids, stop_lats, stop_lons)
-    print(f"  病院: {len(hospital_index.rows)}件 / スーパー: {len(super_index.rows)}件")
+    major_index = FacilityIndex(facilities, "major", stop_ids, stop_lats, stop_lons)
+    print(f"  かかりつけ(内科の病院・診療所): {len(hospital_index.rows)}件 / 大きな病院(救急告示): "
+          f"{len(major_index.rows)}件 / スーパー: {len(super_index.rows)}件")
 
     rows = []
     n = len(meshes)
@@ -236,7 +264,8 @@ def main():
 
         hosp_min, hosp_name = compute_indicator1(mesh.lat, mesh.lon, mesh_stops, network, hospital_index)
         super_min, super_name = compute_indicator1(mesh.lat, mesh.lon, mesh_stops, network, super_index)
-        visit_ok, visit_total_min = compute_hospital_visit(
+        major_min, major_name = compute_indicator1(mesh.lat, mesh.lon, mesh_stops, network, major_index)
+        visit_ok, visit_total_min, visit_name = compute_hospital_visit(
             mesh.lat, mesh.lon, mesh_stops, network, hospital_index)
 
         # 空白判定の「徒歩15分」チェックは、直線距離で一番近い病院に対して行う
@@ -262,6 +291,10 @@ def main():
             "hospital_visit_ok": visit_ok,
             "visit_total_min": visit_total_min,
             "is_gap": is_gap,
+            # 第2版で追加(列の並びは既存の列の後ろ。読む側の互換のため)
+            "visit_hospital_name": visit_name,
+            "time_to_major_hospital_min": major_min if major_min is not None else UNREACHABLE,
+            "major_hospital_name": major_name,
         })
 
     df = pd.DataFrame(rows)

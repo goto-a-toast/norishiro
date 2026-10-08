@@ -2,6 +2,10 @@
 """
 交通空白マップのFolium地図(output/gap_map.html)を作る。詳しい構成は
 docs/plan_gap_map.md §8 が土台だが、本ファイルは以下の点をユーザー指示で調整している:
+  ★第2版(2026-10-08): 行き先を「かかりつけ=内科のある病院・医院」と「大きな病院=救急告示病院」に
+    分けた(compute_access.py の冒頭・docs/plan_gap_map.md §7.1)。レイヤは
+    ①かかりつけの内科まで ②大きな病院まで(新設) ③バス停までの距離 ④通院可能性(通院先の名前つき)。
+    以下の説明の「病院」は①では「かかりつけの内科」、レイヤ番号は第1版のもの
 
   - レイヤ1「病院への所要時間」: 5段階(〜15/〜30/〜45/〜60/60分超)の色分け。
     到達不能メッシュはこの層では「危険を意味する色(赤系)」にはせず、
@@ -106,6 +110,9 @@ def build_mesh_features(df: pd.DataFrame) -> list:
     features = []
     for row in df.itertuples():
         h_bucket = hospital_bucket(row.time_to_hospital_min)
+        m_bucket = hospital_bucket(row.time_to_major_hospital_min)
+        major_display = (UNREACHABLE if row.time_to_major_hospital_min == UNREACHABLE
+                         else f"{row.time_to_major_hospital_min}分")
         d_band = stop_dist_band(row.nearest_stop_dist_m)
         time_display = (UNREACHABLE if row.time_to_hospital_min == UNREACHABLE
                          else f"{row.time_to_hospital_min}分")
@@ -129,6 +136,12 @@ def build_mesh_features(df: pd.DataFrame) -> list:
                 "hospital_name": row.hospital_name if pd.notna(row.hospital_name) else "(到達不能)",
                 "time_to_hospital_display": time_display,
                 "hospital_bucket": h_bucket,
+                "major_bucket": m_bucket,
+                "major_hospital_name": (row.major_hospital_name if pd.notna(row.major_hospital_name)
+                                        else "(到達不能)"),
+                "time_to_major_display": major_display,
+                "visit_hospital_name": (row.visit_hospital_name if pd.notna(row.visit_hospital_name)
+                                        else "-"),
                 "distance_band": d_band,
                 "hospital_visit_ok": row.hospital_visit_ok,
                 "visit_total_min": (int(row.visit_total_min)
@@ -140,7 +153,7 @@ def build_mesh_features(df: pd.DataFrame) -> list:
 
 
 def add_mesh_layer(fmap, features, color_by, colors, labels, unreachable_color,
-                    layer_name, show):
+                    layer_name, show, tooltip_fields=None, tooltip_aliases=None):
     """メッシュのGeoJSONレイヤを1つ地図に追加する。
     color_by: "hospital_bucket" または "distance_band"(propertiesのキー名)"""
     fg = folium.FeatureGroup(name=layer_name, show=show)
@@ -154,10 +167,11 @@ def add_mesh_layer(fmap, features, color_by, colors, labels, unreachable_color,
         return {"fillColor": fill, "color": "#52514e", "weight": 0.3,
                 "fillOpacity": 0.75}
 
-    tooltip_fields = ["municipality", "population", "population_65plus", "nearest_stop_name",
-                       "nearest_stop_dist_m", "hospital_name", "time_to_hospital_display"]
-    tooltip_aliases = ["市町村", "人口(人)", "65歳以上(人)", "最寄り停留所", "停留所まで(m)",
-                        "最寄り病院", "病院まで"]
+    if tooltip_fields is None:
+        tooltip_fields = ["municipality", "population", "population_65plus", "nearest_stop_name",
+                           "nearest_stop_dist_m", "hospital_name", "time_to_hospital_display"]
+        tooltip_aliases = ["市町村", "人口(人)", "65歳以上(人)", "最寄り停留所", "停留所まで(m)",
+                            "いちばん早く着く内科(病院・医院)", "内科まで"]
 
     folium.GeoJson(
         {"type": "FeatureCollection", "features": features},
@@ -183,10 +197,10 @@ def add_hospital_visit_layer(fmap, features, layer_name, show):
         return {"fillColor": fill, "color": "#52514e", "weight": 0.3, "fillOpacity": 0.7}
 
     tooltip_fields = ["municipality", "population", "population_65plus",
-                       "hospital_visit_ok", "visit_total_min", "time_to_hospital_display",
-                       "hidden_gap"]
+                       "hospital_visit_ok", "visit_hospital_name", "visit_total_min",
+                       "time_to_hospital_display", "hidden_gap"]
     tooltip_aliases = ["市町村", "人口(人)", "65歳以上(人)", "通院可能性(11-17時)",
-                        "拘束時間(分)", "①病院まで", "隠れ空白(①OK・②NG)"]
+                        "通院先(内科)", "拘束時間(分)", "①内科まで", "隠れ空白(①OK・④NG)"]
 
     folium.GeoJson(
         {"type": "FeatureCollection", "features": features},
@@ -227,7 +241,8 @@ def main():
     print("データを読み込み中...")
     meshes = pd.read_csv(config.TARGET_MESHES_CSV)
     access = pd.read_csv(config.ACCESS_MESH_CSV)
-    facilities = pd.read_csv(config.FACILITIES_CSV)
+    facilities = pd.read_csv(config.FACILITIES_CSV)   # スーパーのマーカー用(第1版と同じ)
+    medical = pd.read_csv(config.MEDICAL_CSV)          # 第2版の行き先(make_medical.py)
     with open(config.NETWORK_PKL, "rb") as f:
         network = pickle.load(f)
 
@@ -252,27 +267,48 @@ def main():
     fmap = folium.Map(location=[center_lat, center_lon], zoom_start=12, tiles=None)
     folium.TileLayer("OpenStreetMap", control=False).add_to(fmap)
 
-    print("レイヤ1(病院への所要時間)を追加中...")
+    print("レイヤ1(かかりつけの内科への所要時間)を追加中...")
     add_mesh_layer(fmap, features, "hospital_bucket", HOSPITAL_COLORS, HOSPITAL_LABELS,
-                    HOSPITAL_UNREACHABLE_COLOR, "① 病院への所要時間", show=True)
+                    HOSPITAL_UNREACHABLE_COLOR, "① かかりつけの内科(病院・医院)まで", show=True)
 
-    print("レイヤ2(最寄りバス停までの距離帯)を追加中...")
+    print("レイヤ2(大きな病院への所要時間)を追加中...")
+    add_mesh_layer(fmap, features, "major_bucket", HOSPITAL_COLORS, HOSPITAL_LABELS,
+                    HOSPITAL_UNREACHABLE_COLOR, "② 大きな病院(救急告示)まで", show=False,
+                    tooltip_fields=["municipality", "population", "population_65plus",
+                                    "major_hospital_name", "time_to_major_display"],
+                    tooltip_aliases=["市町村", "人口(人)", "65歳以上(人)",
+                                     "いちばん早く着く大きな病院", "大きな病院まで"])
+
+    print("レイヤ3(最寄りバス停までの距離帯)を追加中...")
     add_mesh_layer(fmap, features, "distance_band", STOP_DIST_COLORS, STOP_DIST_LABELS,
-                    STOP_DIST_COLORS[-1], "② 最寄りバス停までの距離帯", show=False)
+                    STOP_DIST_COLORS[-1], "③ 最寄りバス停までの距離帯", show=False)
 
-    print("レイヤ3(通院可能性)を追加中...")
-    add_hospital_visit_layer(fmap, features, "③ 通院可能性(11-17時)", show=False)
+    print("レイヤ4(通院可能性)を追加中...")
+    add_hospital_visit_layer(fmap, features, "④ 通院可能性(11-17時・内科)", show=False)
 
     print("施設マーカーを追加中...")
-    hospital_fg = folium.FeatureGroup(name="④ 病院マーカー", show=True)
-    for row in facilities[facilities["category"] == "hospital"].itertuples():
+    # 医療機関は県全域を行き先にしているが、マーカーは地図の範囲(対象メッシュのまわり)だけに出す
+    # (内科の病院・医院は県全体で約560か所あり、全部出すと重く見づらいため)
+    lat0, lat1 = df["lat"].min() - 0.02, df["lat"].max() + 0.02
+    lon0, lon1 = df["lon"].min() - 0.03, df["lon"].max() + 0.03
+    in_view = medical[medical["lat"].between(lat0, lat1) & medical["lon"].between(lon0, lon1)]
+    major_fg = folium.FeatureGroup(name="⑤ 大きな病院(救急告示)マーカー", show=True)
+    for row in in_view[in_view["major"]].itertuples():
         folium.Marker(
-            location=[row.lat, row.lon], tooltip=row.name,
+            location=[row.lat, row.lon], tooltip=f"{row.name}(救急告示病院)",
             icon=folium.Icon(color="darkpurple", icon="plus", prefix="fa"),
-        ).add_to(hospital_fg)
-    hospital_fg.add_to(fmap)
+        ).add_to(major_fg)
+    major_fg.add_to(fmap)
 
-    super_fg = folium.FeatureGroup(name="⑤ スーパーマーカー", show=False)
+    clinic_fg = folium.FeatureGroup(name="⑥ 内科の病院・医院マーカー", show=False)
+    for row in in_view[in_view["kakaritsuke"] & ~in_view["major"]].itertuples():
+        folium.CircleMarker(
+            location=[row.lat, row.lon], radius=4, tooltip=row.name,
+            color="#6b3fa0", fill=True, fill_opacity=0.8, weight=1,
+        ).add_to(clinic_fg)
+    clinic_fg.add_to(fmap)
+
+    super_fg = folium.FeatureGroup(name="⑦ スーパーマーカー", show=False)
     for row in facilities[facilities["category"] == "supermarket"].itertuples():
         folium.Marker(
             location=[row.lat, row.lon], tooltip=row.name,
@@ -301,12 +337,12 @@ def main():
     </style>
     """
     fmap.get_root().header.add_child(folium.Element(layer_control_css))
-    add_legend(fmap, "① 病院への所要時間", HOSPITAL_COLORS, HOSPITAL_LABELS,
+    add_legend(fmap, "①内科・②大きな病院への所要時間", HOSPITAL_COLORS, HOSPITAL_LABELS,
                unreachable_label=UNREACHABLE, unreachable_color=HOSPITAL_UNREACHABLE_COLOR,
                position_top=10)
-    add_legend(fmap, "② 停留所までの距離帯", STOP_DIST_COLORS, STOP_DIST_LABELS,
+    add_legend(fmap, "③ 停留所までの距離帯", STOP_DIST_COLORS, STOP_DIST_LABELS,
                position_top=170)
-    add_legend(fmap, "③ 通院可能性(11-17時)",
+    add_legend(fmap, "④ 通院可能性(11-17時・内科)",
                [VISIT_OK_COLOR, VISIT_NG_COLOR], ["Yes(可能)", "No(不可)"],
                position_top=330)
     hidden_gap_note = f"""
@@ -317,7 +353,7 @@ def main():
       <div style="display:flex;align-items:center;margin:2px 0;">
         <span style="display:inline-block;width:14px;height:14px;background:{VISIT_NG_COLOR};
         border:2.5px solid {HIDDEN_GAP_BORDER_COLOR};margin-right:6px;"></span>
-        隠れ空白(①は60分以内なのに②はNo)
+        隠れ空白(①は60分以内なのに④はNo)
       </div>
     </div>
     """

@@ -79,6 +79,9 @@ YAMAGATA_DEFAULTS = {
     "p04_dir": "P04-14_06_GML/P04-14_06_GML",
     "p04_shp": "P04-14_06-g_MedicalInstitution.shp",
     "p04_dbf": "P04-14_06-g_MedicalInstitution.dbf",
+    # 医療機関の2020年版(国土数値情報 P04-20。空白分析の第2版で使う。make_medical.py が読む)。
+    # 2014年版(上の3つ)は、確定第1版の再現とかんたんモードの行き先(make_destinations.py)のために残す
+    "p04_2020_geojson": "P04-20_06/P04-20_06_GML/P04-20_06.geojson",
 
     # 地区分け(make_districts.py)の方式を市町村ごとに選ぶ(R2):
     #   a27_polygon        … 国土数値情報A27の小学校区ポリゴン(あれば最良)
@@ -117,8 +120,8 @@ YAMAGATA_DEFAULTS = {
     "expected": {
         "total_population": 276482,     # 対象2市の総人口
         "mesh_count": 817,              # 人口>0のメッシュ数
-        "gap_population": 15418,        # 空白メッシュの人口合計
-        "hidden_gap_population": 571,   # 隠れ空白の人口合計
+        "gap_population": 11455,        # 空白メッシュの人口合計(第2版 2026-10-08。第1版は15418)
+        "hidden_gap_population": 314,   # 隠れ空白の人口合計(第2版。第1版は571)
         "date_checks": [                # date_table の検算(日付: 期待されるダイヤ種別)
             ["2026-07-20", "sunday_holiday"],   # 海の日
             ["2026-08-13", "sunday_holiday"],   # お盆
