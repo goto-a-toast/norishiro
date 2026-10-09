@@ -18,7 +18,7 @@ from export_web_data import (
     frontier_rows, keep_useful_boards, pick_kantan_board,
     make_itinerary, build_entry, collapse_transfer_alternatives,
     board_options_for, alight_options_for, _slim_to_board, MAX_BOARD_OPTIONS,
-    attach_stop_points, drop_same_bus_earlier_rows,
+    attach_stop_points, drop_same_bus_earlier_rows, drop_pointless_rows, WALK_SAVING_MIN,
 )
 
 R_EARTH_M = 6371000
@@ -518,6 +518,82 @@ def test_build_entry_picks_another_board_for_day_type_without_trips():
     # 旧実装は平日が空になり「平日0便」の誤った時刻表を出していた
     assert entry["kantan_boards"] == {"weekday": "平日停", "saturday": "土曜停"}
     assert len(entry["outbound"]["weekday"]) == 2
+
+
+# ===============================================================
+# バスを使う意味の無い便を落とす(2026-10-09 開発者指摘「蔵王の森から金谷まで歩いて、
+# バスでこだま橋、そこから歩いてみゆき会病院は無理がある」)
+# ===============================================================
+def walk_row(dep, arr, board, bw, aw, opts=None):
+    r = row(dep, arr, board, bw)
+    r["alight_walk_min"] = aw
+    r["ride_min"] = 99
+    r["platform"] = "1"
+    r["board_ll"] = [0.0, 0.0]
+    if opts is not None:
+        r["board_options"] = [{"stop": s, "dep": d, "walk_min": w, "_ll": [1.0, 1.0]} for s, d, w in opts]
+    return r
+
+
+def test_drop_pointless_rows_drops_bus_that_saves_little_walking():
+    """実例: 金谷まで13分+こだま橋から15分=28分。全部歩くと約29.5分 → 落とす。
+    甲石8分+2分=10分は残す"""
+    kanaya = walk_row("08:01", "08:17", "金谷", 13, 15)
+    koishi = walk_row("07:26", "07:31", "甲石", 8, 2)
+    kept = drop_pointless_rows([koishi, kanaya], 29.5, "outbound")
+    assert kept == [koishi]
+    # ちょうど WALK_SAVING_MIN 分減るなら残す(境界)
+    assert drop_pointless_rows([kanaya], 28 + WALK_SAVING_MIN, "outbound") == [kanaya]
+
+
+def test_drop_pointless_rows_moves_to_a_useful_nearer_stop_of_the_same_bus():
+    """主停(遠い停)からだと意味が無いが、同じバスが家の近くの停にも停まるなら、
+    その停から乗る形に付け替えて残す。意味の無い候補停は外す"""
+    r = walk_row("08:00", "08:30", "遠い停", 14, 10,
+                 opts=[("近い停", "08:03", 4), ("遠い停", "08:00", 14)])
+    r["transfer"] = {"wait_min": 2}
+    kept = drop_pointless_rows([r], 25.0, "outbound")
+    assert len(kept) == 1
+    k = kept[0]
+    assert (k["board"], k["dep"], k["board_walk_min"], k["platform"]) == ("近い停", "08:03", 4, None)
+    assert k["board_ll"] == [1.0, 1.0]
+    assert k["ride_min"] == 30 - 3 - 2
+    assert [o["stop"] for o in k["board_options"]] == ["近い停"]
+    assert r["board"] == "遠い停"   # 元の便は書き換えない
+
+
+def test_drop_pointless_rows_inbound_checks_home_side_alight_walk():
+    """帰りは、施設から乗る停までの徒歩+降りる停から家までの徒歩で判定し、
+    家側の降りる候補(alight_options)も同じ決まりで絞る"""
+    good = walk_row("10:00", "10:20", "病院前", 2, 8)
+    good["alight_options"] = [{"stop": "甲石", "arr": "10:18", "walk_min": 8},
+                              {"stop": "金谷", "arr": "10:16", "walk_min": 13}]
+    bad = walk_row("11:00", "11:20", "こだま橋", 15, 13)
+    kept = drop_pointless_rows([good, bad], 19.0, "inbound")
+    assert [k["board"] for k in kept] == ["病院前"]
+    assert [o["stop"] for o in kept[0]["alight_options"]] == ["甲石"]
+
+
+def test_build_entry_marks_walk_all_when_every_bus_is_pointless():
+    """全部の便が落ちたら「行けない」だが、バスはあったので walk_all_min を添える
+    (画面は「バスでは行けません」ではなく「歩く時間が変わりません」と出す)"""
+    district = {"id": "d01", "lat": 0.0, "lon": 0.0}
+    facility = {"id": "f01", "lat": meters_to_lat_deg(1000), "lon": 0.0}   # 全部歩くと約21.7分
+    rows = [walk_row("08:00", "08:20", "停", 10, 10)]
+    empty = {"district_board": {}, "outbound": {}, "inbound": {}}
+    per_daytype = {
+        "weekday": {"district_board": {}, "outbound": {"d01": {"f01": rows}}, "inbound": {}},
+        "saturday": empty,
+        "sunday_holiday": empty,
+    }
+    assert build_entry(district, facility, per_daytype) == {"unreachable": True, "walk_all_min": 22}
+    # 意味のある便が残れば、ふつうのエントリに walk_all_min が付く
+    per_daytype["saturday"] = {"district_board": {}, "inbound": {},
+                               "outbound": {"d01": {"f01": [walk_row("09:00", "09:10", "停2", 3, 2)]}}}
+    entry = build_entry(district, facility, per_daytype)
+    assert entry["walk_all_min"] == 22
+    assert entry["outbound"]["weekday"] == []
+    assert [r["board"] for r in entry["outbound"]["saturday"]] == ["停2"]
 
 
 # ===============================================================
