@@ -180,6 +180,10 @@ h1 {
 .home-set-btn { background: #fdf6e3; color: var(--color-text); border-color: var(--color-border); font-size: 26px; }
 .home-note { font-size: 19px; color: #444444; margin: 0; line-height: 1.5; text-align: left; }
 .home-sub { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+/* 画面3: 地区から しらべたときの「わが家から しらべなおす」の一言(2026-10-09)。目立たせすぎない */
+.home-hint { margin: 0 0 12px; padding: 8px 10px; background: #f3f6fa; border-radius: 8px; }
+.home-hint-note { font-size: 18px; color: #444444; margin: 0 0 6px; line-height: 1.5; }
+.home-hint .home-small-btn { width: 100%; }
 .home-small-btn {
   min-height: 48px;
   padding: 4px 12px;
@@ -755,7 +759,7 @@ h1 {
    ひとまわり縮める。色が出ない印刷でも読めるよう、枠線と記号(※)は残る
    ===================================================================== */
 @media print {
-  #app-header, .action-row, .chip-hint, .near-stop-box, .map-link-row { display: none; }
+  #app-header, .action-row, .chip-hint, .near-stop-box, .map-link-row, .home-hint, .ride-card .tomorrow-btn { display: none; }
 
   body { font-size: 18px; }
   /* 便数が多いペア(例: 全便乗換で行き23本)でも1枚に収まるよう全体を少し縮める。
