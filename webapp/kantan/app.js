@@ -805,7 +805,7 @@ const s3 = {
   showType: null,    // 時刻表として表示しているダイヤ種別(有効期間外は平日で代用)
   sel: null,         // 選択中の便 { dir: "outbound"|"inbound", idx: 数字 }
   manual: false,     // 利用者が時刻チップを自分でえらんだか
-  tomorrowView: false, // きょう運行が無い日に「あしたの時刻表」へ切り替えたか
+  tomorrowView: false, // 「あしたの時刻表」へ切り替えたか(きょう運行が無い日・本日の便が終わったあと)
   timer: null,       // 1分ごとの時計更新タイマー
   stopsIndex: null,  // 停留所名→座標(GPS測位が新しいときだけ読み込む。対策1)
   mapIndex: null,    // 同じ索引。地図リンク用に、測位の有無にかかわらず読み込む
@@ -822,10 +822,13 @@ const s3 = {
 // kantanOutbound() が選ぶ(2026-10-07 までは工場が絞り込み済みのデータを配っていた)。
 // 帰り(inbound)は工場側で完結(2026-07-10から乗り場欄は実停名。施設近くの複数の停の
 // 便が混ざるが、どの停から乗るかは各便のステップ①が徒歩分つきで案内する)
-function rowsFor(dir, showType) {
+// closedOps(省略可): その日に運休する運行主体。省略すると表示中の日のもの(s3.closedOps)を使う。
+// 「あしたの始発」を調べるときは、あしたの運休を渡す(きょうの運休をあしたに当てはめないため)
+function rowsFor(dir, showType, closedOps) {
   let rows = (s3.entry && s3.entry[dir] && s3.entry[dir][showType]) || [];
   // 表示している日に運休するバス(10/15 の済生病院シャトル等)の便は出さない
-  const closed = showType === s3.closedFor ? s3.closedOps : null;
+  const closed = closedOps !== undefined ? closedOps
+    : (showType === s3.closedFor ? s3.closedOps : null);
   if (closed && closed.size) rows = withoutClosed(rows, closed);
   if (dir !== "outbound" || !s3.entry) return rows;
   // 利用者が「いまの場所から近いバス停」を選んでいれば、その停から乗る形に付け替える
@@ -916,6 +919,7 @@ async function renderScreen3(did, fid) {
   const facility = destinations.find((f) => f.id === fid);
   document.getElementById("s3-district-name").textContent = district ? district.name : "";
   document.getElementById("s3-facility-name").textContent = facility ? facility.name : "";
+  renderHomeHint(district, facility);
 
   if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
   // 乗車バス停の選択は行き先を変えるたびに白紙に戻す。行けない行き先で下の
@@ -1026,20 +1030,20 @@ function renderRideCard(now) {
     const ranToday = s3Rows("outbound").length > 0;
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const tType = dayTypeOf(tomorrow);
-    const tRows = tType ? rowsFor("outbound", tType) : [];
+    const tRows = tType ? rowsFor("outbound", tType, closedOpsOn(tomorrow)) : [];
     head =
       `<div class="card-main">${ranToday ? "本日の便は おわりました" : "きょうは 行きのバスの運行が ありません"}</div>` +
-      (tRows.length
-        ? `<div class="card-sub">あしたの始発は ${timeWord(tRows[0].dep)} です</div>`
-        : "");
-    // きょう運行が無い日は「あしたの時刻表」への入口を出す(2026-07-12 開発者要望。
-    // タップ+1回の明示操作にすることで「きょう乗れる」との誤解を防ぐ)
-    if (!ranToday && tRows.length) {
+      (tRows.length ? `<div class="card-sub">${tomorrowFirstWord(tType, tRows[0])}</div>` : "");
+    // 「あしたの時刻表」への入口(2026-07-12 開発者要望。タップ+1回の明示操作にすることで
+    // 「きょう乗れる」との誤解を防ぐ)。2026-10-09 から、本日の便が終わったあとにも出す
+    // (開発者指摘「あしたの始発は8:01と出るのに、下の時刻表に8:01が無い」。下の時刻表は
+    // きょうのダイヤのままなので、あしたの便を確かめる手段が無かった)
+    if (tRows.length) {
       head += `<button type="button" id="show-tomorrow-btn" class="tomorrow-btn">あしたの じこくひょうを 見る</button>`;
     }
     card.innerHTML = head;
     const tbtn = card.querySelector("#show-tomorrow-btn");
-    if (tbtn) tbtn.addEventListener("click", () => showTomorrowTimetable(tType));
+    if (tbtn) tbtn.addEventListener("click", () => showTomorrowTimetable(tType, ranToday));
     return;
   }
 
@@ -1133,9 +1137,17 @@ function otherDayBoardNote() {
   return `<div class="day-board-note">※${lines.join("。")}</div>`;
 }
 
-// きょう運行の無い日に「あしたの時刻表」へ切り替える(2026-07-12 開発者要望)。
+// 「あしたの始発」の一文。曜日でダイヤも乗り場も変わることがあるので(例: 平日しか
+// 走らないバスの停 → 土曜は別の停)、ダイヤの名前と乗るバス停を必ず添える(2026-10-09)
+function tomorrowFirstWord(tType, first) {
+  const dayWord = tType === s3.todayType ? "" : `あしたは「${meta.day_types[tType]}」ダイヤです。`;
+  return `${escapeHtml(dayWord)}始発は 「${escapeHtml(first.board)}」から ${timeWord(first.dep)} です`;
+}
+
+// 「あしたの時刻表」へ切り替える(2026-07-12 開発者要望)。きょう運行の無い日と、
+// 本日の便が終わったあと(2026-10-09〜)に使う。ranToday: きょう運行があったか(注記の言い方を変える)。
 // あしたの始発を選んだ状態にして乗り方まで見せる。時計連動(あと◯分)はしない
-function showTomorrowTimetable(tType) {
+function showTomorrowTimetable(tType, ranToday = false) {
   s3.tomorrowView = true;
   s3.showType = tType;
   s3.closedOps = closedOpsOn(new Date(Date.now() + 24 * 60 * 60 * 1000));
@@ -1148,7 +1160,32 @@ function showTomorrowTimetable(tType) {
   updateChipSelection();
   renderNearStopBox();   // 候補と本数は曜日で変わるので出し直す
   document.getElementById("day-type-note").textContent =
-    `※あしたの「${meta.day_types[tType]}」ダイヤです(きょうの運行はありません)`;
+    `※あしたの「${meta.day_types[tType]}」ダイヤです` +
+    (ranToday ? "(きょうの便は おわりました)" : "(きょうの運行はありません)");
+}
+
+// 地区から しらべたときの一言(2026-10-09 開発者指摘「中川地区(きた)から みゆき会病院が
+// 金谷工業団地前→こだま橋になるが、家(蔵王の森)からは甲石の方がよい」)。
+// 地区の時刻表は地区の代表点1か所から計算しているので、広い地区では家によって近いバス停が
+// 変わる。わが家が登録済みなら、同じ行き先を わが家から しらべ直すボタンを出す
+function renderHomeHint(district, facility) {
+  const box = document.getElementById("home-hint");
+  if (!box) return;
+  const homeUsable = "geolocation" in navigator && storageUsable();
+  if (!district || district.isHome || !homeUsable) { box.hidden = true; box.innerHTML = ""; return; }
+  const note = `この時刻表は ${escapeHtml(district.name)}の まんなかあたりから しらべたものです。` +
+    `おうちの場所によって、近いバス停が かわります。`;
+  if (loadHome() && facility) {
+    box.innerHTML = `<p class="home-hint-note">${note}</p>` +
+      `<button type="button" id="home-hint-btn" class="home-small-btn">🏠 わが家から しらべなおす</button>`;
+    box.querySelector("#home-hint-btn").addEventListener("click", () => {
+      location.hash = `${HOME_ID}/${facility.id}`;
+    });
+  } else {
+    box.innerHTML = `<p class="home-hint-note">${note}` +
+      `はじめの画面の「いまいる場所を わが家にする」を おうちで おすと、家のそばの バス停で しらべられます</p>`;
+  }
+  box.hidden = false;
 }
 
 // ===============================================================
@@ -1762,6 +1799,14 @@ function setupSpeakButton() {
       text = s3Rows("outbound").length > 0
         ? "本日の便は、おわりました。"
         : "きょうは、行きのバスの運行が、ありません。";
+      // あしたの始発も、画面と同じく乗るバス停といっしょに読む
+      const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      const tType = dayTypeOf(tomorrow);
+      const tRows = tType ? rowsFor("outbound", tType, closedOpsOn(tomorrow)) : [];
+      if (tRows.length) {
+        text += (tType === s3.todayType ? "" : `あしたは、${meta.day_types[tType]}ダイヤです。`) +
+          `始発は、${tRows[0].board}バス停から、${timeSpeech(tRows[0].dep)}です。`;
+      }
     } else {
       const parts = [];
       if (!s3.manual && s3.sel.dir === "outbound") {

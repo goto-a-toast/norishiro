@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>バスの時刻表 - かんたんモード</title>
 <!-- ?v= は更新日。app.js/style.css を変えたら数字を上げる(ブラウザに残った古いファイルを使わせないため。docs/runbook_regenerate.md) -->
-<link rel="stylesheet" href="style.css?v=20261008h">
+<link rel="stylesheet" href="style.css?v=20261009a">
 </head>
 <body>
 <noscript>この機能にはJavaScriptが必要です</noscript>
@@ -66,6 +66,10 @@
   <main id="screen3" class="screen" hidden>
     <p class="breadcrumb"><span id="s3-district-name"></span> → <span id="s3-facility-name"></span></p>
 
+    <!-- 地区から しらべたときの一言(2026-10-09)。地区の時刻表は代表点1か所から計算しているので、
+         わが家から しらべなおす入口を出す。わが家から しらべているとき・位置情報が使えない環境では JS が隠す -->
+    <div id="home-hint" class="home-hint" hidden></div>
+
     <!-- いまの場所から いちばん近いバス停(2026-08-21 開発者要望)。この行き先へ行く
          バスが停まるバス停の中から、GPSでいちばん近いものを出す。スマホでのりかた
          カードの下に置くと画面外になり気づけなかったため、カードの上に置く
@@ -105,6 +109,6 @@
   </main>
 </div>
 
-<script src="app.js?v=20261008e"></script>
+<script src="app.js?v=20261009a"></script>
 </body>
 </html>
