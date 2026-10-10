@@ -1084,9 +1084,73 @@ def _slim_to_board(rows: list, kantan_board: str) -> list:
     return kept
 
 
+# バスを使う意味があるとみなす「歩く時間の短縮」の下限(分)。バスに乗っても、歩く時間の合計
+# (家→乗る停+降りる停→行き先)が、全部歩くよりこれ以上減らない便は出さない(drop_pointless_rows)。
+# 蔵王の森→みゆき会病院(金谷まで13分+こだま橋から15分=28分。全部歩くと約30分)を
+# 落とせる値で、おすすめ乗り場の KANTAN_SWITCH_GAIN_MIN と同じ「5分」の感覚にそろえた
+WALK_SAVING_MIN = 5
+
+
+def _walk_saving(walk_sum, walk_all: float) -> bool:
+    """バスを使うと、家から行き先まで全部歩くより歩く時間が WALK_SAVING_MIN 分以上減るか"""
+    return walk_sum + WALK_SAVING_MIN <= walk_all
+
+
+def drop_pointless_rows(rows: list, walk_all: float, direction: str) -> list:
+    """バスに乗っても、歩く時間の合計(家→乗る停+降りる停→行き先)が、家から行き先まで
+    全部歩くより WALK_SAVING_MIN 分以上は減らない便を落とす(2026-10-09 開発者指摘「蔵王の森から、金谷まで歩いて
+    バスでこだま橋、そこから歩いてみゆき会病院は無理がある」。歩く13分+15分=28分で、
+    全部歩いても約30分だった)。
+    walk_all: 家(地区の代表点)から行き先までの直線距離を徒歩分にした値(丸める前。
+      徒歩圏の停と同じ walk_minutes = 遠回り係数つき)。
+    direction: "outbound"(行き。乗る停=家側。board_options も同じ決まりで絞る)
+               "inbound"(帰り。降りる停=家側。alight_options も同じ決まりで絞る)。
+    行きで、主停(board)からでは意味が無いが、同じバスの家に近い停(board_options)からなら
+    意味がある便は、その停から乗る形に付け替えて残す(_slim_to_board と同じ付け替え)。
+    乗換の徒歩は数えない(乗る前と降りた後の徒歩だけ)"""
+    kept = []
+    for r in rows:
+        bw = r.get("board_walk_min") or 0
+        aw = r.get("alight_walk_min") or 0
+        if direction == "inbound":
+            if not _walk_saving(bw + aw, walk_all):
+                continue
+            opts = r.get("alight_options")
+            if opts:
+                r = dict(r)
+                r["alight_options"] = [o for o in opts if _walk_saving(bw + o["walk_min"], walk_all)]
+            kept.append(r)
+            continue
+        opts = r.get("board_options")
+        good = [o for o in opts if _walk_saving(o["walk_min"] + aw, walk_all)] if opts else []
+        if _walk_saving(bw + aw, walk_all):
+            if opts:
+                r = dict(r)
+                r["board_options"] = good
+            kept.append(r)
+        elif good:
+            # 主停からでは意味が無い → 家にいちばん近い(意味のある)停から乗る形にする
+            o = min(good, key=lambda x: x["walk_min"])
+            r = dict(r)
+            r["board"] = o["stop"]
+            r["board_ll"] = o.get("_ll")
+            r["dep"] = o["dep"]
+            r["board_walk_min"] = o["walk_min"]
+            r["platform"] = None   # のりば番号は元の主停のもの
+            wait = r["transfer"]["wait_min"] if r["transfer"] else 0
+            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - wait
+            r["board_options"] = good
+            kept.append(r)
+    # 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+    return sorted(kept, key=lambda r: r["dep"])
+
+
 def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
     """1つの(地区, 行き先)ペアぶんのJSON片を組み立てる"""
     did, fid = district["id"], facility["id"]
+    direct_dist_m = haversine_m(district["lat"], district["lon"], facility["lat"], facility["lon"])
+    walk_all = walk_minutes(direct_dist_m)   # 家から行き先まで全部歩いたときの徒歩分(丸める前)
+    any_pointless = False
     board_walk_min = None
     outbound = {}
     outbound_all = {}   # 間引く前の行き(おすすめ乗り場の選定に使う)
@@ -1100,6 +1164,12 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
         # 直通・乗換の間引きはscan_from_origin側で完結済み(直通便は間引かない)
         rows_out = dt["outbound"].get(did, {}).get(fid, [])
         rows_in = dt["inbound"].get(fid, {}).get(did, [])
+        # バスを使っても歩く時間が減らない便を落とす(drop_pointless_rows。2026-10-09)
+        useful_out = drop_pointless_rows(rows_out, walk_all, "outbound")
+        useful_in = drop_pointless_rows(rows_in, walk_all, "inbound")
+        if len(useful_out) < len(rows_out) or len(useful_in) < len(rows_in):
+            any_pointless = True
+        rows_out, rows_in = useful_out, useful_in
         # 帰りは行単位のパレートフロンティアで間引く(2026-07-10。施設側の乗り場拡大で、
         # 都心どうしのペアが数分おき600便超に爆発したため)。「施設を出る時刻(=発車−徒歩分)が
         # 同じか早いのに、家に着くのが同じか遅い」= どの時点で施設を出るとしても選ぶ理由が
@@ -1112,9 +1182,16 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
             any_reachable = True
 
     if not any_reachable:
+        if any_pointless:
+            # バスはあるが、どれも全部歩くのと変わらない。画面は「バスでは行けません」ではなく
+            # 「あるいた方が かんたん」と伝える(walk_all_min = 全部歩いたときの徒歩分)
+            return {"unreachable": True, "walk_all_min": round(walk_all)}
         return {"unreachable": True}
 
     entry = {"board_walk_min": board_walk_min, "outbound": outbound, "inbound": inbound}
+    if any_pointless:
+        # 一部の便を落としたしるし。便が1本も残らなかった曜日に、画面が理由を添える
+        entry["walk_all_min"] = round(walk_all)
     # かんたんモードの「一番いい乗り場」(kantan_board)を選ぶ。
     # ★2026-10-07 方式変更(開発者採用の案A): 以前は行きの便をこの1停を通る便だけに
     # 絞って(slim)保存していたが、しっかりモードまで同じ1停しか見えず、第五地区→
@@ -1152,7 +1229,6 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
                     chosen = None   # 想定外の保険: 画面側は絞らずに全便を見せる
             boards[day_type] = chosen
         entry["kantan_boards"] = boards
-    direct_dist_m = haversine_m(district["lat"], district["lon"], facility["lat"], facility["lon"])
     if direct_dist_m <= config.MAX_WALK_TO_STOP_M:
         entry["direct_walk_min"] = round(walk_minutes(direct_dist_m))
     return entry

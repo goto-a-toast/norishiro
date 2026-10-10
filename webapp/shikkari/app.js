@@ -307,7 +307,11 @@ async function render() {
     : "※きょうはこの時刻表の有効期間外の日です";
 
   if (!entry || entry.unreachable) {
-    content.innerHTML = '<p class="unreachable-note">この地区からこの行き先へは、バスでは行けません</p>';
+    // バスはあるが、どれも全部歩くのと歩く時間がほとんど変わらない(工場が便を落とした。2026-10-09)
+    content.innerHTML = entry && Number.isFinite(entry.walk_all_min)
+      ? `<p class="unreachable-note">この地区からこの行き先へは、バスを使っても歩く時間がほとんど変わりません` +
+        `(全部歩くと約${entry.walk_all_min}分)</p>`
+      : '<p class="unreachable-note">この地区からこの行き先へは、バスでは行けません</p>';
     renderPhoneBox(district, []);
     document.getElementById("validity-note").textContent =
       `この時刻表は ${dateJa(meta.valid_until)} まで有効です`;

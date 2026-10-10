@@ -45,7 +45,7 @@ const HOME_KEY = "norishiro.home.v1";      // 保存領域の名前
 const HOME_NAME = "わが家";
 // 家として登録してよい場所: 人の住むメッシュの中心からこの距離以内(=山形市・上山市の中)
 const HOME_AREA_M = 1000;
-const ENGINE_VER = "20261008b";            // engine/ のファイルの版(古いものを使わせないため)
+const ENGINE_VER = "20261009a";            // engine/ のファイルの版(古いものを使わせないため)
 
 // 保存領域は、プライベートブラウズ・設定で止められているときなどに使えない(読み書きで例外)。
 // 使えなくても地区の一覧で今までどおり使えるよう、失敗は「登録なし」として扱う
@@ -762,11 +762,28 @@ function renderFacilityList(timetable) {
     } else {
       btn.innerHTML =
         `<span class="facility-name">${escapeHtml(f.name)}</span>` +
-        `<span class="facility-meta"><span class="facility-time">バスでは行けません</span></span>`;
+        `<span class="facility-meta"><span class="facility-time">${escapeHtml(unreachableWord(timetable.to[f.id]))}</span></span>`;
       btn.disabled = true;
     }
     list.appendChild(btn);
   });
+}
+
+// 行けない行き先の一言。バスはあるが、どれに乗っても全部歩くのと歩く時間が
+// ほとんど変わらない(工場が便を落とした。walk_all_min)ときは、そう伝える(2026-10-09)
+function unreachableWord(entry) {
+  if (entry && Number.isFinite(entry.walk_all_min)) {
+    return `バスを つかっても あるく時間が かわりません(ぜんぶ あるくと 約${entry.walk_all_min}分)`;
+  }
+  return "バスでは行けません";
+}
+
+// その日に便が1本も無いとき、便を落としたせいなら理由を添える(walk_all_min。2026-10-09)
+function pointlessNote(entry) {
+  return entry && Number.isFinite(entry.walk_all_min)
+    ? `<div class="card-sub">バスを つかっても あるく時間が ほとんど かわらない便は のせていません` +
+      `(ぜんぶ あるくと 約${entry.walk_all_min}分)</div>`
+    : "";
 }
 
 // どの行き先へもバスで行けないとき(近くにバス停が無い家・地区)に、画面2で案内と電話番号を出す。
@@ -950,8 +967,9 @@ async function renderScreen3(did, fid) {
   // 行けない施設(画面2ではタップできないが、URL直叩きで来る場合がある)
   const dirBlocks = document.querySelectorAll("#screen3 .direction-block");
   if (!entry || entry.unreachable) {
-    document.getElementById("ride-card").innerHTML =
-      '<div class="card-main">この行き先へは バスで行けません</div>';
+    document.getElementById("ride-card").innerHTML = entry && Number.isFinite(entry.walk_all_min)
+      ? `<div class="card-main">${escapeHtml(unreachableWord(entry))}</div>`
+      : '<div class="card-main">この行き先へは バスで行けません</div>';
     document.getElementById("chip-hint").hidden = true;
     const nb = nearStopBoxEl();
     if (nb) nb.hidden = true;
@@ -1033,7 +1051,13 @@ function renderRideCard(now) {
     const tRows = tType ? rowsFor("outbound", tType, closedOpsOn(tomorrow)) : [];
     head =
       `<div class="card-main">${ranToday ? "本日の便は おわりました" : "きょうは 行きのバスの運行が ありません"}</div>` +
-      (tRows.length ? `<div class="card-sub">${tomorrowFirstWord(tType, tRows[0])}</div>` : "");
+      (ranToday ? "" : pointlessNote(s3.entry)) +
+      (tRows.length ? `<div class="card-sub">${tomorrowFirstWord(tType, tRows[0])}</div>` : "") +
+      // あしたも便が無いことを黙っていると、あしたも乗れるように見えるので一言添える(2026-10-09)
+      (tType && !tRows.length
+        ? `<div class="card-sub">あしたの「${escapeHtml(meta.day_types[tType])}」ダイヤにも 行きの便は ありません</div>` +
+          (ranToday ? pointlessNote(s3.entry) : "")
+        : "");
     // 「あしたの時刻表」への入口(2026-07-12 開発者要望。タップ+1回の明示操作にすることで
     // 「きょう乗れる」との誤解を防ぐ)。2026-10-09 から、本日の便が終わったあとにも出す
     // (開発者指摘「あしたの始発は8:01と出るのに、下の時刻表に8:01が無い」。下の時刻表は

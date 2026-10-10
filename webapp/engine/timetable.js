@@ -38,6 +38,7 @@ const MAX_BOARD_OPTIONS = 6;
 const KANTAN_SWITCH_GAIN_MIN = 5;
 const KANTAN_MIN_TRIP_SHARE = 0.5;
 const KANTAN_FREQUENT_TRIPS = 3;
+const WALK_SAVING_MIN = 5;
 const DAY_TYPES = ["weekday", "saturday", "sunday_holiday"];   // region.py の reference_dates の順
 
 // ===============================================================
@@ -545,6 +546,43 @@ function pickKantanBoard(outbound) {
   });
 }
 
+// drop_pointless_rows: バスに乗っても、歩く時間の合計(家→乗る停+降りる停→行き先)が、
+// 家から行き先まで全部歩くより WALK_SAVING_MIN 分以上は減らない便を落とす(2026-10-09。工場の同名関数と同じ)。
+// walkAll: 全部歩いたときの徒歩分(丸める前)。direction: "outbound" | "inbound"。
+// 生の答えは書き換えない(画面2で計算した行きを画面3でも使い回すため。変えるときは写しを作る)
+function dropPointlessRows(rows, walkAll, direction) {
+  const saving = (w) => w + WALK_SAVING_MIN <= walkAll;
+  const kept = [];
+  for (const r0 of rows) {
+    let r = r0;
+    const bw = r.board_walk_min || 0;
+    const aw = r.alight_walk_min || 0;
+    if (direction === "inbound") {
+      if (!saving(bw + aw)) continue;
+      if (r.alight_options && r.alight_options.length) {
+        r = { ...r, alight_options: r.alight_options.filter((o) => saving(bw + o.walk_min)) };
+      }
+      kept.push(r);
+      continue;
+    }
+    const opts = r.board_options;
+    const good = opts && opts.length ? opts.filter((o) => saving(o.walk_min + aw)) : [];
+    if (saving(bw + aw)) {
+      if (opts && opts.length) r = { ...r, board_options: good };
+      kept.push(r);
+    } else if (good.length) {
+      // 主停からでは意味が無い → 家にいちばん近い(意味のある)停から乗る形にする
+      const o = minBy(good, (x) => x.walk_min);
+      const wait = r.transfer ? r.transfer.wait_min : 0;
+      r = { ...r, board: o.stop, board_ll: o._ll ?? null, dep: o.dep, board_walk_min: o.walk_min,
+            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - wait, board_options: good };
+      kept.push(r);
+    }
+  }
+  // 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+  return kept.sort((a, b) => (a.dep < b.dep ? -1 : a.dep > b.dep ? 1 : 0));
+}
+
 // ===============================================================
 // 1行き先ぶんのエントリ(build_entry)
 // ===============================================================
@@ -552,6 +590,9 @@ function pickKantanBoard(outbound) {
 // perDay: {ダイヤ種別: {outbound: [便...], inbound: [便...], homeBoard: [停, 徒歩分] or null}}
 // cfg   : 配布ネットワークの config(徒歩の速さ・徒歩圏。工場の config.py と同じ値)
 function buildEntry(home, facility, perDay, cfg) {
+  const directM = haversineM(home.lat, home.lon, facility.lat, facility.lon);
+  const walkAll = walkMinutes({ config: cfg }, directM);   // 全部歩いたときの徒歩分(丸める前)
+  let anyPointless = false;
   let boardWalkMin = null;
   const outbound = {}, outboundAll = {}, inbound = {};
   let anyReachable = false;
@@ -559,16 +600,24 @@ function buildEntry(home, facility, perDay, cfg) {
     if (!perDay[dt]) continue;
     const d = perDay[dt];
     if (boardWalkMin === null && d.homeBoard) boardWalkMin = TT_ENGINE.pyRound(d.homeBoard[1]);
-    const rowsOut = d.outbound || [];
-    const rowsIn = d.inbound || [];
+    // バスを使っても歩く時間が減らない便を落とす(dropPointlessRows。2026-10-09)
+    const allOut = d.outbound || [];
+    const allIn = d.inbound || [];
+    const rowsOut = dropPointlessRows(allOut, walkAll, "outbound");
+    const rowsIn = dropPointlessRows(allIn, walkAll, "inbound");
+    if (rowsOut.length < allOut.length || rowsIn.length < allIn.length) anyPointless = true;
     inbound[dt] = rowsIn.length > 1 ? frontierRows(rowsIn) : rowsIn;
     outboundAll[dt] = rowsOut;
     outbound[dt] = dropSameBusEarlierRows(rowsOut);
     if (rowsOut.length || rowsIn.length) anyReachable = true;
   }
-  if (!anyReachable) return { unreachable: true };
+  if (!anyReachable) {
+    // バスはあるが、どれも全部歩くのと変わらない(画面は「あるいた方が かんたん」と伝える)
+    return anyPointless ? { unreachable: true, walk_all_min: TT_ENGINE.pyRound(walkAll) } : { unreachable: true };
+  }
 
   const entry = { board_walk_min: boardWalkMin, outbound, inbound };
+  if (anyPointless) entry.walk_all_min = TT_ENGINE.pyRound(walkAll);   // 一部の便を落としたしるし
   const kantanBoard = pickKantanBoard(outboundAll);
   if (kantanBoard !== null) {
     entry.kantan_board = kantanBoard;
@@ -590,7 +639,6 @@ function buildEntry(home, facility, perDay, cfg) {
     }
     entry.kantan_boards = boards;
   }
-  const directM = haversineM(home.lat, home.lon, facility.lat, facility.lon);
   if (directM <= cfg.max_walk_to_stop_m) {
     entry.direct_walk_min = TT_ENGINE.pyRound(walkMinutes({ config: cfg }, directM));
   }
@@ -723,7 +771,7 @@ function buildHomeTimetable(nets, home, facilities, dirs = ["outbound", "inbound
 const api = {
   buildHomeTimetable, computeHomeRaw, assembleHomeTimetable, computeDayType, buildEntry,
   attachStopPoints, prepareNetwork, nearbyStops, buildOrigins, buildTargets, scanFromOrigin,
-  pickKantanBoard, dropSameBusEarlierRows, frontierRows, haversineM, DAY_TYPES,
+  pickKantanBoard, dropSameBusEarlierRows, dropPointlessRows, frontierRows, haversineM, DAY_TYPES,
 };
 if (typeof module !== "undefined" && module.exports) module.exports = api;
 else root.TimetableEngine = api;
