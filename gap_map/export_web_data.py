@@ -1200,6 +1200,26 @@ def drop_pointless_rows(rows: list, walk_all: float, direction: str) -> list:
     return sorted(kept, key=lambda r: r["dep"])
 
 
+def drop_slower_than_walk_rows(rows: list, walk_all: float) -> list:
+    """行きの便から、次の2つが両方当てはまる便を落とす(2026-10-12 計画C。開発者決定 C-1「全部の乗り場」・
+    C-2「余裕をつけない」):
+      1. 家を出てから着くまで(着 − (発 − 乗る停までの徒歩分))が、家から行き先まで全部歩く時間
+         (walk_all。丸める前)より長い
+      2. 家を同じか遅く出て、同じか早く着く別の便がある(どちらかは厳しく良い。乗り場は問わない)
+    例: 中川(きた)→みゆき会病院の平日 06:10 リナワールド前発(桜田で47分待ち・07:35着・85分)は、全部歩くと
+    約21分で、07:30 金瓶南発・07:35着の便に負けるので落ちる。2. をつけるのは、それしか無い便(早朝の
+    1本など)を残すため(歩けない人にはバスが要る)。比べるのは主停(board)から乗るときの家を出る時刻"""
+    metrics = [(_leave_home_min(r), hm_to_min(r["arr"])) for r in rows]
+    kept = []
+    for i, (lr, ar) in enumerate(metrics):
+        if ar - lr > walk_all and any(
+                j != i and ls >= lr and as_ <= ar and (ls > lr or as_ < ar)
+                for j, (ls, as_) in enumerate(metrics)):
+            continue
+        kept.append(rows[i])
+    return kept
+
+
 def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
     """1つの(地区, 行き先)ペアぶんのJSON片を組み立てる"""
     did, fid = district["id"], facility["id"]
@@ -1225,6 +1245,8 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
         if len(useful_out) < len(rows_out) or len(useful_in) < len(rows_in):
             any_pointless = True
         rows_out, rows_in = useful_out, useful_in
+        # 全部歩くより遅く、しかも別の便に負けている便を落とす(drop_slower_than_walk_rows。2026-10-12 計画C)
+        rows_out = drop_slower_than_walk_rows(rows_out, walk_all)
         # 帰りは行単位のパレートフロンティアで間引く(2026-07-10。施設側の乗り場拡大で、
         # 都心どうしのペアが数分おき600便超に爆発したため)。「施設を出る時刻(=発車−徒歩分)が
         # 同じか早いのに、家に着くのが同じか遅い」= どの時点で施設を出るとしても選ぶ理由が

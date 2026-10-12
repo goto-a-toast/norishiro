@@ -610,6 +610,17 @@ function dropPointlessRows(rows, walkAll, direction) {
   return kept.sort((a, b) => (a.dep < b.dep ? -1 : a.dep > b.dep ? 1 : 0));
 }
 
+// drop_slower_than_walk_rows: 全部歩くより遅く(1)、しかも家を同じか遅く出て同じか早く着く別の便が
+// ある(2)行きの便を落とす(2026-10-12 計画C。工場の同名関数と同じ)。walkAll は丸める前の値
+function dropSlowerThanWalkRows(rows, walkAll) {
+  const metrics = rows.map((r) => [leaveHomeMin(r), hmToMin(r.arr)]);
+  return rows.filter((_, i) => {
+    const [lr, ar] = metrics[i];
+    if (!(ar - lr > walkAll)) return true;
+    return !metrics.some(([ls, as], j) => j !== i && ls >= lr && as <= ar && (ls > lr || as < ar));
+  });
+}
+
 // ===============================================================
 // 1行き先ぶんのエントリ(build_entry)
 // ===============================================================
@@ -630,9 +641,11 @@ function buildEntry(home, facility, perDay, cfg) {
     // バスを使っても歩く時間が減らない便を落とす(dropPointlessRows。2026-10-09)
     const allOut = d.outbound || [];
     const allIn = d.inbound || [];
-    const rowsOut = dropPointlessRows(allOut, walkAll, "outbound");
+    const rowsOut0 = dropPointlessRows(allOut, walkAll, "outbound");
     const rowsIn = dropPointlessRows(allIn, walkAll, "inbound");
-    if (rowsOut.length < allOut.length || rowsIn.length < allIn.length) anyPointless = true;
+    if (rowsOut0.length < allOut.length || rowsIn.length < allIn.length) anyPointless = true;
+    // 全部歩くより遅く、しかも別の便に負けている便を落とす(dropSlowerThanWalkRows。2026-10-12 計画C)
+    const rowsOut = dropSlowerThanWalkRows(rowsOut0, walkAll);
     inbound[dt] = rowsIn.length > 1 ? frontierRows(rowsIn) : rowsIn;
     outboundAll[dt] = rowsOut;
     outbound[dt] = dropSameBusEarlierRows(rowsOut);
@@ -798,7 +811,7 @@ function buildHomeTimetable(nets, home, facilities, dirs = ["outbound", "inbound
 const api = {
   buildHomeTimetable, computeHomeRaw, assembleHomeTimetable, computeDayType, buildEntry,
   attachStopPoints, prepareNetwork, nearbyStops, buildOrigins, buildTargets, scanFromOrigin,
-  pickKantanBoard, dropSameBusEarlierRows, dropPointlessRows, frontierRows, haversineM, DAY_TYPES,
+  pickKantanBoard, dropSameBusEarlierRows, dropPointlessRows, dropSlowerThanWalkRows, frontierRows, haversineM, DAY_TYPES,
 };
 if (typeof module !== "undefined" && module.exports) module.exports = api;
 else root.TimetableEngine = api;
