@@ -223,12 +223,15 @@ function makeItinerary(net, path, finalArrival, boardName, alightPlace,
     const second = rides[1];
     const transferStop = second.from_stop;
     const walkBetween = path.find((l) => l.kind === "walk" && l.to_stop === transferStop);
-    const arriveAtTransfer = walkBetween ? walkBetween.arrive : first.arrive;
+    // 乗り換えで歩く分(工場と同じ。歩く区間の到着 = 1本目の到着+乗換の余裕+歩く分。同じ停なら0)
+    const transferWalk = walkBetween
+      ? Math.max(0, TT_ENGINE.pyRound(walkBetween.arrive - walkBetween.depart - net.config.min_transfer_min)) : 0;
     const firstAlightName = net.stops[first.to_stop] ? net.stops[first.to_stop].name : null;
     const m2 = tripMeta(net, second.trip_id);
     transfer = {
       at: net.stops[transferStop].name,
-      wait_min: TT_ENGINE.pyRound(second.depart - arriveAtTransfer),
+      wait_min: TT_ENGINE.pyRound(second.depart - first.arrive - transferWalk),
+      walk_min: transferWalk,
       headsign2: m2.headsign,
       route2: normalizeText(second.route_name),
       op2: Number.isInteger(m2.op) ? m2.op : null,
@@ -240,7 +243,7 @@ function makeItinerary(net, path, finalArrival, boardName, alightPlace,
   }
 
   const totalMin = finalArrival - dep;
-  const rideMin = TT_ENGINE.pyRound(totalMin - (transfer ? transfer.wait_min : 0));
+  const rideMin = TT_ENGINE.pyRound(totalMin - (transfer ? transfer.wait_min + transfer.walk_min : 0));
   const boardInfo = net.stops[first.from_stop] || {};
   const platform = typeof boardInfo.platform_code === "string" ? boardInfo.platform_code : null;
   const alightStop = rides[rides.length - 1].to_stop;
@@ -404,10 +407,18 @@ function collapseTransferAlternatives(rows) {
   });
 }
 
+// transfer_gap_min: 乗り換えでバスに乗っていない時間(まち+歩く分。walk_min が無い古い便は wait_min だけ)
+function transferGapMin(row) {
+  const t = row.transfer;
+  return t ? (t.wait_min || 0) + (t.walk_min || 0) : 0;
+}
+
 function leaveHomeMin(row) {
   return hmToMin(row.dep) - (row.board_walk_min || 0);
 }
 
+// drop_same_bus_earlier_rows(工場と同じ。2026-10-12 計画B から「乗り場ごと」に比べる)。
+// 生の答えは書き換えない(変えるときは写しを作る)
 function dropSameBusEarlierRows(rows) {
   const lastBus = (r) => (r.transfer ? `${r.transfer.headsign2}\u0000${r.transfer.route2}`
                                      : `${r.headsign}\u0000${r.route}`);
@@ -428,28 +439,46 @@ function dropSameBusEarlierRows(rows) {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(i);
   });
-  const drop = new Set();
+  const removed = new Map();   // 行の番号 → 外す乗り場の名前
   for (const idxs of groups.values()) {
     if (idxs.length < 2) continue;
     const lv = new Map(idxs.map((i) => [i, leaves(rows[i])]));
-    for (const i of idxs) {
-      for (const j of idxs) {
-        if (i === j || drop.has(j)) continue;
-        const li = lv.get(i), lj = lv.get(j);
-        let all = true, strictly = false;
-        for (const [b, t] of li) {
-          if (!lj.has(b) || lj.get(b) < t) { all = false; break; }
-          if (lj.get(b) > t) strictly = true;
-        }
-        if (!all) continue;
-        if (strictly || wait(rows[j]) < wait(rows[i]) || (wait(rows[j]) === wait(rows[i]) && j < i)) {
-          drop.add(i);
-          break;
-        }
+    const stops = new Set();
+    for (const i of idxs) for (const b of lv.get(i).keys()) stops.add(b);
+    for (const b of stops) {
+      const have = idxs.filter((i) => lv.get(i).has(b));
+      if (have.length < 2) continue;
+      // (家を出る時刻, −待ち, −行の番号) が最大の行(工場の max と同じ)
+      let best = have[0];
+      for (const i of have.slice(1)) {
+        const ti = lv.get(i).get(b), tb = lv.get(best).get(b);
+        if (ti > tb || (ti === tb && (wait(rows[i]) < wait(rows[best]) ||
+            (wait(rows[i]) === wait(rows[best]) && i < best)))) best = i;
+      }
+      for (const i of have) {
+        if (i === best) continue;
+        if (!removed.has(i)) removed.set(i, new Set());
+        removed.get(i).add(b);
       }
     }
   }
-  return rows.filter((_, i) => !drop.has(i));
+  const out = [];
+  rows.forEach((r0, i) => {
+    const gone = removed.get(i);
+    if (!gone) { out.push(r0); return; }
+    const opts = r0.board_options;
+    const keep = opts && opts.length ? opts.filter((o) => !gone.has(o.stop)) : [];
+    if (!keep.length) return;
+    let r = { ...r0, board_options: keep };
+    if (gone.has(r.board)) {
+      const o = minBy(keep, (x) => x.walk_min);
+      r = { ...r, board: o.stop, board_ll: o._ll ?? null, dep: o.dep, board_walk_min: o.walk_min,
+            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - transferGapMin(r) };
+    }
+    out.push(r);
+  });
+  // 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+  return out.sort((a, b) => (a.dep < b.dep ? -1 : a.dep > b.dep ? 1 : 0));
 }
 
 function frontierRows(rows) {
@@ -476,10 +505,9 @@ function slimToBoard(rows, kantanBoard) {
     }
     const match = opts.find((o) => o.stop === kantanBoard);
     if (!match) continue;
-    const wait = r.transfer ? r.transfer.wait_min : 0;
     kept.push({ ...r, board: kantanBoard, board_ll: match._ll ?? null, dep: match.dep,
                 board_walk_min: match.walk_min,
-                ride_min: hmToMin(r.arr) - hmToMin(match.dep) - wait });
+                ride_min: hmToMin(r.arr) - hmToMin(match.dep) - transferGapMin(r) });
   }
   return kept;
 }
@@ -573,14 +601,24 @@ function dropPointlessRows(rows, walkAll, direction) {
     } else if (good.length) {
       // 主停からでは意味が無い → 家にいちばん近い(意味のある)停から乗る形にする
       const o = minBy(good, (x) => x.walk_min);
-      const wait = r.transfer ? r.transfer.wait_min : 0;
       r = { ...r, board: o.stop, board_ll: o._ll ?? null, dep: o.dep, board_walk_min: o.walk_min,
-            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - wait, board_options: good };
+            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - transferGapMin(r), board_options: good };
       kept.push(r);
     }
   }
   // 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
   return kept.sort((a, b) => (a.dep < b.dep ? -1 : a.dep > b.dep ? 1 : 0));
+}
+
+// drop_slower_than_walk_rows: 全部歩くより遅く(1)、しかも家を同じか遅く出て同じか早く着く別の便が
+// ある(2)行きの便を落とす(2026-10-12 計画C。工場の同名関数と同じ)。walkAll は丸める前の値
+function dropSlowerThanWalkRows(rows, walkAll) {
+  const metrics = rows.map((r) => [leaveHomeMin(r), hmToMin(r.arr)]);
+  return rows.filter((_, i) => {
+    const [lr, ar] = metrics[i];
+    if (!(ar - lr > walkAll)) return true;
+    return !metrics.some(([ls, as], j) => j !== i && ls >= lr && as <= ar && (ls > lr || as < ar));
+  });
 }
 
 // ===============================================================
@@ -603,9 +641,11 @@ function buildEntry(home, facility, perDay, cfg) {
     // バスを使っても歩く時間が減らない便を落とす(dropPointlessRows。2026-10-09)
     const allOut = d.outbound || [];
     const allIn = d.inbound || [];
-    const rowsOut = dropPointlessRows(allOut, walkAll, "outbound");
+    const rowsOut0 = dropPointlessRows(allOut, walkAll, "outbound");
     const rowsIn = dropPointlessRows(allIn, walkAll, "inbound");
-    if (rowsOut.length < allOut.length || rowsIn.length < allIn.length) anyPointless = true;
+    if (rowsOut0.length < allOut.length || rowsIn.length < allIn.length) anyPointless = true;
+    // 全部歩くより遅く、しかも別の便に負けている便を落とす(dropSlowerThanWalkRows。2026-10-12 計画C)
+    const rowsOut = dropSlowerThanWalkRows(rowsOut0, walkAll);
     inbound[dt] = rowsIn.length > 1 ? frontierRows(rowsIn) : rowsIn;
     outboundAll[dt] = rowsOut;
     outbound[dt] = dropSameBusEarlierRows(rowsOut);
@@ -771,7 +811,7 @@ function buildHomeTimetable(nets, home, facilities, dirs = ["outbound", "inbound
 const api = {
   buildHomeTimetable, computeHomeRaw, assembleHomeTimetable, computeDayType, buildEntry,
   attachStopPoints, prepareNetwork, nearbyStops, buildOrigins, buildTargets, scanFromOrigin,
-  pickKantanBoard, dropSameBusEarlierRows, dropPointlessRows, frontierRows, haversineM, DAY_TYPES,
+  pickKantanBoard, dropSameBusEarlierRows, dropPointlessRows, dropSlowerThanWalkRows, frontierRows, haversineM, DAY_TYPES,
 };
 if (typeof module !== "undefined" && module.exports) module.exports = api;
 else root.TimetableEngine = api;

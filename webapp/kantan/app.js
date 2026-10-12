@@ -45,7 +45,7 @@ const HOME_KEY = "norishiro.home.v1";      // 保存領域の名前
 const HOME_NAME = "わが家";
 // 家として登録してよい場所: 人の住むメッシュの中心からこの距離以内(=山形市・上山市の中)
 const HOME_AREA_M = 1000;
-const ENGINE_VER = "20261012a";            // engine/ のファイルの版(古いものを使わせないため)
+const ENGINE_VER = "20261012b";            // engine/ のファイルの版(古いものを使わせないため)
 
 // 保存領域は、プライベートブラウズ・設定で止められているときなどに使えない(読み書きで例外)。
 // 使えなくても地区の一覧で今までどおり使えるよう、失敗は「登録なし」として扱う
@@ -882,7 +882,6 @@ function rowsFromBoard(rows, stop) {
   for (const r of rows) {
     const opt = boardOptionOf(r, stop);
     if (!opt) continue;
-    const wait = r.transfer ? r.transfer.wait_min : 0;
     out.push({
       ...r,
       board: opt.stop,
@@ -891,11 +890,22 @@ function rowsFromBoard(rows, stop) {
       bp: Number.isInteger(opt.p) ? opt.p : (opt.stop === r.board && opt.dep === r.dep ? r.bp : undefined),
       dep: opt.dep,
       board_walk_min: opt.walk_min != null ? opt.walk_min : r.board_walk_min,
-      ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - wait,
+      ride_min: hmToMin(r.arr) - hmToMin(opt.dep) - transferGapMin(r),
     });
   }
   out.sort((a, b) => hmToMin(a.dep) - hmToMin(b.dep));
   return out;
+}
+
+// 乗り換えでバスに乗っていない時間(まち+歩く分。walk_min が無い古いデータは まち だけ)
+function transferGapMin(r) {
+  const t = r.transfer;
+  return t ? (t.wait_min || 0) + (t.walk_min || 0) : 0;
+}
+
+// 乗り換えの「(あるいて約3分・2分 まち)」(2026-10-12 計画A)。歩かない乗り換えは「(2分 まち)」
+function transferWaitWord(t) {
+  return t.walk_min >= 1 ? `あるいて約${t.walk_min}分・${t.wait_min}分 まち` : `${t.wait_min}分 まち`;
 }
 
 function s3Rows(dir) {
@@ -1577,7 +1587,7 @@ function rideStepsHtml(r, dir) {
         ? `「${escapeHtml(r.transfer.off)}」で おりて、「${escapeHtml(r.transfer.at)}」まで あるいて、<br>`
         : `「${escapeHtml(r.transfer.at)}」で おりて、<br>`) +
       `<span class="headsign">${escapeHtml(headsignLabel(r.transfer.headsign2))}</span> に ` +
-      `のりかえ(${r.transfer.wait_min}分 まち)${confirmLineHtml(r.transfer.route2)}` + tLinks
+      `のりかえ(${transferWaitWord(r.transfer)})${confirmLineHtml(r.transfer.route2)}` + tLinks
     );
   }
 
@@ -1863,6 +1873,10 @@ function setupSpeakButton() {
         parts.push(ride.transfer.off
           ? `${ride.transfer.off}で おりて、${ride.transfer.at}まで あるいて、${hs2Word}行きに、のりかえてください。`
           : `${ride.transfer.at}で おりて、${hs2Word}行きに、のりかえてください。`);
+        // まち時間も読む(2026-10-12 計画A)
+        parts.push(ride.transfer.walk_min >= 1
+          ? `のりかえは、あるいて約${ride.transfer.walk_min}分、まちは${ride.transfer.wait_min}分です。`
+          : `のりかえの まちは、${ride.transfer.wait_min}分です。`);
       }
       // どこで降りるかを必ず音声でも案内する(実際のバス停名。開発者指摘2026-07-08)。
       // 目的地まで歩くときは徒歩分も添える

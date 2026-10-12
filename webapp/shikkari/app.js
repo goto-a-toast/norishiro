@@ -466,6 +466,17 @@ function dropSameBusEarlierRows(rows) {
   return rows.filter((_, i) => keep.has(i));
 }
 
+// 乗り換えでバスに乗っていない時間(待ち+歩く分。walk_min が無い古いデータは待ちだけ。2026-10-12 計画A)
+function transferGapMin(r) {
+  const t = r.transfer;
+  return t ? (t.wait_min || 0) + (t.walk_min || 0) : 0;
+}
+
+// のりつぎ欄の「(徒歩3分・待ち2分)」。歩かない乗り換えは「(待ち2分)」
+function transferWaitWord(t) {
+  return t.walk_min >= 1 ? `徒歩${t.walk_min}分・待ち${t.wait_min}分` : `待ち${t.wait_min}分`;
+}
+
 function directionSection(dir, label, entry, district, facility) {
   const rows = (entry[dir] && entry[dir][state.dayType]) || [];
   const sec = document.createElement("section");
@@ -568,7 +579,7 @@ function directionSection(dir, label, entry, district, facility) {
     for (const r of rows) {
       const opt = pickOption(r.board_options, active, "dep", true);
       if (!opt) continue;
-      const wait = r.transfer ? r.transfer.wait_min : 0;
+      const wait = transferGapMin(r);
       shown.push({ ...r, board: active,
                    // 候補停が持つ「このバスが実際に止まるのりば」の番号を使う(無い古いデータは停名の索引)
                    bp: Number.isInteger(opt.p) ? opt.p : (active === r.board && opt.dep === r.dep ? r.bp : undefined),
@@ -583,7 +594,7 @@ function directionSection(dir, label, entry, district, facility) {
     for (const r of rows) {
       const opt = pickOption(r.alight_options, active, "arr", false);
       if (!opt) continue;
-      const wait = r.transfer ? r.transfer.wait_min : 0;
+      const wait = transferGapMin(r);
       const homeArr = hmToMin(opt.arr) + opt.walk_min;
       shown.push({ ...r, alight: opt.stop,
                    ap: Number.isInteger(opt.p) ? opt.p : (opt.stop === r.alight && minToHm(homeArr) === r.arr ? r.ap : undefined),
@@ -615,8 +626,8 @@ function directionSection(dir, label, entry, district, facility) {
       const op2 = operatorOf(t.op2);
       transferCell =
         (t.off
-          ? `「${escapeHtml(t.off)}」で おりて「${escapeHtml(t.at)}」まで歩いて のりかえ(待ち${t.wait_min}分)<br>`
-          : `「${escapeHtml(t.at)}」で のりかえ(待ち${t.wait_min}分)<br>`) +
+          ? `「${escapeHtml(t.off)}」で おりて「${escapeHtml(t.at)}」まで歩いて のりかえ(${transferWaitWord(t)})<br>`
+          : `「${escapeHtml(t.at)}」で のりかえ(${transferWaitWord(t)})<br>`) +
         `<span class="sub">→ ${escapeHtml(headsignLabel(t.headsign2))} 番号: ${escapeHtml(t.route2)}` +
         (op2 ? ` / ${escapeHtml(op2.name)}` : "") + "</span>" +
         // 乗り換えのバス停の地図(2026-10-08)。offp / atp = 実際に降りる/乗るのりばの番号

@@ -357,6 +357,24 @@ def normalize_text(name):
     return unicodedata.normalize("NFKC", name).strip()
 
 
+def normalize_stop_names(network: transit_core.Network) -> transit_core.Network:
+    """停留所名にも normalize_text をかける(2026-10-12 全体レビュー B-4・計画 D)。
+    「ＮＨＫ前」「本町・Ｑ１」のような全角英数字が画面に出ていた(全角英数字は翻訳ルールの禁止語彙)。
+    ネットワークを作った直後に1回だけ書き換えるので、便の乗り場・降り場・乗換の停名・候補停・
+    stops_index.json がすべて同じ名前にそろう。build_network.py / transit_core.py(凍結)は変えない。
+    2026-10-12 時点で1,256停名のうち47が変わり、変えたあとで別の停と同じ名前になる組は無い"""
+    for info in network.stops.values():
+        info["name"] = normalize_text(info["name"])
+    return network
+
+
+def build_web_network(feed_dirs, ref_date) -> transit_core.Network:
+    """Web用のネットワーク = build_network(凍結)+ 停留所名の正規化。
+    工場・配布ネットワーク(export_network.py)・地点の照合(export_point_timetables.py)は
+    必ずこれを使う(片方だけ正規化すると、端末と工場の停名がずれて照合で落ちる)"""
+    return normalize_stop_names(build_network(feed_dirs, ref_date))
+
+
 _RAW_HEADSIGNS = None   # trips.txtのtrip_headsign(接頭辞付きtrip_id→行き先)。初回だけ読む
 
 
@@ -436,14 +454,20 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         transfer_stop_id = second.from_stop
         walk_between = next(
             (leg for leg in path if leg.kind == "walk" and leg.to_stop == transfer_stop_id), None)
-        arrive_at_transfer = walk_between.arrive if walk_between else first.arrive
+        # 乗り換えで歩く分(2026-10-12 計画A)。RAPTOR の歩く区間の到着は「1本目の到着+乗換の余裕
+        # (config.MIN_TRANSFER_MIN)+歩く分」なので、余裕を引いて歩く分だけを取り出す。同じ停なら0
+        transfer_walk = (max(0, round(walk_between.arrive - walk_between.depart - config.MIN_TRANSFER_MIN))
+                         if walk_between else 0)
         # 1本目を降りる停と2本目に乗る停の名前が違う(=歩いて乗り換える)ときは、降りる停の
         # 名前も持たせる(2026-10-07 済生病院シャトル: 「山形駅前」で降りて交番前のシャトル
         # 乗り場まで歩くのに、画面が「シャトル乗り場で おりて」と出していた)
         first_alight_name = network.stops.get(first.to_stop, {}).get("name")
         transfer = {
             "at": network.stops[transfer_stop_id]["name"],
-            "wait_min": round(second.depart - arrive_at_transfer),
+            # まち = 1本目を降りてから2本目が出るまで − 歩く分(乗換の余裕3分は「まち」に含める。
+            # 2026-10-12 計画A。以前は歩いて乗り換える便だけ余裕と歩く分を引いた値で「0分 まち」が出ていた)
+            "wait_min": round(second.depart - first.arrive - transfer_walk),
+            "walk_min": transfer_walk,                 # 乗り換えで歩く分(同じ停なら0)
             "headsign2": headsigns[second.trip_id],   # のりかえ後の便の行き先表示(R4)
             "route2": normalize_text(second.route_name),
             "op2": operator_index(second.trip_id),    # のりかえ後の便の運行主体(meta.operatorsの添字)
@@ -458,7 +482,8 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
             transfer["_off_ll"] = stop_latlon(network, first.to_stop)
 
     total_min = final_arrival - dep
-    ride_min = round(total_min - (transfer["wait_min"] if transfer else 0))
+    # バスに乗っている時間 = 全体 − 乗り換えの「まち」と歩く分
+    ride_min = round(total_min - (transfer["wait_min"] + transfer["walk_min"] if transfer else 0))
 
     board_stop_info = network.stops.get(first.from_stop, {})
     platform = board_stop_info.get("platform_code")
@@ -499,6 +524,13 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         # alight もこの中の1つ。行きoutboundはNone(降車=施設で1か所のため)
         "alight_options": alight_options,
     }
+
+
+def transfer_gap_min(row: dict) -> int:
+    """乗り換えでバスに乗っていない時間(まち+歩く分)。乗り場を付け替えて ride_min を
+    計算し直すときに引く。walk_min が無い古い便は wait_min だけ(以前の決まり)"""
+    t = row.get("transfer")
+    return (t.get("wait_min") or 0) + (t.get("walk_min") or 0) if t else 0
 
 
 def stop_latlon(network: transit_core.Network, stop_id) -> list | None:
@@ -820,18 +852,21 @@ def _leave_home_min(row: dict) -> int:
 
 
 def drop_same_bus_earlier_rows(rows: list) -> list:
-    """行きの便から「同じバスで同じ時刻に着くのに、家を早く出る」だけの行を落とす(2026-10-07
+    """行きの便から「同じバスで同じ時刻に着くのに、家を早く出る」だけの乗り場を外す(2026-10-07
     開発者指摘「第五地区→徳洲会病院の 5:50 山交ビル発・山形駅前で54分待ちは現実的でない」)。
-    その例では 5:50・6:20(どちらも山交ビル発)・6:35 山形市役所前発の3行が、山形駅前で
-    同じべにちゃんバスに乗って 7:11 に着いていた。
 
-    最後に乗るバス(乗換なら乗換後の便)・降りる停・到着時刻が同じ行 r と s があり、
-    r で乗れる**どの停でも**(主停と board_options の全部)s でも乗れて、しかも家を同じか
-    遅く出られるときだけ r を落とす(同点なら待ちの短い方を残す)。
-    かんたんモード・乗り場の絞り込み・「◯◯から のる」は、便を選んだ停から乗る形に
-    付け替えて見せるため、どの停から見ても使える便が減らないようにこの条件にした
-    (乗り場を1つだけ見て比べると、全件試算で109〜1,552便が、その乗り場の画面から消えた)。
-    乗り場をまたいだ比較は、しっかりモードの「すべて」表示が画面側で行う"""
+    最後に乗るバス(乗換なら乗換後の便)・降りる停・到着時刻が同じ行どうしを、**乗り場ごとに**比べる。
+    ある乗り場 b で乗れる行のうち、家をいちばん遅く出られる行(同点なら待ちの短い行、さらに同点なら
+    先の行)だけに b を残し、ほかの行の乗り場の候補(board_options)から b を外す。
+    乗り場が1つも残らない行は落とし、主停(board)が外れた行は、残った候補のうち家にいちばん近い停から
+    乗る形に付け替える(drop_pointless_rows と同じ付け替え)。
+    かんたんモード・しっかりの絞り込み・「◯◯から のる」・わが家は、便を選んだ停から乗る形に付け替えて
+    見せるため、どの乗り場から見ても「早く出て同じバスに乗るだけ」の便が消え、その乗り場で使える便は
+    減らない(その乗り場でいちばん良い行が必ず残る)。
+    ★2026-10-12 計画B: 以前は「その行の**全部の**乗り場で代わりがある」ときだけ行を落としていたため、
+    第二地区→ヤマザワ長岡店の平日 16:56 山交ビル発(山形駅前で降りて山交ビルへ歩いて戻り、17:15 の
+    山交ビル発に乗る「ひと回り」の便)が、保健所前からも乗れるという理由で残り、かんたんに出ていた。
+    乗り場をまたいだ比較(しっかりの「すべて」表示)は画面側で行う"""
     def last_bus(r):
         t = r.get("transfer")
         return (t["headsign2"], t["route2"]) if t else (r.get("headsign"), r.get("route"))
@@ -852,21 +887,43 @@ def drop_same_bus_earlier_rows(rows: list) -> list:
     groups = {}
     for i, r in enumerate(rows):
         groups.setdefault((r["arr"], r.get("alight"), last_bus(r)), []).append(i)
-    drop = set()
+    removed = {}   # 行の番号 → その行から外す乗り場の名前
     for idxs in groups.values():
         if len(idxs) < 2:
             continue
         lv = {i: leaves(rows[i]) for i in idxs}
-        for i in idxs:
-            for j in idxs:
-                if i == j or j in drop:
-                    continue
-                if all(b in lv[j] and lv[j][b] >= t for b, t in lv[i].items()):
-                    strictly = any(lv[j][b] > t for b, t in lv[i].items())
-                    if strictly or wait(rows[j]) < wait(rows[i]) or (wait(rows[j]) == wait(rows[i]) and j < i):
-                        drop.add(i)
-                        break
-    return [r for i, r in enumerate(rows) if i not in drop]
+        for b in sorted({b for i in idxs for b in lv[i]}):
+            have = [i for i in idxs if b in lv[i]]
+            if len(have) < 2:
+                continue
+            best = max(have, key=lambda i: (lv[i][b], -wait(rows[i]), -i))
+            for i in have:
+                if i != best:
+                    removed.setdefault(i, set()).add(b)
+    out = []
+    for i, r in enumerate(rows):
+        gone = removed.get(i)
+        if not gone:
+            out.append(r)
+            continue
+        opts = r.get("board_options")
+        keep = [o for o in opts if o["stop"] not in gone] if opts else []
+        if not keep:
+            continue   # どの乗り場でも、同じバスに遅く出て乗れる行がある
+        r = dict(r)
+        r["board_options"] = keep
+        if r["board"] in gone:
+            # 主停では「早く出るだけ」→ 残った候補のうち家にいちばん近い停から乗る形にする
+            o = min(keep, key=lambda x: x["walk_min"])
+            r["board"] = o["stop"]
+            r["board_ll"] = o.get("_ll")
+            r["dep"] = o["dep"]
+            r["board_walk_min"] = o["walk_min"]
+            r["platform"] = None   # のりば番号は元の主停のもの
+            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - transfer_gap_min(r)
+        out.append(r)
+    # 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+    return sorted(out, key=lambda r: r["dep"])
 
 
 def frontier_rows(rows: list) -> list:
@@ -1078,8 +1135,7 @@ def _slim_to_board(rows: list, kantan_board: str) -> list:
         r["dep"] = match["dep"]
         r["board_walk_min"] = match["walk_min"]
         # 主停を変えたので乗車時間も合わせ直す(到着−この停の発車−乗換待ち)
-        wait = r["transfer"]["wait_min"] if r["transfer"] else 0
-        r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(match["dep"]) - wait
+        r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(match["dep"]) - transfer_gap_min(r)
         kept.append(r)
     return kept
 
@@ -1137,12 +1193,31 @@ def drop_pointless_rows(rows: list, walk_all: float, direction: str) -> list:
             r["dep"] = o["dep"]
             r["board_walk_min"] = o["walk_min"]
             r["platform"] = None   # のりば番号は元の主停のもの
-            wait = r["transfer"]["wait_min"] if r["transfer"] else 0
-            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - wait
+            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - transfer_gap_min(r)
             r["board_options"] = good
             kept.append(r)
     # 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
     return sorted(kept, key=lambda r: r["dep"])
+
+
+def drop_slower_than_walk_rows(rows: list, walk_all: float) -> list:
+    """行きの便から、次の2つが両方当てはまる便を落とす(2026-10-12 計画C。開発者決定 C-1「全部の乗り場」・
+    C-2「余裕をつけない」):
+      1. 家を出てから着くまで(着 − (発 − 乗る停までの徒歩分))が、家から行き先まで全部歩く時間
+         (walk_all。丸める前)より長い
+      2. 家を同じか遅く出て、同じか早く着く別の便がある(どちらかは厳しく良い。乗り場は問わない)
+    例: 中川(きた)→みゆき会病院の平日 06:10 リナワールド前発(桜田で47分待ち・07:35着・85分)は、全部歩くと
+    約21分で、07:30 金瓶南発・07:35着の便に負けるので落ちる。2. をつけるのは、それしか無い便(早朝の
+    1本など)を残すため(歩けない人にはバスが要る)。比べるのは主停(board)から乗るときの家を出る時刻"""
+    metrics = [(_leave_home_min(r), hm_to_min(r["arr"])) for r in rows]
+    kept = []
+    for i, (lr, ar) in enumerate(metrics):
+        if ar - lr > walk_all and any(
+                j != i and ls >= lr and as_ <= ar and (ls > lr or as_ < ar)
+                for j, (ls, as_) in enumerate(metrics)):
+            continue
+        kept.append(rows[i])
+    return kept
 
 
 def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
@@ -1170,6 +1245,8 @@ def build_entry(district: dict, facility: dict, per_daytype: dict) -> dict:
         if len(useful_out) < len(rows_out) or len(useful_in) < len(rows_in):
             any_pointless = True
         rows_out, rows_in = useful_out, useful_in
+        # 全部歩くより遅く、しかも別の便に負けている便を落とす(drop_slower_than_walk_rows。2026-10-12 計画C)
+        rows_out = drop_slower_than_walk_rows(rows_out, walk_all)
         # 帰りは行単位のパレートフロンティアで間引く(2026-07-10。施設側の乗り場拡大で、
         # 都心どうしのペアが数分おき600便超に爆発したため)。「施設を出る時刻(=発車−徒歩分)が
         # 同じか早いのに、家に着くのが同じか遅い」= どの時点で施設を出るとしても選ぶ理由が
@@ -1477,7 +1554,7 @@ def main():
     networks = {}   # 対策1: stops_index の座標解決に使う(3ダイヤ種別ぶん保持)
     for day_type, ref_date in REFERENCE_DATES.items():
         print(f"\n[{day_type}] {ref_date}のネットワークを構築中...")
-        network = build_network(config.GTFS_FEED_DIRS, ref_date)
+        network = build_web_network(config.GTFS_FEED_DIRS, ref_date)
         networks[day_type] = network
         stop_index = StopIndex(network)
         headsigns = build_headsign_map(network)   # F4-1: 行き先表示(バス前面)の対応表
@@ -1493,7 +1570,7 @@ def main():
             if not rf_dests:
                 continue
             print(f"  [{rf['dir'].name}] 専用フィード入りで {len(rf_dests)}件の行き先を計算し直し中...")
-            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            net_rf = build_web_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
             networks[f"{day_type}+{rf['dir'].name}"] = net_rf
             res = compute_day_type_schedules(net_rf, districts, rf_dests, StopIndex(net_rf),
                                              build_headsign_map(net_rf))

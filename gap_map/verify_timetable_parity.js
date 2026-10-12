@@ -40,8 +40,11 @@ function readJson(p) { return JSON.parse(fs.readFileSync(p, "utf8")); }
 
 // 配布ネットワーク3ダイヤぶんと、行き先専用のネットワーク(シャトル入り等)を読む。
 // restricted は buildHomeTimetable にそのまま渡せる形 [{facilities, nets: {ダイヤ種別: ネットワーク}}]
+// 配布ネットワークの場所は環境変数 PARITY_NETWORK_DIR で替えられる(工場を直している途中に、
+// webapp/data を書き換えずに作業用フォルダのネットワークで照合するため。2026-10-12)
+const NETWORK_DIR = process.env.PARITY_NETWORK_DIR || path.join(DATA, "network");
 function loadNets() {
-  const load = (name) => TT.prepareNetwork(inflateNetwork(readJson(path.join(DATA, "network", name))));
+  const load = (name) => TT.prepareNetwork(inflateNetwork(readJson(path.join(NETWORK_DIR, name))));
   const nets = {};
   for (const dt of TT.DAY_TYPES) nets[dt] = load(`${dt}.json`);
   const restricted = nets.weekday.restricted.map((_r, i) => ({

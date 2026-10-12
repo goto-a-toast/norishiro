@@ -26,7 +26,6 @@ from pathlib import Path
 
 import config
 import export_web_data as ew
-from build_network import build_network
 from region import REGION
 
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -127,7 +126,7 @@ def main():
     total_raw = total_gz = 0
     for day_type, ref_date in REGION["reference_dates"].items():
         print(f"[{day_type}] {ref_date} のネットワークを組み立て中…")
-        net = build_network(config.GTFS_FEED_DIRS, ref_date)
+        net = ew.build_web_network(config.GTFS_FEED_DIRS, ref_date)
         headsigns = ew.build_headsign_map(net)
         data = serialize(net, headsigns)
         raw, gz = sizes(data)
@@ -144,7 +143,7 @@ def main():
         # ほかの行き先の経路(市内どうしの移動・乗り継ぎ)に使わせないため
         restricted = []
         for i, rf in enumerate(ew.RESTRICTED_FEEDS):
-            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            net_rf = ew.build_web_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
             data_rf = serialize(net_rf, ew.build_headsign_map(net_rf))
             raw_rf, gz_rf = sizes(data_rf)
             total_raw += len(raw_rf); total_gz += len(gz_rf)
