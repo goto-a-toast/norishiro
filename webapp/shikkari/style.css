@@ -231,7 +231,7 @@ table.tt {
    区別できる)。白黒対策: 行き=実線の太枠、帰り=二重線の枠+ラベル文字
    ===================================================================== */
 @media print {
-  .no-print, #page-header .mode-note a, .gap-panel { display: none; }
+  .no-print, .tt .map-link, #page-header .mode-note a, .gap-panel { display: none; }
   body { font-size: 15px; }
   /* 詳細表は縦に長いので、全体を縮めてA4で2枚以内を目安にする
      (かんたんモードの印刷と同じ手法。zoom非対応環境でも枚数が増えるだけ) */

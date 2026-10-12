@@ -26,7 +26,8 @@ class HomeCalc {
   }
 
   load() {
-    if (!this.ready) this.ready = this._load();
+    // 読み込みに失敗したら覚えておかない(通信が戻ったあとの頼みごとで読み直せるように)
+    if (!this.ready) this.ready = this._load().catch((e) => { this.ready = null; throw e; });
     return this.ready;
   }
 

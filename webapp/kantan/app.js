@@ -45,7 +45,7 @@ const HOME_KEY = "norishiro.home.v1";      // 保存領域の名前
 const HOME_NAME = "わが家";
 // 家として登録してよい場所: 人の住むメッシュの中心からこの距離以内(=山形市・上山市の中)
 const HOME_AREA_M = 1000;
-const ENGINE_VER = "20261009a";            // engine/ のファイルの版(古いものを使わせないため)
+const ENGINE_VER = "20261012a";            // engine/ のファイルの版(古いものを使わせないため)
 
 // 保存領域は、プライベートブラウズ・設定で止められているときなどに使えない(読み書きで例外)。
 // 使えなくても地区の一覧で今までどおり使えるよう、失敗は「登録なし」として扱う
@@ -1023,8 +1023,12 @@ async function renderScreen3(did, fid) {
 
   // 時計モード: 1分ごとに「あと◯分」を更新する。
   // 利用者がチップをえらんでいない間は「つぎの便」も自動で進める
+  s3.dayKey = dateKey(now);
   s3.timer = setInterval(() => {
     const t = new Date();
+    // 画面を開いたまま日付が変わったら、きょうのダイヤで作り直す(前の日のダイヤのまま
+    // 「つぎのバス」を出さないため。2026-10-12 レビューで発見)
+    if (dateKey(t) !== s3.dayKey) { renderScreen3(s3.district.id, s3.facility.id); return; }
     if (!s3.manual) {
       const idx = nextOutboundIdx(t);
       s3.sel = idx >= 0 ? { dir: "outbound", idx } : null;
@@ -1522,7 +1526,7 @@ function rideStepsHtml(r, dir) {
   if (dir === "outbound" && Array.isArray(r.board_options)) {
     const others = r.board_options.filter((o) => o.stop !== r.board).slice(0, 3);
     if (others.length) {
-      const list = others.map((o) => `${escapeHtml(o.stop)}(${o.dep}発)`).join("・");
+      const list = others.map((o) => `${escapeHtml(o.stop)}(${timeWord(o.dep)}発)`).join("・");
       siblingNote =
         `<div class="sibling-note">同じバスは ${list} にも とまります。` +
         `ちかいバス停で のってください</div>`;
