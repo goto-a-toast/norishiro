@@ -249,6 +249,47 @@ def test_drop_same_bus_earlier_rows_keeps_latest_departure_to_same_bus():
         ("06:20", "山交ビル"), ("06:35", "山形市役所前"), ("06:40", "保健所前")]
 
 
+def test_drop_same_bus_earlier_rows_removes_loop_board_but_keeps_other_board():
+    """計画B(2026-10-12): 第二地区→ヤマザワ長岡店の平日 16:56 山交ビル発(山形駅前で降りて山交ビルへ
+    歩いて戻り、17:15 の山交ビル発に乗る「ひと回り」の便)。山交ビルからは 17:15 の直通の方が遅く出て
+    同じバスで同じ時刻に着くので、16:56 の行から山交ビルを外す。保健所前(17:15 の便は通らない)から
+    乗る形には残り、主停は保健所前に付け替わる"""
+    loop = {"dep": "16:56", "arr": "17:58", "board": "山交ビル", "board_walk_min": 10,
+            "alight": "長岡南町", "headsign": "芸術工科大学前", "route": "T21・C5", "platform": "1",
+            "ride_min": 50,
+            "transfer": {"at": "山交ビル", "off": "山形駅前", "wait_min": 2, "walk_min": 3,
+                         "headsign2": "わくわくランド", "route2": "N50・C2", "op2": 0},
+            "board_options": [{"stop": "山交ビル", "dep": "16:56", "walk_min": 10},
+                              {"stop": "保健所前", "dep": "16:54", "walk_min": 17}]}
+    direct = {"dep": "17:15", "arr": "17:58", "board": "山交ビル", "board_walk_min": 10,
+              "alight": "長岡南町", "headsign": "わくわくランド", "route": "N50・C2", "ride_min": 43,
+              "transfer": None,
+              "board_options": [{"stop": "山交ビル", "dep": "17:15", "walk_min": 10},
+                                {"stop": "山形駅前", "dep": "17:17", "walk_min": 13}]}
+    kept = drop_same_bus_earlier_rows([loop, direct])
+    assert [(r["dep"], r["board"]) for r in kept] == [("16:54", "保健所前"), ("17:15", "山交ビル")]
+    moved = kept[0]
+    assert [o["stop"] for o in moved["board_options"]] == ["保健所前"]
+    assert moved["board_walk_min"] == 17 and moved["platform"] is None
+    assert moved["ride_min"] == (17 * 60 + 58) - (16 * 60 + 54) - 2 - 3
+    # 山交ビルから見ると(かんたんモード)、17:15 だけになる
+    assert [r["dep"] for r in _slim_to_board(kept, "山交ビル")] == ["17:15"]
+
+
+def test_drop_same_bus_earlier_rows_drops_row_beaten_on_every_board_by_different_rows():
+    """計画B: 乗り場ごとに別の行に負けていれば(1つの行に全部負けていなくても)行ごと落とす"""
+    def r(dep, opts, wait):
+        return {"dep": dep, "arr": "09:00", "board": opts[0][0], "board_walk_min": opts[0][2],
+                "alight": "X", "headsign": "H", "route": "R", "ride_min": 10,
+                "transfer": {"at": "T", "wait_min": wait, "walk_min": 0, "headsign2": "H2", "route2": "R2"},
+                "board_options": [{"stop": s, "dep": d, "walk_min": w} for s, d, w in opts]}
+    early = r("08:00", [("A", "08:00", 5), ("B", "08:02", 5)], 30)
+    a_late = r("08:20", [("A", "08:20", 5)], 10)
+    b_late = r("08:22", [("B", "08:22", 5)], 10)
+    kept = drop_same_bus_earlier_rows([early, a_late, b_late])
+    assert [x["dep"] for x in kept] == ["08:20", "08:22"]
+
+
 def test_pick_kantan_board_none_when_no_outbound():
     assert pick_kantan_board({"weekday": [], "saturday": [], "sunday_holiday": []}) is None
 

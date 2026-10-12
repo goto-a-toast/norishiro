@@ -417,6 +417,8 @@ function leaveHomeMin(row) {
   return hmToMin(row.dep) - (row.board_walk_min || 0);
 }
 
+// drop_same_bus_earlier_rows(工場と同じ。2026-10-12 計画B から「乗り場ごと」に比べる)。
+// 生の答えは書き換えない(変えるときは写しを作る)
 function dropSameBusEarlierRows(rows) {
   const lastBus = (r) => (r.transfer ? `${r.transfer.headsign2}\u0000${r.transfer.route2}`
                                      : `${r.headsign}\u0000${r.route}`);
@@ -437,28 +439,46 @@ function dropSameBusEarlierRows(rows) {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(i);
   });
-  const drop = new Set();
+  const removed = new Map();   // 行の番号 → 外す乗り場の名前
   for (const idxs of groups.values()) {
     if (idxs.length < 2) continue;
     const lv = new Map(idxs.map((i) => [i, leaves(rows[i])]));
-    for (const i of idxs) {
-      for (const j of idxs) {
-        if (i === j || drop.has(j)) continue;
-        const li = lv.get(i), lj = lv.get(j);
-        let all = true, strictly = false;
-        for (const [b, t] of li) {
-          if (!lj.has(b) || lj.get(b) < t) { all = false; break; }
-          if (lj.get(b) > t) strictly = true;
-        }
-        if (!all) continue;
-        if (strictly || wait(rows[j]) < wait(rows[i]) || (wait(rows[j]) === wait(rows[i]) && j < i)) {
-          drop.add(i);
-          break;
-        }
+    const stops = new Set();
+    for (const i of idxs) for (const b of lv.get(i).keys()) stops.add(b);
+    for (const b of stops) {
+      const have = idxs.filter((i) => lv.get(i).has(b));
+      if (have.length < 2) continue;
+      // (家を出る時刻, −待ち, −行の番号) が最大の行(工場の max と同じ)
+      let best = have[0];
+      for (const i of have.slice(1)) {
+        const ti = lv.get(i).get(b), tb = lv.get(best).get(b);
+        if (ti > tb || (ti === tb && (wait(rows[i]) < wait(rows[best]) ||
+            (wait(rows[i]) === wait(rows[best]) && i < best)))) best = i;
+      }
+      for (const i of have) {
+        if (i === best) continue;
+        if (!removed.has(i)) removed.set(i, new Set());
+        removed.get(i).add(b);
       }
     }
   }
-  return rows.filter((_, i) => !drop.has(i));
+  const out = [];
+  rows.forEach((r0, i) => {
+    const gone = removed.get(i);
+    if (!gone) { out.push(r0); return; }
+    const opts = r0.board_options;
+    const keep = opts && opts.length ? opts.filter((o) => !gone.has(o.stop)) : [];
+    if (!keep.length) return;
+    let r = { ...r0, board_options: keep };
+    if (gone.has(r.board)) {
+      const o = minBy(keep, (x) => x.walk_min);
+      r = { ...r, board: o.stop, board_ll: o._ll ?? null, dep: o.dep, board_walk_min: o.walk_min,
+            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - transferGapMin(r) };
+    }
+    out.push(r);
+  });
+  // 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+  return out.sort((a, b) => (a.dep < b.dep ? -1 : a.dep > b.dep ? 1 : 0));
 }
 
 function frontierRows(rows) {

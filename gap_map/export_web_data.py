@@ -852,18 +852,21 @@ def _leave_home_min(row: dict) -> int:
 
 
 def drop_same_bus_earlier_rows(rows: list) -> list:
-    """行きの便から「同じバスで同じ時刻に着くのに、家を早く出る」だけの行を落とす(2026-10-07
+    """行きの便から「同じバスで同じ時刻に着くのに、家を早く出る」だけの乗り場を外す(2026-10-07
     開発者指摘「第五地区→徳洲会病院の 5:50 山交ビル発・山形駅前で54分待ちは現実的でない」)。
-    その例では 5:50・6:20(どちらも山交ビル発)・6:35 山形市役所前発の3行が、山形駅前で
-    同じべにちゃんバスに乗って 7:11 に着いていた。
 
-    最後に乗るバス(乗換なら乗換後の便)・降りる停・到着時刻が同じ行 r と s があり、
-    r で乗れる**どの停でも**(主停と board_options の全部)s でも乗れて、しかも家を同じか
-    遅く出られるときだけ r を落とす(同点なら待ちの短い方を残す)。
-    かんたんモード・乗り場の絞り込み・「◯◯から のる」は、便を選んだ停から乗る形に
-    付け替えて見せるため、どの停から見ても使える便が減らないようにこの条件にした
-    (乗り場を1つだけ見て比べると、全件試算で109〜1,552便が、その乗り場の画面から消えた)。
-    乗り場をまたいだ比較は、しっかりモードの「すべて」表示が画面側で行う"""
+    最後に乗るバス(乗換なら乗換後の便)・降りる停・到着時刻が同じ行どうしを、**乗り場ごとに**比べる。
+    ある乗り場 b で乗れる行のうち、家をいちばん遅く出られる行(同点なら待ちの短い行、さらに同点なら
+    先の行)だけに b を残し、ほかの行の乗り場の候補(board_options)から b を外す。
+    乗り場が1つも残らない行は落とし、主停(board)が外れた行は、残った候補のうち家にいちばん近い停から
+    乗る形に付け替える(drop_pointless_rows と同じ付け替え)。
+    かんたんモード・しっかりの絞り込み・「◯◯から のる」・わが家は、便を選んだ停から乗る形に付け替えて
+    見せるため、どの乗り場から見ても「早く出て同じバスに乗るだけ」の便が消え、その乗り場で使える便は
+    減らない(その乗り場でいちばん良い行が必ず残る)。
+    ★2026-10-12 計画B: 以前は「その行の**全部の**乗り場で代わりがある」ときだけ行を落としていたため、
+    第二地区→ヤマザワ長岡店の平日 16:56 山交ビル発(山形駅前で降りて山交ビルへ歩いて戻り、17:15 の
+    山交ビル発に乗る「ひと回り」の便)が、保健所前からも乗れるという理由で残り、かんたんに出ていた。
+    乗り場をまたいだ比較(しっかりの「すべて」表示)は画面側で行う"""
     def last_bus(r):
         t = r.get("transfer")
         return (t["headsign2"], t["route2"]) if t else (r.get("headsign"), r.get("route"))
@@ -884,21 +887,43 @@ def drop_same_bus_earlier_rows(rows: list) -> list:
     groups = {}
     for i, r in enumerate(rows):
         groups.setdefault((r["arr"], r.get("alight"), last_bus(r)), []).append(i)
-    drop = set()
+    removed = {}   # 行の番号 → その行から外す乗り場の名前
     for idxs in groups.values():
         if len(idxs) < 2:
             continue
         lv = {i: leaves(rows[i]) for i in idxs}
-        for i in idxs:
-            for j in idxs:
-                if i == j or j in drop:
-                    continue
-                if all(b in lv[j] and lv[j][b] >= t for b, t in lv[i].items()):
-                    strictly = any(lv[j][b] > t for b, t in lv[i].items())
-                    if strictly or wait(rows[j]) < wait(rows[i]) or (wait(rows[j]) == wait(rows[i]) and j < i):
-                        drop.add(i)
-                        break
-    return [r for i, r in enumerate(rows) if i not in drop]
+        for b in sorted({b for i in idxs for b in lv[i]}):
+            have = [i for i in idxs if b in lv[i]]
+            if len(have) < 2:
+                continue
+            best = max(have, key=lambda i: (lv[i][b], -wait(rows[i]), -i))
+            for i in have:
+                if i != best:
+                    removed.setdefault(i, set()).add(b)
+    out = []
+    for i, r in enumerate(rows):
+        gone = removed.get(i)
+        if not gone:
+            out.append(r)
+            continue
+        opts = r.get("board_options")
+        keep = [o for o in opts if o["stop"] not in gone] if opts else []
+        if not keep:
+            continue   # どの乗り場でも、同じバスに遅く出て乗れる行がある
+        r = dict(r)
+        r["board_options"] = keep
+        if r["board"] in gone:
+            # 主停では「早く出るだけ」→ 残った候補のうち家にいちばん近い停から乗る形にする
+            o = min(keep, key=lambda x: x["walk_min"])
+            r["board"] = o["stop"]
+            r["board_ll"] = o.get("_ll")
+            r["dep"] = o["dep"]
+            r["board_walk_min"] = o["walk_min"]
+            r["platform"] = None   # のりば番号は元の主停のもの
+            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - transfer_gap_min(r)
+        out.append(r)
+    # 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)
+    return sorted(out, key=lambda r: r["dep"])
 
 
 def frontier_rows(rows: list) -> list:
