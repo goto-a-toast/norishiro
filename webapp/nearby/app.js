@@ -196,12 +196,15 @@ function renderTrips(dest, result) {
         `「${esc(state.net.stops[r.to_stop].name)}」で おりる（${timeWord(r.arrive)}着）` +
         `${stopMapLink(state.net.stops[r.to_stop])}</li>`);
       if (i < t.rides.length - 1) {
-        const wait = t.rides[i + 1].depart - r.arrive;
         // 乗り換えで別ののりばへ歩くときは、乗るのりばの地図も出す(2026-10-08)
         const next = t.rides[i + 1].from_stop;
+        // まち = 降りてから乗るまで − 歩く分(かんたんモードと同じ決まり。2026-10-12 計画A)
+        const fp = next !== r.to_stop ? (state.net.footpaths[r.to_stop] || []).find(([o]) => o === next) : null;
+        const walkMin = fp ? Math.round(fp[1]) : 0;
+        const wait = t.rides[i + 1].depart - r.arrive - walkMin;
         const walkTo = next !== r.to_stop
           ? `「${esc(state.net.stops[next].name)}」まで あるいて ${stopMapLink(state.net.stops[next])}` : "";
-        steps.push(`<li>のりかえ（${wait}分まち）${walkTo}</li>`);
+        steps.push(`<li>のりかえ（${walkMin >= 1 ? `あるいて約${walkMin}分・` : ""}${wait}分まち）${walkTo}</li>`);
       }
     });
     if (t.best.walk >= 1) {

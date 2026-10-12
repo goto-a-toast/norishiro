@@ -223,12 +223,15 @@ function makeItinerary(net, path, finalArrival, boardName, alightPlace,
     const second = rides[1];
     const transferStop = second.from_stop;
     const walkBetween = path.find((l) => l.kind === "walk" && l.to_stop === transferStop);
-    const arriveAtTransfer = walkBetween ? walkBetween.arrive : first.arrive;
+    // 乗り換えで歩く分(工場と同じ。歩く区間の到着 = 1本目の到着+乗換の余裕+歩く分。同じ停なら0)
+    const transferWalk = walkBetween
+      ? Math.max(0, TT_ENGINE.pyRound(walkBetween.arrive - walkBetween.depart - net.config.min_transfer_min)) : 0;
     const firstAlightName = net.stops[first.to_stop] ? net.stops[first.to_stop].name : null;
     const m2 = tripMeta(net, second.trip_id);
     transfer = {
       at: net.stops[transferStop].name,
-      wait_min: TT_ENGINE.pyRound(second.depart - arriveAtTransfer),
+      wait_min: TT_ENGINE.pyRound(second.depart - first.arrive - transferWalk),
+      walk_min: transferWalk,
       headsign2: m2.headsign,
       route2: normalizeText(second.route_name),
       op2: Number.isInteger(m2.op) ? m2.op : null,
@@ -240,7 +243,7 @@ function makeItinerary(net, path, finalArrival, boardName, alightPlace,
   }
 
   const totalMin = finalArrival - dep;
-  const rideMin = TT_ENGINE.pyRound(totalMin - (transfer ? transfer.wait_min : 0));
+  const rideMin = TT_ENGINE.pyRound(totalMin - (transfer ? transfer.wait_min + transfer.walk_min : 0));
   const boardInfo = net.stops[first.from_stop] || {};
   const platform = typeof boardInfo.platform_code === "string" ? boardInfo.platform_code : null;
   const alightStop = rides[rides.length - 1].to_stop;
@@ -404,6 +407,12 @@ function collapseTransferAlternatives(rows) {
   });
 }
 
+// transfer_gap_min: 乗り換えでバスに乗っていない時間(まち+歩く分。walk_min が無い古い便は wait_min だけ)
+function transferGapMin(row) {
+  const t = row.transfer;
+  return t ? (t.wait_min || 0) + (t.walk_min || 0) : 0;
+}
+
 function leaveHomeMin(row) {
   return hmToMin(row.dep) - (row.board_walk_min || 0);
 }
@@ -476,10 +485,9 @@ function slimToBoard(rows, kantanBoard) {
     }
     const match = opts.find((o) => o.stop === kantanBoard);
     if (!match) continue;
-    const wait = r.transfer ? r.transfer.wait_min : 0;
     kept.push({ ...r, board: kantanBoard, board_ll: match._ll ?? null, dep: match.dep,
                 board_walk_min: match.walk_min,
-                ride_min: hmToMin(r.arr) - hmToMin(match.dep) - wait });
+                ride_min: hmToMin(r.arr) - hmToMin(match.dep) - transferGapMin(r) });
   }
   return kept;
 }
@@ -573,9 +581,8 @@ function dropPointlessRows(rows, walkAll, direction) {
     } else if (good.length) {
       // 主停からでは意味が無い → 家にいちばん近い(意味のある)停から乗る形にする
       const o = minBy(good, (x) => x.walk_min);
-      const wait = r.transfer ? r.transfer.wait_min : 0;
       r = { ...r, board: o.stop, board_ll: o._ll ?? null, dep: o.dep, board_walk_min: o.walk_min,
-            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - wait, board_options: good };
+            platform: null, ride_min: hmToMin(r.arr) - hmToMin(o.dep) - transferGapMin(r), board_options: good };
       kept.push(r);
     }
   }

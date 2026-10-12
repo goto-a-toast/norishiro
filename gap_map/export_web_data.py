@@ -454,14 +454,20 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         transfer_stop_id = second.from_stop
         walk_between = next(
             (leg for leg in path if leg.kind == "walk" and leg.to_stop == transfer_stop_id), None)
-        arrive_at_transfer = walk_between.arrive if walk_between else first.arrive
+        # 乗り換えで歩く分(2026-10-12 計画A)。RAPTOR の歩く区間の到着は「1本目の到着+乗換の余裕
+        # (config.MIN_TRANSFER_MIN)+歩く分」なので、余裕を引いて歩く分だけを取り出す。同じ停なら0
+        transfer_walk = (max(0, round(walk_between.arrive - walk_between.depart - config.MIN_TRANSFER_MIN))
+                         if walk_between else 0)
         # 1本目を降りる停と2本目に乗る停の名前が違う(=歩いて乗り換える)ときは、降りる停の
         # 名前も持たせる(2026-10-07 済生病院シャトル: 「山形駅前」で降りて交番前のシャトル
         # 乗り場まで歩くのに、画面が「シャトル乗り場で おりて」と出していた)
         first_alight_name = network.stops.get(first.to_stop, {}).get("name")
         transfer = {
             "at": network.stops[transfer_stop_id]["name"],
-            "wait_min": round(second.depart - arrive_at_transfer),
+            # まち = 1本目を降りてから2本目が出るまで − 歩く分(乗換の余裕3分は「まち」に含める。
+            # 2026-10-12 計画A。以前は歩いて乗り換える便だけ余裕と歩く分を引いた値で「0分 まち」が出ていた)
+            "wait_min": round(second.depart - first.arrive - transfer_walk),
+            "walk_min": transfer_walk,                 # 乗り換えで歩く分(同じ停なら0)
             "headsign2": headsigns[second.trip_id],   # のりかえ後の便の行き先表示(R4)
             "route2": normalize_text(second.route_name),
             "op2": operator_index(second.trip_id),    # のりかえ後の便の運行主体(meta.operatorsの添字)
@@ -476,7 +482,8 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
             transfer["_off_ll"] = stop_latlon(network, first.to_stop)
 
     total_min = final_arrival - dep
-    ride_min = round(total_min - (transfer["wait_min"] if transfer else 0))
+    # バスに乗っている時間 = 全体 − 乗り換えの「まち」と歩く分
+    ride_min = round(total_min - (transfer["wait_min"] + transfer["walk_min"] if transfer else 0))
 
     board_stop_info = network.stops.get(first.from_stop, {})
     platform = board_stop_info.get("platform_code")
@@ -517,6 +524,13 @@ def make_itinerary(path: list, final_arrival: int, network: transit_core.Network
         # alight もこの中の1つ。行きoutboundはNone(降車=施設で1か所のため)
         "alight_options": alight_options,
     }
+
+
+def transfer_gap_min(row: dict) -> int:
+    """乗り換えでバスに乗っていない時間(まち+歩く分)。乗り場を付け替えて ride_min を
+    計算し直すときに引く。walk_min が無い古い便は wait_min だけ(以前の決まり)"""
+    t = row.get("transfer")
+    return (t.get("wait_min") or 0) + (t.get("walk_min") or 0) if t else 0
 
 
 def stop_latlon(network: transit_core.Network, stop_id) -> list | None:
@@ -1096,8 +1110,7 @@ def _slim_to_board(rows: list, kantan_board: str) -> list:
         r["dep"] = match["dep"]
         r["board_walk_min"] = match["walk_min"]
         # 主停を変えたので乗車時間も合わせ直す(到着−この停の発車−乗換待ち)
-        wait = r["transfer"]["wait_min"] if r["transfer"] else 0
-        r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(match["dep"]) - wait
+        r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(match["dep"]) - transfer_gap_min(r)
         kept.append(r)
     return kept
 
@@ -1155,8 +1168,7 @@ def drop_pointless_rows(rows: list, walk_all: float, direction: str) -> list:
             r["dep"] = o["dep"]
             r["board_walk_min"] = o["walk_min"]
             r["platform"] = None   # のりば番号は元の主停のもの
-            wait = r["transfer"]["wait_min"] if r["transfer"] else 0
-            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - wait
+            r["ride_min"] = hm_to_min(r["arr"]) - hm_to_min(o["dep"]) - transfer_gap_min(r)
             r["board_options"] = good
             kept.append(r)
     # 付け替えで発車時刻が変わることがあるので、発車順に並べ直す(同じ時刻は元の順のまま)

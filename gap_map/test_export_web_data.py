@@ -345,14 +345,49 @@ def test_make_itinerary_records_walk_between_transfer_stops():
     network = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
     ride1 = Leg(kind="ride", from_stop="O", to_stop="E", depart=404, arrive=430,
                 trip_id="山形交通:t1", route_name="S85")
-    walk = Leg(kind="walk", from_stop="E", to_stop="K", depart=430, arrive=431)
+    # RAPTOR の歩く区間の到着 = 降りた時刻+乗換の余裕3分+歩く1分
+    walk = Leg(kind="walk", from_stop="E", to_stop="K", depart=430, arrive=434)
     ride2 = Leg(kind="ride", from_stop="K", to_stop="H", depart=453, arrive=469,
                 trip_id="済生病院シャトル:loop1_to_eki", route_name="シャトル")
     it = make_itinerary([ride1, walk, ride2], 470, network, "蔵王駅口", "済生病院",
                         {"山形交通:t1": "千歳公園", "済生病院シャトル:loop1_to_eki": "山形済生病院"})
     assert it["transfer"]["at"] == "山形駅(シャトルバス・交番前)"
     assert it["transfer"]["off"] == "山形駅前"
-    assert it["transfer"]["wait_min"] == 22          # 歩いて着いてから乗るまで
+    # 2026-10-12 計画A: まち = 降りてから乗るまで(453−430=23分)− 歩く1分。余裕の3分は「まち」に含める
+    assert it["transfer"]["walk_min"] == 1
+    assert it["transfer"]["wait_min"] == 22
+    # バスに乗っている時間 = 全体(470−404=66分)− まち22分 − 歩く1分
+    assert it["ride_min"] == 43
+
+
+def test_make_itinerary_same_stop_transfer_has_no_walk():
+    """同じ停での乗り換え: 歩く分は0、まちは「降りてから乗るまで」(計画A)"""
+    stops = {
+        "O": {"name": "蔵王駅口", "lat": 38.20, "lon": 140.33, "platform_code": None},
+        "E": {"name": "山形駅前", "lat": 38.2490, "lon": 140.3285, "platform_code": None},
+        "H": {"name": "県立中央病院", "lat": 38.2846, "lon": 140.3350, "platform_code": None},
+    }
+    network = Network(patterns=[], stop_routes={}, stops=stops, footpaths={})
+    ride1 = Leg(kind="ride", from_stop="O", to_stop="E", depart=404, arrive=430,
+                trip_id="山形交通:t1", route_name="S85")
+    ride2 = Leg(kind="ride", from_stop="E", to_stop="H", depart=440, arrive=460,
+                trip_id="山形交通:t2", route_name="N52")
+    it = make_itinerary([ride1, ride2], 462, network, "蔵王駅口", "県立中央病院",
+                        {"山形交通:t1": "山形駅前", "山形交通:t2": "県立中央病院"})
+    assert it["transfer"]["walk_min"] == 0
+    assert it["transfer"]["wait_min"] == 10
+    assert "off" not in it["transfer"]
+    assert it["ride_min"] == 58 - 10     # 全体58分 − まち10分
+
+
+def test_slim_to_board_subtracts_transfer_walk_from_ride():
+    """乗り場を付け替えたときの「のること」は、まちと歩く分の両方を引く(計画A)"""
+    r = {"board": "A", "dep": "07:00", "arr": "08:00", "board_walk_min": 5, "ride_min": 0,
+         "transfer": {"wait_min": 4, "walk_min": 2},
+         "board_options": [{"stop": "A", "dep": "07:00", "walk_min": 5},
+                           {"stop": "B", "dep": "07:10", "walk_min": 9}]}
+    k = _slim_to_board([r], "B")[0]
+    assert k["ride_min"] == 60 - 10 - 4 - 2
 
 
 def test_make_itinerary_coordinates_none_when_stop_unknown():
