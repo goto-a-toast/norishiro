@@ -634,7 +634,9 @@ def main():
 
     page_labels = [d["label"] for d in page_data]
     pages = [
-        render_page(d["label"], stop_a, stop_b, d["out_pairs"], d["in_pairs"],
+        # 紙面の停名は全角英数字を半角に(Web と同じ表記。2026-10-12 計画 D-1)
+        render_page(d["label"], unicodedata.normalize("NFKC", stop_a), unicodedata.normalize("NFKC", stop_b),
+                    d["out_pairs"], d["in_pairs"],
                     d["route_text"], notes, validity_text,
                     d["platform_out"], d["platform_in"],
                     page_labels, i)

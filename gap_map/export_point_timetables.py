@@ -25,7 +25,6 @@ from pathlib import Path
 
 import config
 import export_web_data as ew
-from build_network import build_network
 
 PROJECT_ROOT = Path(__file__).parent.parent
 MESH_INDEX_JSON = PROJECT_ROOT / "webapp" / "data" / "mesh_index.json"
@@ -51,7 +50,7 @@ def main():
     per_daytype = {}
     for day_type, ref_date in ew.REFERENCE_DATES.items():
         t0 = time.time()
-        network = build_network(config.GTFS_FEED_DIRS, ref_date)
+        network = ew.build_web_network(config.GTFS_FEED_DIRS, ref_date)
         per_daytype[day_type] = ew.compute_day_type_schedules(
             network, points, destinations, ew.StopIndex(network), ew.build_headsign_map(network))
         # 行き先専用のフィード: export_web_data.main() と同じ差し替え
@@ -59,7 +58,7 @@ def main():
             rf_dests = [f for f in destinations if f["id"] in rf["facilities"]]
             if not rf_dests:
                 continue
-            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            net_rf = ew.build_web_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
             res = ew.compute_day_type_schedules(net_rf, points, rf_dests, ew.StopIndex(net_rf),
                                                 ew.build_headsign_map(net_rf))
             for f in rf_dests:

@@ -734,3 +734,18 @@ def test_flatten_districts_appends_subs_with_parent_info():
     assert [d["id"] for d in flat] == ["d01", "d15", "d15a", "d15b"]  # 親も残す
     sub = flat[2]
     assert sub["municipality"] == "山形市" and sub["parent_id"] == "d15"
+
+
+# ---------------------------------------------------------------
+# 計画 D(2026-10-12): 停留所名の全角英数字を半角に
+# ---------------------------------------------------------------
+def test_normalize_stop_names_makes_fullwidth_alnum_halfwidth():
+    from export_web_data import normalize_stop_names
+    net = Network(patterns=[], stop_routes={}, footpaths={}, stops={
+        "a": {"name": "ＮＨＫ前", "lat": 0.0, "lon": 0.0},
+        "b": {"name": "本町・Ｑ１", "lat": 0.0, "lon": 0.0},
+        "c": {"name": "四ツ谷（往路）", "lat": 0.0, "lon": 0.0},
+        "d": {"name": "七日町", "lat": 0.0, "lon": 0.0},
+    })
+    normalize_stop_names(net)
+    assert [net.stops[k]["name"] for k in "abcd"] == ["NHK前", "本町・Q1", "四ツ谷(往路)", "七日町"]

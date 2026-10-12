@@ -357,6 +357,24 @@ def normalize_text(name):
     return unicodedata.normalize("NFKC", name).strip()
 
 
+def normalize_stop_names(network: transit_core.Network) -> transit_core.Network:
+    """停留所名にも normalize_text をかける(2026-10-12 全体レビュー B-4・計画 D)。
+    「ＮＨＫ前」「本町・Ｑ１」のような全角英数字が画面に出ていた(全角英数字は翻訳ルールの禁止語彙)。
+    ネットワークを作った直後に1回だけ書き換えるので、便の乗り場・降り場・乗換の停名・候補停・
+    stops_index.json がすべて同じ名前にそろう。build_network.py / transit_core.py(凍結)は変えない。
+    2026-10-12 時点で1,256停名のうち47が変わり、変えたあとで別の停と同じ名前になる組は無い"""
+    for info in network.stops.values():
+        info["name"] = normalize_text(info["name"])
+    return network
+
+
+def build_web_network(feed_dirs, ref_date) -> transit_core.Network:
+    """Web用のネットワーク = build_network(凍結)+ 停留所名の正規化。
+    工場・配布ネットワーク(export_network.py)・地点の照合(export_point_timetables.py)は
+    必ずこれを使う(片方だけ正規化すると、端末と工場の停名がずれて照合で落ちる)"""
+    return normalize_stop_names(build_network(feed_dirs, ref_date))
+
+
 _RAW_HEADSIGNS = None   # trips.txtのtrip_headsign(接頭辞付きtrip_id→行き先)。初回だけ読む
 
 
@@ -1477,7 +1495,7 @@ def main():
     networks = {}   # 対策1: stops_index の座標解決に使う(3ダイヤ種別ぶん保持)
     for day_type, ref_date in REFERENCE_DATES.items():
         print(f"\n[{day_type}] {ref_date}のネットワークを構築中...")
-        network = build_network(config.GTFS_FEED_DIRS, ref_date)
+        network = build_web_network(config.GTFS_FEED_DIRS, ref_date)
         networks[day_type] = network
         stop_index = StopIndex(network)
         headsigns = build_headsign_map(network)   # F4-1: 行き先表示(バス前面)の対応表
@@ -1493,7 +1511,7 @@ def main():
             if not rf_dests:
                 continue
             print(f"  [{rf['dir'].name}] 専用フィード入りで {len(rf_dests)}件の行き先を計算し直し中...")
-            net_rf = build_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
+            net_rf = build_web_network(list(config.GTFS_FEED_DIRS) + [rf["dir"]], ref_date)
             networks[f"{day_type}+{rf['dir'].name}"] = net_rf
             res = compute_day_type_schedules(net_rf, districts, rf_dests, StopIndex(net_rf),
                                              build_headsign_map(net_rf))
