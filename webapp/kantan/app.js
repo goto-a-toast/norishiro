@@ -123,13 +123,133 @@ function hereDistrict() {
            municipality: real ? real.municipality : "山形市",
            lat: h.lat, lon: h.lon, parent: real ? (real.parent || real) : null };
 }
-// 計算の出発点(わが家 または いまいる場所)。地区なら null
+// ===============================================================
+// いつも乗るバス停から しらべる(2026-10-15)
+// ---------------------------------------------------------------
+// 地区の時刻表は地区の代表点から歩ける停だけで作るので、人が住む区画の近くで便も多いのに、どの地区の
+// 時刻表にも乗り場として出てこない停がある(174停。かみのやま温泉駅前・遊学館前など)。
+// 「地区は分かりにくい」(開発者)ので、ふだん使うバス停の名前で選んでもらい、その停を出発点にして
+// わが家と同じ端末の計算で時刻表を作る。
+// - バス停の一覧は ../data/stop_search.json(gap_map/make_stop_search.py が作る。停名・読みがな・
+//   市町村・便の数・代表ののりばの座標)。画面1でバス停をさがすときだけ読む
+// - URL は #stop/<停の名前>(画面2)・#stop/<停の名前>/<行き先ID>(画面3)。URL だけで同じ画面に
+//   もどれるので、何も保存しない(ブックマーク・QR でも開ける)
+// - 出発点は「代表ののりば」(その停で平日の便がいちばん多いのりば)の座標。道の反対側などの
+//   別ののりばも、エンジンが「同じ場所(150m以内)」として候補にする(buildOrigins)
+// - 画面の中では「地区」のかわりに「◯◯バス停」を置く(isHome=true で、近くのバス停欄や
+//   わが家のヒントなど地区向けの案内は出さない)。電話番号欄は近い区画の地区から引く
+// ===============================================================
+const STOP_PREFIX = "stop/";   // 画面の上での「バス停」の名前は "stop/<URL用に変換した停の名前>"
+let stopSearchCache;           // undefined=未取得 / null=取得失敗 / {stops, byKey}
+const stopParent = new Map();  // 画面の上の名前 → 近い区画の地区ID(電話番号欄の判定用)
+
+function isStopId(did) { return typeof did === "string" && did.startsWith(STOP_PREFIX); }
+// 停の名前(key。同じ名前の停が離れた所にあるときは「市役所前(上山市)」のように見分けの一言つき)
+// → 画面の上の名前。URL に入れるので、日本語・かっこは % の形にそろえる
+function stopIdOf(key) { return STOP_PREFIX + encodeURIComponent(key); }
+function stopKeyOf(did) {
+  try { return decodeURIComponent(did.slice(STOP_PREFIX.length)); } catch (e) { return null; }
+}
+
+// カタカナをひらがなに(「ヤマザワ前」を「やまざわ」でも、「やまがた」を「ヤマガタ」でも探せるように)
+function kataToHira(s) {
+  return s.replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
+}
+// 検索のための形にそろえる: 全角英数字→半角(NFKC)・カタカナ→ひらがな・空白を消す・
+// うしろの「バス停」を外す(「県立中央病院バス停」と入れても見つかるように)
+function searchForm(s) {
+  return kataToHira(String(s ?? "").normalize("NFKC")).replace(/\s+/g, "")
+    .replace(/(ばす停|ばすてい)$/, "");
+}
+
+async function getStopSearch() {
+  if (stopSearchCache === undefined) {
+    const data = await fetch("../data/stop_search.json", DATA_FETCH)
+      .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    if (data && Array.isArray(data.stops)) {
+      const byKey = new Map();
+      for (const s of data.stops) {
+        s.q = searchForm(s.name);                        // 停名(検索用の形)
+        s.qk = (s.kana || []).map((k) => searchForm(k)); // 読みがな(市営バスの停だけ)
+        byKey.set(s.key, s);
+      }
+      stopSearchCache = { stops: data.stops, byKey };
+    } else {
+      stopSearchCache = null;
+    }
+  }
+  return stopSearchCache;
+}
+
+// 画面の上の名前から、バス停の一覧の1件を引く(一覧を読み終えていないときは null)
+function stopEntryOf(did) {
+  if (!isStopId(did) || !stopSearchCache) return null;
+  return stopSearchCache.byKey.get(stopKeyOf(did)) || null;
+}
+// 計算に渡す出発点。名前は帰りの便の「(◯◯バス停まで あるいて約◯分)」に出る
+function stopPointOf(did) {
+  const s = stopEntryOf(did);
+  return s ? { lat: s.lat, lon: s.lon, name: `${s.name}バス停` } : null;
+}
+// バス停から しらべているときの、その停の名前(地区・わが家・いまいる場所なら null)
+function ownStopName() {
+  const s = stopEntryOf(state.did);
+  return s ? s.name : null;
+}
+// 画面の上での「◯◯バス停」= 地区のかわり
+function stopDistrict(did) {
+  const s = stopEntryOf(did);
+  if (!s) return null;
+  const pid = stopParent.get(did);
+  const real = pid ? findRealDistrict(pid) : null;
+  // 市の相談窓口は、バス停のある市(2市の外の停は、近い区画の市)で出す
+  const city = s.city === "山形市" || s.city === "上山市" ? s.city : (real ? real.municipality : "山形市");
+  return { id: did, name: `${s.name}バス停`, kana: "", isHome: true, isStop: true,
+           municipality: city, lat: s.lat, lon: s.lon, parent: real ? (real.parent || real) : null };
+}
+
+// 入力された名前の一部から、候補のバス停を選ぶ。漢字の名前の一部・読みがな(ひらがな/カタカナ)で一致。
+// 並びは「名前がぴったり → 名前の始まりが一致 → 途中が一致」、同じなら平日の便が多い順
+function searchStops(query, limit = 10) {
+  const q = searchForm(query);
+  if (!q || !stopSearchCache) return { hits: [], more: 0 };
+  const scored = [];
+  for (const s of stopSearchCache.stops) {
+    const forms = [s.q, ...s.qk];
+    let rank = 9;
+    for (const f of forms) {
+      if (f === q) rank = Math.min(rank, 0);
+      else if (f.startsWith(q)) rank = Math.min(rank, 1);
+      else if (f.includes(q)) rank = Math.min(rank, 2);
+    }
+    if (rank < 9) scored.push({ s, rank });
+  }
+  scored.sort((a, b) => a.rank - b.rank || b.s.weekday - a.s.weekday ||
+    (a.s.key < b.s.key ? -1 : a.s.key > b.s.key ? 1 : 0));
+  return { hits: scored.slice(0, limit).map((x) => x.s), more: Math.max(0, scored.length - limit) };
+}
+
+// 計算の出発点(わが家・いまいる場所・バス停)。地区なら null
 function calcPointOf(did) {
   if (did === HOME_ID) { const h = loadHome(); return h ? homePoint(h) : null; }
   if (did === HERE_ID) { const h = loadHere(); return h ? herePoint(h) : null; }
+  if (isStopId(did)) return stopPointOf(did);
   return null;
 }
-function isCalcId(did) { return did === HOME_ID || did === HERE_ID; }
+function isCalcId(did) { return did === HOME_ID || did === HERE_ID || isStopId(did); }
+// 「◯◯からの じかんを けいさんしています」の◯◯
+function calcName(did) {
+  if (did === HOME_ID) return HOME_NAME;
+  if (did === HERE_ID) return HERE_NAME;
+  const d = findDistrict(did);
+  return d ? d.name : "";
+}
+// 出発点がわからないときの一言
+function calcMissingWord(did) {
+  if (did === HOME_ID) return "わが家が とうろく されていません";
+  if (did === HERE_ID) return "いまいる場所が わかりません";
+  return "そのバス停が みつかりません";
+}
 
 // いまの位置(精度の足りる測位)を「いまいる場所」として置いて、その行き先の時刻表へ移る
 async function goHere(fix, fid) {
@@ -244,6 +364,7 @@ function accWord(m) {
 function findDistrict(did) {
   if (did === HOME_ID) return homeDistrict();
   if (did === HERE_ID) return hereDistrict();
+  if (isStopId(did)) return stopDistrict(did);
   return findRealDistrict(did);
 }
 
@@ -366,7 +487,7 @@ async function getTimetable(did) {
   // わが家: 全行き先の「行き」を端末で計算する(帰りは画面3で選んだ行き先だけ。getEntry)
   if (isCalcId(did)) {
     const pt = calcPointOf(did);
-    if (!pt) throw new Error(did === HOME_ID ? "わが家が とうろく されていません" : "いまいる場所が わかりません");
+    if (!pt) throw new Error(calcMissingWord(did));
     return homeCall("outbound", [pt, destinations]);
   }
   if (!timetableCache[did]) {
@@ -380,7 +501,7 @@ async function getTimetable(did) {
 async function getEntry(did, fid) {
   if (isCalcId(did)) {
     const pt = calcPointOf(did);
-    if (!pt) throw new Error(did === HOME_ID ? "わが家が とうろく されていません" : "いまいる場所が わかりません");
+    if (!pt) throw new Error(calcMissingWord(did));
     const r = await homeCall("entry", [pt, destinations, fid]);
     return { entry: r.to[fid], pts: r.pts };
   }
@@ -623,6 +744,64 @@ function registerHome() {
   );
 }
 
+// ---------------- いつも乗るバス停から(画面1。2026-10-15) ----------------
+// 入力欄に名前の一部を入れると、候補のバス停を大きなボタンで出す(最大10件)。
+// 一覧のファイルは入力欄にさわったときに初めて読む(画面1をすぐ出すため)
+function setupStopSearch() {
+  const input = document.getElementById("stop-q");
+  if (!input) return;   // 古い index.html(ブラウザに残った分)では何もしない
+  const show = async () => {
+    const box = document.getElementById("stop-results");
+    if (!input.value.trim()) { box.innerHTML = ""; return; }
+    if (stopSearchCache === undefined) box.innerHTML = `<p class="stop-note">バス停を さがしています…</p>`;
+    const data = await getStopSearch();
+    if (!data) {
+      box.innerHTML = `<p class="home-warn">バス停の いちらんを よみこめませんでした。下の 地区から えらんでください</p>`;
+      return;
+    }
+    renderStopResults(input.value);
+  };
+  input.addEventListener("input", show);
+  input.addEventListener("focus", () => { getStopSearch(); });   // 先に読みはじめておく
+  // 「決定」「検索」キーではキーボードを閉じるだけ(候補は押して選んでもらう)
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); input.blur(); } });
+}
+
+function renderStopResults(query) {
+  const box = document.getElementById("stop-results");
+  const { hits, more } = searchStops(query);
+  if (!hits.length) {
+    box.innerHTML = `<p class="stop-note">「${escapeHtml(query.trim())}」の バス停は みつかりませんでした。` +
+      `なまえの 一部だけ(れい: 「えきまえ」「病院」)でも さがせます</p>`;
+    return;
+  }
+  box.innerHTML = "";
+  for (const s of hits) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "stop-cand";
+    // 同じ名前の停が離れた所にあるときは、見分けの一言(市町村・バス会社)を添える
+    const where = s.hint || s.city;
+    const trips = s.weekday > 0 ? `平日 1日${s.weekday}本` : "平日は バスが ありません";
+    b.innerHTML = `<span class="stop-cand-name">${escapeHtml(s.name)}</span>` +
+      `<span class="stop-cand-sub">${escapeHtml(where)}・${escapeHtml(trips)}</span>`;
+    b.addEventListener("click", () => { location.hash = stopIdOf(s.key); });
+    box.appendChild(b);
+  }
+  if (more) {
+    const p = document.createElement("p");
+    p.className = "stop-note";
+    p.textContent = `ほかにも ${more}か所 あります。なまえを もうすこし くわしく いれてください`;
+    box.appendChild(p);
+  }
+}
+
+// バス停の欄に一言を出す(URL のバス停が見つからなかったときなど)
+function stopRowNotice(text) {
+  const box = document.getElementById("stop-results");
+  if (box) box.innerHTML = `<p class="home-warn">${escapeHtml(text)}</p>`;
+}
+
 // 市タブの見た目を state.city に合わせる(画面3から「もどる」で戻ったとき、
 // 表示中だった地区の市に自動で合わせるため。plan_f4_ui.md §3 画面1)
 function syncCityTabs() {
@@ -702,7 +881,7 @@ async function renderScreen2(did) {
   const list = document.getElementById("facility-list");
   const noneBox = document.getElementById("s2-none-box");
   if (noneBox) noneBox.hidden = true;
-  if (isCalcId(did)) list.innerHTML = `<p class="calc-note">${did === HOME_ID ? HOME_NAME : HERE_NAME}からの じかんを けいさんしています…</p>`;
+  if (isCalcId(did)) list.innerHTML = `<p class="calc-note">${escapeHtml(calcName(did))}からの じかんを けいさんしています…</p>`;
   let timetable;
   try {
     timetable = await getTimetable(did);
@@ -723,6 +902,20 @@ async function renderScreen2(did) {
 function kantanOutbound(entry, dt, closedOps) {
   let rows = (entry.outbound && entry.outbound[dt]) || [];
   if (closedOps && closedOps.size) rows = withoutClosed(rows, closedOps);
+  // バス停から しらべているときは、選んだバス停から乗る便を見せる(その日に1本でもあれば)。
+  // エンジンのおすすめの乗り場は「家から速く着ける停」を選ぶので、歩いて4〜7分の別の停
+  // (七日町→済生病院なら本町)になることがある。「いつも乗るバス停」を選んだ人に別の停の
+  // 時刻表を出すと戸惑うので、その停の便を先にする。速い停は ownStopAltNote() が1行で知らせる
+  const own = ownStopName();
+  if (own) {
+    const mine = rowsFromBoard(rows, own);
+    if (mine.length) return mine;
+  }
+  return engineKantanOutbound(entry, dt, rows);
+}
+
+// エンジン(工場と同じ決め方)のおすすめの乗り場から乗る便。rows は運休を外したあとの全部の便
+function engineKantanOutbound(entry, dt, rows) {
   const kb = entry.kantan_boards ? entry.kantan_boards[dt] : null;
   if (!kb) return rows;
   let picked = rowsFromBoard(rows, kb);
@@ -1008,7 +1201,7 @@ async function renderScreen3(did, fid) {
   const seq = ++s3.seq;
   if (isCalcId(did)) {
     document.getElementById("ride-card").innerHTML =
-      `<p class="calc-note">${did === HOME_ID ? HOME_NAME : HERE_NAME}からの 時刻表を けいさんしています…</p>`;
+      `<p class="calc-note">${escapeHtml(calcName(did))}からの 時刻表を けいさんしています…</p>`;
   }
   let got;
   try {
@@ -1157,7 +1350,8 @@ function renderRideCard(now) {
       ` ${dirWord}のバス</div>`;
   }
 
-  card.innerHTML = banner + head + otherDayBoardNote() + freeShuttleNote() + rideStepsHtml(ride, s3.sel.dir);
+  card.innerHTML = banner + head + otherDayBoardNote() + ownStopAltNote() + freeShuttleNote() +
+    rideStepsHtml(ride, s3.sel.dir);
   const bbtn = card.querySelector("#back-today-btn");
   if (bbtn) bbtn.addEventListener("click", () => renderScreen3(s3.district.id, s3.facility.id));
 }
@@ -1212,17 +1406,44 @@ function otherDayBoardNote() {
   if (!kb || s3.boardPick || !s3.sel || s3.sel.dir !== "outbound") return "";
   // 実際に表示している乗り場(運休日でおすすめを戻した日も正しく比べるため)
   const shown = [...new Set(s3Rows("outbound").map((r) => r.board))];
-  const cur = shown.length === 1 ? shown[0] : kb[s3.showType];
+  const cur = shown.length === 1 ? shown[0] : dayBoardOf(s3.entry, s3.showType);
   const byBoard = new Map();   // 停名 → [ダイヤ種別の名前, ...]
   for (const dt of ["weekday", "saturday", "sunday_holiday"]) {
-    if (dt === s3.showType || !kb[dt] || kb[dt] === cur) continue;
-    if (!byBoard.has(kb[dt])) byBoard.set(kb[dt], []);
-    byBoard.get(kb[dt]).push(meta.day_types[dt]);
+    const b = dayBoardOf(s3.entry, dt);
+    if (dt === s3.showType || !b || b === cur) continue;
+    if (!byBoard.has(b)) byBoard.set(b, []);
+    byBoard.get(b).push(meta.day_types[dt]);
   }
   if (!byBoard.size) return "";
   const lines = [...byBoard.entries()].map(([stop, days]) =>
     `${escapeHtml(days.join("・"))}は「${escapeHtml(stop)}」から のります`);
   return `<div class="day-board-note">※${lines.join("。")}</div>`;
+}
+
+// その曜日に かんたんモードが見せる乗り場(バス停から しらべているときは、その停に便があれば その停)
+function dayBoardOf(entry, dt) {
+  const kb = entry && entry.kantan_boards ? entry.kantan_boards[dt] : null;
+  const own = ownStopName();
+  if (own && entry && rowsFromBoard((entry.outbound && entry.outbound[dt]) || [], own).length) return own;
+  return kb;
+}
+
+// バス停から しらべていて、エンジンのおすすめの乗り場(家から速く着ける停)が別の停のとき、
+// その停と歩く分を1行で知らせる(選んだ停の便を見せたうえで、速い乗り方も隠さない)
+function ownStopAltNote() {
+  const own = ownStopName();
+  if (!own || !s3.entry || s3.boardPick || !s3.sel || s3.sel.dir !== "outbound") return "";
+  const shown = [...new Set(s3Rows("outbound").map((r) => r.board))];
+  if (shown.length !== 1 || shown[0] !== own) return "";   // 選んだ停に便が無い日は、すでにおすすめを見せている
+  let rows = (s3.entry.outbound && s3.entry.outbound[s3.showType]) || [];
+  const closed = s3.showType === s3.closedFor ? s3.closedOps : null;
+  if (closed && closed.size) rows = withoutClosed(rows, closed);
+  const alt = engineKantanOutbound(s3.entry, s3.showType, rows);
+  const boards = [...new Set(alt.map((r) => r.board))];
+  if (boards.length !== 1 || boards[0] === own) return "";
+  const walk = alt[0].board_walk_min >= 1 ? `あるいて約${alt[0].board_walk_min}分の ` : "";
+  return `<div class="day-board-note">※${escapeHtml(walk)}「${escapeHtml(boards[0])}」から のると、` +
+    `はやく つくことが おおいです(この日 ${alt.length}本)</div>`;
 }
 
 // 「あしたの始発」の一文。曜日でダイヤも乗り場も変わることがあるので(例: 平日しか
@@ -1575,7 +1796,11 @@ function rideStepsHtml(r, dir) {
   const gpsPicked = Boolean(s3.boardPick) && !(s3.district && s3.district.isHome) &&
     stopDistanceM(r.board, preciseFix, s3.stopsIndex) !== null;
   let walk = "";
-  if (r.board_walk_min >= 1 && !(dir === "outbound" && gpsPicked)) {
+  // バス停から しらべていて、そのバス停(別ののりば)から乗るときも「あるいて」は出さない。
+  // 七日町のように のりばが離れている停では、代表ののりばから約4分と出てしまうが、
+  // いつも乗る人は そののりばへ直接行くので、のりば番号と地図で案内する
+  const ownBoard = dir === "outbound" && ownStopName() === r.board;
+  if (r.board_walk_min >= 1 && !(dir === "outbound" && gpsPicked) && !ownBoard) {
     walk = ` <span class="walk-note">あるいて約${r.board_walk_min}分</span>`;
   }
   const platform = r.platform
@@ -1652,7 +1877,9 @@ function rideStepsHtml(r, dir) {
   // r.alight_place(施設名/地区名)まで歩く分を添えて「どこで降りればよいか」を明示する。
   // alight_walk_min が無い/0の古いデータでは目的地名だけ添える(後方互換)
   let placeNote = "";
-  if (r.alight_place) {
+  // バス停から しらべた帰りで、そのバス停で降りるときは「(◯◯バス停のすぐ近く)」と重ねて言わない
+  const atSameStop = r.alight_place === `${r.alight}バス停` && !(r.alight_walk_min >= 1);
+  if (r.alight_place && !atSameStop) {
     placeNote = r.alight_walk_min >= 1
       ? ` <span class="walk-note">(${escapeHtml(r.alight_place)}まで あるいて約${r.alight_walk_min}分)</span>`
       : ` <span class="walk-note">(${escapeHtml(r.alight_place)}のすぐ近く)</span>`;
@@ -1918,7 +2145,7 @@ function setupSpeakButton() {
         ? stopDistanceM(ride.board, spFix, s3.stopsIndex) : null;
       if (spDist !== null) {
         parts.push(`バス停までは、いまいる場所から、${distanceWord(spDist).replace("約", "およそ")}です。`);
-      } else if (ride.board_walk_min >= 1) {
+      } else if (ride.board_walk_min >= 1 && !(s3.sel.dir === "outbound" && ownStopName() === ride.board)) {
         parts.push(`バス停までは、あるいて約${ride.board_walk_min}分です。`);
       }
       if (ride.transfer) {
@@ -1954,14 +2181,51 @@ function setupSpeakButton() {
 function parseHash() {
   const raw = location.hash.replace(/^#/, "");
   if (!raw) return { did: null, fid: null };
-  const [did, fid] = raw.split("/");
+  const parts = raw.split("/");
+  // バス停から(#stop/<停の名前>/<行き先ID>)。停の名前は % の形で入っている(日本語のまま
+  // 打ち込まれた URL もブラウザが % の形にする)。いったん戻して同じ形に作り直し、
+  // 「もどる」や行き先ボタンが作る URL とそろえる。#stop だけなら画面1のバス停さがしへ
+  if (parts[0] === "stop") {
+    if (!parts[1]) return { did: null, fid: null, stopSearch: true };
+    let key;
+    try { key = decodeURIComponent(parts[1]); } catch (e) { key = parts[1]; }
+    return { did: stopIdOf(key), fid: parts[2] || null };
+  }
+  const [did, fid] = parts;
   return { did: did || null, fid: fid || null };
 }
 
 async function route() {
-  const { did, fid } = parseHash();
+  const { did, fid, stopSearch } = parseHash();
   state.did = did;
   state.fid = fid;
+  // しっかりモードの「バス停から しらべる」(#stop)。画面1のバス停の入力欄へ
+  if (stopSearch) {
+    if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
+    renderScreen1();
+    const input = document.getElementById("stop-q");
+    if (input) { input.scrollIntoView({ block: "center" }); input.focus(); }
+    return;
+  }
+  // バス停から: 一覧を読んで、その停があるか確かめる。電話番号欄のために近い区画の地区も引いておく
+  if (isStopId(did)) {
+    await getStopSearch();
+    if (state.did !== did) return;   // 読んでいるあいだに別の画面へ移った
+    const s = stopEntryOf(did);
+    if (!s) {
+      if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
+      renderScreen1();
+      stopRowNotice(stopSearchCache
+        ? `「${stopKeyOf(did) || ""}」という バス停は みつかりませんでした。なまえを いれて さがしなおしてください`
+        : "バス停の いちらんを よみこめませんでした。下の 地区から えらんでください");
+      return;
+    }
+    if (!stopParent.has(did)) {
+      const near = await nearestDistricts(s.lat, s.lon, 1);
+      stopParent.set(did, near.length ? near[0].d.id : null);
+      if (state.did !== did) return;
+    }
+  }
   // 表示する地区の市を state.city に反映しておく
   // (画面1に戻ったとき、市タブがその地区の市になるように)
   if (did === HOME_ID && !loadHome()) {
@@ -2037,6 +2301,7 @@ async function init() {
   document.getElementById("app").hidden = false;
   wireStaticHandlers();
   setupGeoButton();
+  setupStopSearch();
   window.addEventListener("hashchange", route);
   await route();
 }

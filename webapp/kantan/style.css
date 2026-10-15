@@ -201,6 +201,31 @@ h1 {
 }
 .calc-note { font-size: 22px; text-align: center; color: #444444; padding: 16px 0; }
 
+/* ---------------- 入口の見出し・いつも乗るバス停から(画面1。2026-10-15) ---------------- */
+.entry-title { font-size: 26px; font-weight: bold; text-align: center; margin: 0 0 8px; }
+.entry-note { font-size: 20px; text-align: center; color: #444444; margin: 0 0 12px; }
+.stop-row {
+  margin: 0 0 24px; padding: 12px; border: 3px solid var(--color-border); border-radius: 14px;
+  background: #f7f9fc;
+}
+.stop-label { display: block; font-size: 20px; line-height: 1.5; margin: 0 0 8px; }
+.stop-input {
+  box-sizing: border-box; width: 100%; min-height: var(--tap-size);
+  padding: 8px 12px; font-family: inherit; font-size: 26px;
+  color: var(--color-text); background: #ffffff;
+  border: 3px solid var(--color-border); border-radius: 12px;
+}
+.stop-input:focus-visible { outline: 4px solid var(--color-outbound); outline-offset: 2px; }
+.stop-results { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.stop-cand {
+  width: 100%; min-height: var(--tap-size); padding: 8px 12px;
+  font-family: inherit; text-align: left; color: var(--color-text);
+  background: #ffffff; border: 3px solid var(--color-outbound); border-radius: 14px;
+}
+.stop-cand-name { display: block; font-size: 26px; font-weight: bold; word-break: break-word; }
+.stop-cand-sub { display: block; font-size: 18px; color: #444444; margin-top: 2px; }
+.stop-note { font-size: 19px; color: #444444; margin: 4px 0 0; line-height: 1.5; text-align: left; }
+
 .geo-result { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 22px; text-align: center; }
 .geo-note { font-size: 20px; color: #444444; margin: 4px 0 0; }
 .geo-candidate { background: #fffdf5; }
@@ -373,6 +398,11 @@ h1 {
   background: var(--color-disabled-bg);
   border-color: var(--color-disabled);
 }
+/* 行けない行き先の長い一言(「バスを つかっても あるく時間が かわりません(…)」)は、名前の下に
+   折り返して出す(2026-10-15 発見: 幅390pxで画面の右に はみ出し、文の後ろが切れて見えなかった) */
+.facility-btn.disabled { flex-wrap: wrap; gap: 4px; }
+.facility-btn.disabled .facility-meta { align-items: flex-start; }
+.facility-btn.disabled .facility-time { white-space: normal; text-align: left; }
 
 /* どの行き先へも行けないときの案内(画面2) */
 .s2-none-box { margin-top: 8px; }

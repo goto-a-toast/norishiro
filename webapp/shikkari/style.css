@@ -59,6 +59,9 @@ noscript { display: block; font-size: 24px; font-weight: bold; text-align: cente
 .selector-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .selector { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 220px; }
 .selector-label { font-size: 15px; font-weight: bold; color: #444444; }
+/* かんたんモードの「いつも乗るバス停から」への入口(2026-10-15) */
+.stop-entry-link { font-size: 16px; color: #444444; margin: 0 0 10px; }
+.stop-entry-link a { color: var(--color-outbound); font-weight: bold; }
 .selector select {
   font-family: inherit;
   font-size: 18px;
