@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>バスの時刻表 - かんたんモード</title>
 <!-- ?v= は更新日。app.js/style.css を変えたら数字を上げる(ブラウザに残った古いファイルを使わせないため。docs/runbook_regenerate.md) -->
-<link rel="stylesheet" href="style.css?v=20261009a">
+<link rel="stylesheet" href="style.css?v=20261015a">
 </head>
 <body>
 <noscript>この機能にはJavaScriptが必要です</noscript>
@@ -31,7 +31,19 @@
          使えない環境では JS が欄ごと隠す(下の地区の一覧だけで完結する) -->
     <div id="home-row" class="home-row" aria-live="polite" hidden></div>
 
-    <p class="instruction">① おすまいの地区をえらんでください</p>
+    <!-- いつも乗るバス停から(2026-10-15)。地区の時刻表は地区の代表点から歩ける停だけで作るので、
+         どの地区にも入っていない停(かみのやま温泉駅前・遊学館前など)がある。ふだん使うバス停の名前で
+         えらんでもらい、その停から時刻表を端末で つくる(わが家と同じ計算。URL は #stop/停の名前) -->
+    <section id="stop-row" class="stop-row" aria-labelledby="stop-title">
+      <h2 id="stop-title" class="entry-title">🚏 いつも乗るバス停から</h2>
+      <label for="stop-q" class="stop-label">バス停の なまえを いれてください(ひらがなでも さがせます)</label>
+      <input id="stop-q" class="stop-input" type="search" autocomplete="off" enterkeyhint="done"
+             placeholder="れい: 山形駅前">
+      <div id="stop-results" class="stop-results" aria-live="polite"></div>
+    </section>
+
+    <h2 class="entry-title">📍 地区から えらぶ</h2>
+    <p class="entry-note">おすまいの地区を えらんでください</p>
     <!-- GPSで近い地区の候補を出す(2026-07-07 開発者要望。使えない環境では一覧だけで完結する) -->
     <div class="geo-row">
       <button id="geo-btn" class="geo-btn" type="button">📍 いまいる場所から 地区をさがす</button>
@@ -109,6 +121,6 @@
   </main>
 </div>
 
-<script src="app.js?v=20261012b"></script>
+<script src="app.js?v=20261015b"></script>
 </body>
 </html>

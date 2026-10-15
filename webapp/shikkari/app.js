@@ -565,7 +565,23 @@ function directionSection(dir, label, entry, district, facility) {
         note.className = "board-filter-note no-print";
         note.textContent =
           `※いまいる場所のいちばん近くは「${truly.stop}」(${distanceWord(truly.dist)})ですが、` +
-          `この停から乗る時刻表はありません。この時刻表は地区の代表点から徒歩圏の停で作っています`;
+          `この時刻表は地区の代表点から徒歩圏の停で作っているため、この停の便は入っていません。`;
+        // いまの位置から計算した時刻表へ(かんたんモードの「いまいる場所」。2026-10-15)。
+        // 位置はこのタブの中だけ(sessionStorage)に置き、かんたんモードが読む(同じサイトの中)
+        const fix = geoFixForStops();
+        if (fix) {
+          const a = document.createElement("a");
+          a.href = `../kantan/index.html#here/${state.fid}`;
+          a.textContent = "いまいる場所から計算した時刻表を見る(かんたんモード)";
+          a.addEventListener("click", () => {
+            try {
+              sessionStorage.setItem("norishiro.here.v1",
+                JSON.stringify({ lat: fix.lat, lon: fix.lon, did: null, at: Date.now() }));
+            } catch (e) { /* 保存できない端末では、かんたんモード側が「わからない」と案内する */ }
+          });
+          note.appendChild(document.createElement("br"));
+          note.appendChild(a);
+        }
         sec.appendChild(note);
       }
     }

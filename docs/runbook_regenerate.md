@@ -119,6 +119,7 @@ python3 gap_map/make_mesh_index.py
 
 python3 gap_map/export_web_data.py
 python3 gap_map/export_network.py     # 端末で計算するための配布ネットワーク(案D。数秒)
+python3 gap_map/make_stop_search.py   # 「いつも乗るバス停から」のバス停の一覧(配布ネットワークから。数秒)
 ```
 
 **時刻表と配布ネットワークは必ず両方作り直す**。片方だけだと、端末で作る時刻表(わが家から)と
