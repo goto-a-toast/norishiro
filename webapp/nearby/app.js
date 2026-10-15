@@ -291,7 +291,10 @@ function setupAddress() {
     }
   };
   $("addr-btn").addEventListener("click", run);
-  $("addr-input").addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+  // 漢字の変換を確定する Enter(変換中)では検索しない(確定前の文字で検索してしまうため)
+  $("addr-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.isComposing && e.keyCode !== 229) run();
+  });
 }
 
 // ---------------- 行き先の一覧 ----------------
