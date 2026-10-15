@@ -89,6 +89,55 @@ function homeDistrict() {
            lat: h.lat, lon: h.lon, parent: real ? (real.parent || real) : null };
 }
 
+// ---- いまいる場所から しらべる(2026-10-15 開発者指摘「県立中央病院にいるのに、県立中央病院
+// バス停の時刻表が無いと案内される」)。地区の時刻表は地区の代表点から歩ける停だけで作るので、
+// 代表点から離れた場所(病院の前など)のバス停は入っていない。そのときは、わが家と同じ端末の計算で
+// いまの位置を出発点にした時刻表を作る。位置はこのタブの中だけ(sessionStorage)に置き、閉じれば消える。
+// わが家(localStorage)とは別にする(出先の位置で わが家を上書きしないため)
+const HERE_ID = "here";
+const HERE_KEY = "norishiro.here.v1";
+const HERE_NAME = "いまいる場所";
+let hereMemory = null;   // sessionStorage が使えない端末の予備(ページを開いている間だけ)
+
+function loadHere() {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(HERE_KEY));
+    if (v && Number.isFinite(v.lat) && Number.isFinite(v.lon)) return v;
+  } catch (e) { /* 使えない端末は下の予備 */ }
+  return hereMemory;
+}
+function saveHere(h) {
+  hereMemory = h;
+  try { sessionStorage.setItem(HERE_KEY, JSON.stringify(h)); } catch (e) { /* 予備で足りる */ }
+}
+function herePoint(h) {
+  return { lat: h.lat, lon: h.lon, name: HERE_NAME };
+}
+// 画面の上での「いまいる場所」。電話番号欄のために、近いメッシュの地区を親に持たせる。
+// isHome=true で、わが家と同じく「近くのバス停」欄などの地区向けの案内を出さない
+function hereDistrict() {
+  const h = loadHere();
+  if (!h) return null;
+  const real = h.did ? findRealDistrict(h.did) : null;
+  return { id: HERE_ID, name: HERE_NAME, kana: "いまいるばしょ", isHome: true, isHere: true,
+           municipality: real ? real.municipality : "山形市",
+           lat: h.lat, lon: h.lon, parent: real ? (real.parent || real) : null };
+}
+// 計算の出発点(わが家 または いまいる場所)。地区なら null
+function calcPointOf(did) {
+  if (did === HOME_ID) { const h = loadHome(); return h ? homePoint(h) : null; }
+  if (did === HERE_ID) { const h = loadHere(); return h ? herePoint(h) : null; }
+  return null;
+}
+function isCalcId(did) { return did === HOME_ID || did === HERE_ID; }
+
+// いまの位置(精度の足りる測位)を「いまいる場所」として置いて、その行き先の時刻表へ移る
+async function goHere(fix, fid) {
+  const near = await nearestDistricts(fix.lat, fix.lon, 1);
+  saveHere({ lat: fix.lat, lon: fix.lon, did: near.length ? near[0].d.id : null, at: Date.now() });
+  location.hash = `${HERE_ID}/${fid}`;
+}
+
 // ---- 端末での計算の窓口。Web Worker(裏の流れ)で計算し、画面を固めない ----
 // Worker が使えない環境(ファイルを直接開いたとき等)では、この画面の中で同じ計算をする
 let homeWorker;            // undefined=まだ / null=使えない / Worker
@@ -194,6 +243,7 @@ function accWord(m) {
 // サブ地区には親の市名と親への参照を持たせて返す)
 function findDistrict(did) {
   if (did === HOME_ID) return homeDistrict();
+  if (did === HERE_ID) return hereDistrict();
   return findRealDistrict(did);
 }
 
@@ -314,10 +364,10 @@ function dateJa(iso) {
 // ===============================================================
 async function getTimetable(did) {
   // わが家: 全行き先の「行き」を端末で計算する(帰りは画面3で選んだ行き先だけ。getEntry)
-  if (did === HOME_ID) {
-    const h = loadHome();
-    if (!h) throw new Error("わが家が とうろく されていません");
-    return homeCall("outbound", [homePoint(h), destinations]);
+  if (isCalcId(did)) {
+    const pt = calcPointOf(did);
+    if (!pt) throw new Error(did === HOME_ID ? "わが家が とうろく されていません" : "いまいる場所が わかりません");
+    return homeCall("outbound", [pt, destinations]);
   }
   if (!timetableCache[did]) {
     timetableCache[did] = await fetch(`../data/timetables/${did}.json`, DATA_FETCH).then((r) => r.json());
@@ -328,10 +378,10 @@ async function getTimetable(did) {
 // 画面3で使う「1つの行き先のエントリ」と、のりばの座標表 pts。
 // わが家なら、選んだ行き先の帰りを足して端末で計算する
 async function getEntry(did, fid) {
-  if (did === HOME_ID) {
-    const h = loadHome();
-    if (!h) throw new Error("わが家が とうろく されていません");
-    const r = await homeCall("entry", [homePoint(h), destinations, fid]);
+  if (isCalcId(did)) {
+    const pt = calcPointOf(did);
+    if (!pt) throw new Error(did === HOME_ID ? "わが家が とうろく されていません" : "いまいる場所が わかりません");
+    const r = await homeCall("entry", [pt, destinations, fid]);
     return { entry: r.to[fid], pts: r.pts };
   }
   const t = await getTimetable(did);
@@ -652,7 +702,7 @@ async function renderScreen2(did) {
   const list = document.getElementById("facility-list");
   const noneBox = document.getElementById("s2-none-box");
   if (noneBox) noneBox.hidden = true;
-  if (did === HOME_ID) list.innerHTML = '<p class="calc-note">わが家からの じかんを けいさんしています…</p>';
+  if (isCalcId(did)) list.innerHTML = `<p class="calc-note">${did === HOME_ID ? HOME_NAME : HERE_NAME}からの じかんを けいさんしています…</p>`;
   let timetable;
   try {
     timetable = await getTimetable(did);
@@ -798,7 +848,7 @@ function renderNoneBox(timetable) {
   });
   if (anyReachable) { box.hidden = true; return; }
   const district = findDistrict(state.did);
-  const who = district && district.isHome ? "わが家" : (district ? district.name : "ここ");
+  const who = district ? district.name : "ここ";
   document.getElementById("s2-none-note").textContent =
     `${who}からは、どの行き先へも 時刻表の バスでは 行けません` +
     `(あるいて行ける所に バス停が ないか、行き先へ行く バスが ありません)。` +
@@ -956,9 +1006,9 @@ async function renderScreen3(did, fid) {
   // 画面遷移の連打対策: await中に新しいrenderScreen3が始まっていたら、
   // 古い方はここで打ち切る(古いsetIntervalが残り続けるのを防ぐ)
   const seq = ++s3.seq;
-  if (did === HOME_ID) {
+  if (isCalcId(did)) {
     document.getElementById("ride-card").innerHTML =
-      '<p class="calc-note">わが家からの 時刻表を けいさんしています…</p>';
+      `<p class="calc-note">${did === HOME_ID ? HOME_NAME : HERE_NAME}からの 時刻表を けいさんしています…</p>`;
   }
   let got;
   try {
@@ -1443,8 +1493,9 @@ function renderNearStopBox() {
   if (uncovered) {
     html +=
       `<p class="near-far">いまいる場所の すぐ近くには「${escapeHtml(truly.stop)}」` +
-      `(${escapeHtml(distanceWord(truly.dist))})が ありますが、そのバス停から のる時刻表は ` +
-      `まだ ありません。下の電話番号で ごそうだんください</p>`;
+      `(${escapeHtml(distanceWord(truly.dist))})が ありますが、この時刻表は 地区の まんなかあたりから ` +
+      `しらべたものなので、そのバス停の便は のっていません</p>` +
+      nearBoxButton("near-here-btn", "📍 いまいる場所から 時刻表を つくる", "near-btn near-use");
   }
   if (isShown) {
     html += `<p class="near-note">いまの時刻表は このバス停の ものです` +
@@ -1470,6 +1521,8 @@ function renderNearStopBox() {
   const reset = box.querySelector("#near-reset-btn");
   if (reset) reset.addEventListener("click", () => applyBoardPick(null));
   box.querySelector("#near-remeasure-btn").addEventListener("click", measureNearStop);
+  const here = box.querySelector("#near-here-btn");
+  if (here) here.addEventListener("click", () => goHere(fix, s3.facility.id));
 }
 
 // GPSで位置を測り直して、いちばん近いバス停を出す。
@@ -1916,6 +1969,21 @@ async function route() {
     renderScreen1();
     renderHomeRow("わが家が とうろく されていません。家に いるときに 「いまいる場所を わが家にする」を おしてください");
     return;
+  }
+  // いまいる場所: タブを閉じたあと等で位置が残っていなければ、画面1に戻して知らせる
+  if (did === HERE_ID && !loadHere()) {
+    if (s3.timer) { clearInterval(s3.timer); s3.timer = null; }
+    renderScreen1();
+    renderHomeRow("いまいる場所が わかりません。もういちど 地区を えらんで、「いまいる場所から 時刻表を つくる」を おしてください");
+    return;
+  }
+  // しっかりモードから来た「いまいる場所」には地区(電話番号欄の判定用)が入っていないので、ここで引く
+  if (did === HERE_ID) {
+    const h = loadHere();
+    if (h && !h.did) {
+      const near = await nearestDistricts(h.lat, h.lon, 1);
+      if (near.length) saveHere({ ...h, did: near[0].d.id });
+    }
   }
   if (did) {
     const d = findDistrict(did);
