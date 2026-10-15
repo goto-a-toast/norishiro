@@ -763,8 +763,14 @@ function setupStopSearch() {
   };
   input.addEventListener("input", show);
   input.addEventListener("focus", () => { getStopSearch(); });   // 先に読みはじめておく
-  // 「決定」「検索」キーではキーボードを閉じるだけ(候補は押して選んでもらう)
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); input.blur(); } });
+  // 「決定」「検索」キーではキーボードを閉じるだけ(候補は押して選んでもらう)。
+  // ただし漢字の変換を確定する Enter(変換中=isComposing。古い Safari は keyCode 229)は何もしない。
+  // 変換の確定と同時に入力欄から外すと、確定した文字が2回入ることがあった(2026-10-16 開発者指摘)
+  input.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || e.isComposing || e.keyCode === 229) return;
+    e.preventDefault();
+    input.blur();
+  });
 }
 
 function renderStopResults(query) {
