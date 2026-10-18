@@ -177,6 +177,7 @@ def build_region_config(answers: dict, found_files: dict) -> dict:
         # 山形の値を引き継いではいけないもの(空でも明示的に書く)
         "core_hospitals": answers.get("core_hospitals", []),
         "town_spots": answers.get("town_spots", []),
+        "entrance_points": {},
         "expected": {},
     }
     cfg.update(found_files)   # 見つかった地図・統計データのパス

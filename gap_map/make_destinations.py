@@ -71,6 +71,8 @@ MANUAL_TOWN_FACILITIES = [
     (t["name"], t["municipality"], t["lat"], t["lon"], t["memo"])
     for t in REGION["town_spots"]
 ]
+# 入口の座標(正式名 → {lat, lon, memo})。destinations.json の座標だけを入口に置き直す
+ENTRANCE_POINTS = REGION.get("entrance_points", {})
 
 # 正式名 → かな(全角括弧付きの法人格などは読み飛ばさず全部読む)。
 # 自信のないものには末尾に「?」を付ける
@@ -272,13 +274,16 @@ def write_outputs(master: pd.DataFrame) -> None:
     DESTINATIONS_JSON.parent.mkdir(parents=True, exist_ok=True)
     records = []
     for r in accepted.itertuples():
+        # 入口の座標が分かっている行き先は、入口に置き直す(region.py の entrance_points。
+        # マスタCSVの lat/lon は人間の編集を引き継ぐキーなので、こちらは書き換えない)
+        ent = ENTRANCE_POINTS.get(r.正式名)
         records.append({
             "id": r.id,
             "name": r.display_name or r.正式名,
             "kana": r.kana,
             "category": cat_code[r.カテゴリ],
-            "lat": r.lat,
-            "lon": r.lon,
+            "lat": ent["lat"] if ent else r.lat,
+            "lon": ent["lon"] if ent else r.lon,
         })
     DESTINATIONS_JSON.write_text(
         json.dumps(records, ensure_ascii=False, indent=1), encoding="utf-8")
