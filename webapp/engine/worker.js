@@ -7,8 +7,8 @@
 // ファイルの場所はこの worker.js から見た相対パス(engine/ の中のファイルと ../data/network/)。
 
 /* global importScripts, HomeCalc */
-importScripts("raptor.js?v=20261012b", "network.js?v=20261012b",
-              "timetable.js?v=20261012b", "home_calc.js?v=20261012b");
+importScripts("raptor.js?v=20261021a", "network.js?v=20261021a",
+              "timetable.js?v=20261021a", "home_calc.js?v=20261021a");
 
 const calc = new HomeCalc("../data/network/");
 

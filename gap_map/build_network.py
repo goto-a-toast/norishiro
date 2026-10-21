@@ -10,6 +10,7 @@ Network(停車パターン・停留所・徒歩乗換表)に前処理するモ�
   3. stop_id・trip_idに「フィード名:」の接頭辞を付ける
      (フィードをまたいでIDが重複しても衝突しないように。§3の最重要ルール)
   4. 停車パターン(stop_idの並びが完全に同じ便のグループ)ごとにtripをまとめる
+     (respect_pickup_drop=True のときは「乗れない/降りられない位置」も同じ便のグループ)
   5. 停留所間の徒歩乗換表(config.TRANSFER_WALK_M以内のペア)を作る
 
 実行方法: プロジェクトのルートで `python3 gap_map/build_network.py`
@@ -77,11 +78,27 @@ def _feed_prefix(feed_dir: Path) -> str:
     return feed_dir.name.removeprefix("gtfs_") + ":"
 
 
-def load_feed(feed_dir: Path, target_date: str):
+def pickup_drop_limits(pickup_types: list, drop_off_types: list) -> tuple:
+    """1便分の pickup_type / drop_off_type の並びから、
+    (乗れない位置の集合, 降りられない位置の集合) を返す(2026-10-21 追加)。
+
+    GTFSでは 1 が「乗れない/降りられない」。2・3(電話予約・運転士に申し出)は
+    乗り降りできるものとして扱う。列が無い・空欄も 0(ふつうに乗り降りできる)と同じ。
+    始発の「降りられない」と終点の「乗れない」は探索に何の影響もないので数えない
+    (ほとんどの便がこの形で入力されている。数えるとパターンが無駄に分かれる)"""
+    last = len(pickup_types) - 1
+    no_pickup = frozenset(i for i, v in enumerate(pickup_types) if v == "1" and i != last)
+    no_drop = frozenset(i for i, v in enumerate(drop_off_types) if v == "1" and i != 0)
+    return no_pickup, no_drop
+
+
+def load_feed(feed_dir: Path, target_date: str, respect_pickup_drop: bool = False):
     """1フィード分のGTFSを読み、
       (接頭辞付きstop_id → 停留所情報 の辞書,
-       停車パターン(stop_idタプル) → その日のTripのリース の辞書)
-    を返す"""
+       停車パターンのキー → その日のTripのリース の辞書)
+    を返す。キーは (stop_idタプル, 乗れない位置, 降りられない位置)。
+    respect_pickup_drop=False(既定)では制限を読まず、位置はいつも空
+    (第2部の空白分析は制限なしで凍結されているため。build_network の説明を参照)"""
     prefix = _feed_prefix(feed_dir)
 
     stops = pd.read_csv(feed_dir / "stops.txt", dtype=str)
@@ -126,7 +143,12 @@ def load_feed(feed_dir: Path, target_date: str):
         departures = [to_minutes(t) for t in g["departure_time"]]
         route_id = trip_route_map.get(trip_id)
         route_name = route_name_map.get(route_id, route_id)
-        pattern_trips[stop_ids].append(Trip(
+        no_pickup = no_drop = frozenset()
+        if respect_pickup_drop:
+            no_pickup, no_drop = pickup_drop_limits(
+                list(g["pickup_type"]) if "pickup_type" in g else [],
+                list(g["drop_off_type"]) if "drop_off_type" in g else [])
+        pattern_trips[(stop_ids, no_pickup, no_drop)].append(Trip(
             trip_id=prefix + trip_id, route_name=route_name,
             arrivals=arrivals, departures=departures,
         ))
@@ -173,27 +195,35 @@ def build_footpaths(stops: dict) -> dict:
     return dict(footpaths)
 
 
-def build_network(feed_dirs: list, target_date: str) -> Network:
+def build_network(feed_dirs: list, target_date: str, respect_pickup_drop: bool = False) -> Network:
     """feed_dirs(GTFSディレクトリのリスト)から、指定日のNetworkを組み立てる。
 
     feed_dirsを絞れば「このフィードだけのミニネットワーク」も作れる
     (M3の検証2で、上山市営バスだけのネットワークを作るのに使う)。
+
+    respect_pickup_drop(2026-10-21 追加): True にすると、GTFSの pickup_type / drop_off_type
+    (「この停では乗れない/降りられない」)を守る。仙台・新潟・空港へ行く高速バスは
+    山形市内の停どうしでは乗り降りできないが、False ではそれを市内バスのように使ってしまう。
+    時刻表Web(第3部。export_web_data.build_web_network)は True で使う。
+    既定の False は第2部の空白分析(git tag gap-map-analysis-v2 で凍結)と同じ答えを出すため
+    (README「既知の限界」に、分析は制限を守っていないことを書いてある)
     """
     all_stops = {}
     all_pattern_trips = defaultdict(list)
 
     for feed_dir in feed_dirs:
-        stops_dict, pattern_trips = load_feed(feed_dir, target_date)
+        stops_dict, pattern_trips = load_feed(feed_dir, target_date, respect_pickup_drop)
         all_stops.update(stops_dict)
-        for stop_ids, trip_list in pattern_trips.items():
-            all_pattern_trips[stop_ids].extend(trip_list)
+        for key, trip_list in pattern_trips.items():
+            all_pattern_trips[key].extend(trip_list)
 
     patterns = []
     stop_routes = defaultdict(list)
-    for stop_ids, trip_list in all_pattern_trips.items():
+    for (stop_ids, no_pickup, no_drop), trip_list in all_pattern_trips.items():
         trip_list.sort(key=lambda t: t.departures[0])   # 便を出発時刻の昇順に整列
         pattern_idx = len(patterns)
-        patterns.append(Pattern(stop_ids=stop_ids, trips=trip_list))
+        patterns.append(Pattern(stop_ids=stop_ids, trips=trip_list,
+                                no_pickup=no_pickup, no_drop=no_drop))
         for pos, stop_id in enumerate(stop_ids):
             stop_routes[stop_id].append((pattern_idx, pos))
 

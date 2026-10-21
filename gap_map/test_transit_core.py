@@ -146,3 +146,69 @@ def test_later_improvement_does_not_corrupt_an_earlier_reconstructed_path():
     assert legs_e[1].to_stop == "C" and legs_e[1].arrive == 18
     assert legs_e[2].depart == 20 and legs_e[2].arrive == 25
     assert result["E"]["arrival"] == 25
+
+
+# ===============================================================
+# 「この停では乗れない/降りられない」(Pattern.no_pickup / no_drop。2026-10-21 追加)
+# ---------------------------------------------------------------
+# 仙台行きの高速バスは、山形市内の停(山交ビル・山形駅前・県庁前…)では乗るだけ、
+# 仙台市内の停では降りるだけ。それを手作りの小さな路線で再現する:
+#   Y1(山交ビル)→ Y2(県庁前)→ S1(広瀬通)→ S2(仙台駅前)
+#   Y2 では降りられない(位置1)、S1 では乗れない(位置2)
+# ===============================================================
+def make_express_network(with_local: bool = False):
+    express = Trip(trip_id="X1", route_name="仙台~山形",
+                   arrivals=[600, 610, 660, 670], departures=[600, 610, 660, 670])
+    patterns = [Pattern(stop_ids=("Y1", "Y2", "S1", "S2"), trips=[express],
+                        no_pickup=frozenset({2}), no_drop=frozenset({1}))]
+    if with_local:
+        # 同じ Y1→Y2 を走る市内バス(高速バスより遅い便)
+        local = Trip(trip_id="L1", route_name="市内線",
+                     arrivals=[605, 625], departures=[605, 625])
+        patterns.append(Pattern(stop_ids=("Y1", "Y2"), trips=[local]))
+    stop_routes = {}
+    for idx, pat in enumerate(patterns):
+        for pos, sid in enumerate(pat.stop_ids):
+            stop_routes.setdefault(sid, []).append((idx, pos))
+    stops = {s: {"name": s, "lat": 0, "lon": 0} for s in ("Y1", "Y2", "S1", "S2")}
+    return Network(patterns=patterns, stop_routes=stop_routes, stops=stops, footpaths={})
+
+
+def test_cannot_alight_where_drop_off_is_not_allowed():
+    """Y1で乗った高速バスは、降りられないY2には着かない(仙台側のS1・S2には着く)"""
+    result = raptor_search(make_express_network(), {"Y1": 600}, max_transfers=0)
+    assert "Y2" not in result
+    assert result["S1"]["arrival"] == 660
+    assert result["S2"]["arrival"] == 670
+
+
+def test_cannot_board_where_pickup_is_not_allowed():
+    """乗れないS1からは、同じバスでS2へ行けない"""
+    result = raptor_search(make_express_network(), {"S1": 600}, max_transfers=0)
+    assert "S2" not in result
+
+
+def test_can_board_at_pickup_only_stop_in_the_middle():
+    """Y2は降りられないが乗るのはできる(山形市内の途中の停から仙台へ行ける)"""
+    result = raptor_search(make_express_network(), {"Y2": 605}, max_transfers=0)
+    assert result["S2"]["arrival"] == 670
+    assert result["S2"]["leg"].from_stop == "Y2"
+
+
+def test_restricted_express_does_not_hide_the_local_bus():
+    """Y1→Y2 は高速バス(Y2に10分着)には乗れないので、市内バス(Y2に25分着)を使う"""
+    result = raptor_search(make_express_network(with_local=True), {"Y1": 600}, max_transfers=0)
+    assert result["Y2"]["arrival"] == 625
+    assert result["Y2"]["leg"].trip_id == "L1"
+
+
+def test_cannot_transfer_at_a_stop_the_bus_does_not_let_you_off():
+    """降りられないY2で乗り換えることもできない(Y2発の便があっても届かない)"""
+    network = make_express_network()
+    onward = Trip(trip_id="Z1", route_name="市内線2", arrivals=[630, 640], departures=[630, 640])
+    network.patterns.append(Pattern(stop_ids=("Y2", "Z"), trips=[onward]))
+    network.stop_routes.setdefault("Y2", []).append((1, 0))
+    network.stop_routes["Z"] = [(1, 1)]
+    network.stops["Z"] = {"name": "Z", "lat": 0, "lon": 0}
+    result = raptor_search(network, {"Y1": 600}, max_transfers=1)
+    assert "Z" not in result

@@ -123,7 +123,8 @@ function boardableDirections(net, sid) {
   const out = new Set();
   for (const [pi, pos] of net.stop_routes[sid] ?? []) {
     const p = net.patterns[pi];
-    if (pos === p.stop_ids.length - 1) continue;   // 終点では乗れない
+    // 終点と、乗れない位置(高速バスの降りるだけの停など)では乗れない
+    if (pos === p.stop_ids.length - 1 || p.no_pickup?.has(pos)) continue;
     const terminal = net.stops[p.stop_ids[p.stop_ids.length - 1]].name;
     for (const t of p.trips) out.add(`${t.route_name}\u0000${terminal}`);
   }
@@ -169,7 +170,7 @@ function boardEvents(net, sid) {
   const ev = [];
   for (const [pi, pos] of net.stop_routes[sid] ?? []) {
     const p = net.patterns[pi];
-    if (pos === p.stop_ids.length - 1) continue;
+    if (pos === p.stop_ids.length - 1 || p.no_pickup?.has(pos)) continue;   // 終点と、乗れない位置
     for (const t of p.trips) ev.push([t.departures[pos], pi, pos, t]);
   }
   return ev.sort((a, b) => a[0] - b[0]);
@@ -182,6 +183,7 @@ function boardOptionsFor(net, pattern, trip, upToPos, nearHome) {
   const opts = [];
   const seen = new Set();
   for (let p = 0; p < upToPos; p++) {
+    if (pattern.no_pickup?.has(p)) continue;   // 乗れない位置は候補にしない
     const sid = pattern.stop_ids[p];
     if (nearHome.has(sid) && !seen.has(sid)) {
       seen.add(sid);
@@ -197,6 +199,7 @@ function alightOptionsFor(net, pattern, trip, fromPos, homeWalks) {
   const opts = [];
   const seen = new Set();
   for (let p = fromPos + 1; p < pattern.stop_ids.length; p++) {
+    if (pattern.no_drop?.has(p)) continue;   // 降りられない位置は候補にしない
     const sid = pattern.stop_ids[p];
     if (homeWalks.has(sid) && !seen.has(sid)) {
       seen.add(sid);
@@ -310,6 +313,7 @@ function scanFromOrigin(net, originStops, targets, nearHome = null, alightHome =
     // (a) 乗換なし: このバスに乗ったまま届く行き先(バス到着+徒歩が最小の停で降りる)
     const directHit = new Map();
     for (let later = pos + 1; later < pattern.stop_ids.length; later++) {
+      if (pattern.no_drop?.has(later)) continue;   // 降りられない位置(高速バスの乗るだけの停など)
       const sid = pattern.stop_ids[later];
       for (const [tid, w] of stopToTargets.get(sid) ?? []) {
         const total = trip.arrivals[later] + rnd(w);
@@ -363,8 +367,10 @@ function scanFromOrigin(net, originStops, targets, nearHome = null, alightHome =
         const found = net.tripLookup.get(leg1.trip_id);
         if (found) {
           const [pat, t] = found;
-          const boardPos = pat.stop_ids.indexOf(leg1.from_stop);
-          const transferPos = pat.stop_ids.indexOf(leg1.to_stop, boardPos + 1);
+          // 循環バスは同じ停を2回通ることがあるので、乗れる位置・降りられる位置を選ぶ(工場と同じ)
+          const boardPos = pat.stop_ids.findIndex((s, i) => s === leg1.from_stop && !pat.no_pickup?.has(i));
+          const transferPos = pat.stop_ids.findIndex(
+            (s, i) => i > boardPos && s === leg1.to_stop && !pat.no_drop?.has(i));
           bOpts = boardOptionsFor(net, pat, t, transferPos, nearHome);
         }
       }

@@ -96,14 +96,18 @@ def load_readings(feed_dirs) -> dict:
 
 def boardable_trips(net: dict) -> list:
     """のりば(添字)ごとに「そこで乗れる便」の集合を作る(終点の停は乗れないので除く)。
+    乗れない位置(pattern_limits。高速バスの降りるだけの停など。2026-10-21)も除く。
     あわせて便ID→運行主体の添字も返す"""
+    no_pickup = {pi: set(np_) for pi, np_, _nd in net.get("pattern_limits", [])}
     trips = [set() for _ in net["stops"]]
     trip_op = {}
-    for stop_ids, ts in net["patterns"]:
+    for pi, (stop_ids, ts) in enumerate(net["patterns"]):
+        limit = no_pickup.get(pi, set())
         for t in ts:
             trip_op[t[T_TRIPID]] = t[T_OP]
-            for sid in stop_ids[:-1]:
-                trips[sid].add(t[T_TRIPID])
+            for pos, sid in enumerate(stop_ids[:-1]):
+                if pos not in limit:
+                    trips[sid].add(t[T_TRIPID])
     return trips, trip_op
 
 

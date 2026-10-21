@@ -25,6 +25,11 @@ function inflateNetwork(data) {
     stops[i] = { name, lat, lon, platform_code: platform, gtfs_stop_id: data.stop_ids?.[i] ?? null };
   }
 
+  // 「この位置では乗れない/降りられない」パターンだけの一覧(export_network.py の pattern_limits)。
+  // [[パターンの添字, [乗れない位置...], [降りられない位置...]], ...]。無い古い配布ファイルでは制限なし
+  const limits = new Map();
+  for (const [pi, noPickup, noDrop] of data.pattern_limits ?? []) limits.set(pi, [noPickup, noDrop]);
+
   const patterns = [];
   const stopRoutes = {};
   data.patterns.forEach((p, patternIdx) => {
@@ -40,7 +45,10 @@ function inflateNetwork(data) {
         arrivals: t[T_ARR].map((a) => a + base),
       };
     });
-    patterns.push({ stop_ids: stopIds, trips });
+    const lim = limits.get(patternIdx);
+    patterns.push({ stop_ids: stopIds, trips,
+                    no_pickup: lim ? new Set(lim[0]) : null,
+                    no_drop: lim ? new Set(lim[1]) : null });
     stopIds.forEach((sid, pos) => {
       (stopRoutes[sid] ??= []).push([patternIdx, pos]);
     });

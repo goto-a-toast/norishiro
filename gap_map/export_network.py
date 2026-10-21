@@ -60,6 +60,13 @@ def serialize(network, headsigns: dict) -> dict:
 
     routes, hs_list = {}, {}
     patterns = []
+    # 「この位置では乗れない/降りられない」パターン(2026-10-21 追加。transit_core.Pattern の
+    # no_pickup / no_drop)。制限のあるパターンは1割未満なので、patterns の並びは変えずに
+    # 別の一覧で配る(patterns を [停の並び, 便] の2つ組で読む既存のスクリプトを壊さないため)
+    pattern_limits = []
+    for pi, pat in enumerate(network.patterns):
+        if pat.no_pickup or pat.no_drop:
+            pattern_limits.append([pi, sorted(pat.no_pickup), sorted(pat.no_drop)])
     for pat in network.patterns:
         trips = []
         for t in pat.trips:
@@ -105,6 +112,7 @@ def serialize(network, headsigns: dict) -> dict:
         "headsigns": list(hs_list.keys()),
         "operators": ew.build_operators(),
         "patterns": patterns,
+        "pattern_limits": pattern_limits,   # [[パターンの添字, [乗れない位置], [降りられない位置]], ...]
         "footpaths": footpaths,
     }
 
