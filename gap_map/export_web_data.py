@@ -307,8 +307,8 @@ def board_events(network: transit_core.Network, stop_id: str) -> list:
     events = []
     for pattern_idx, pos in network.stop_routes.get(stop_id, []):
         pattern = network.patterns[pattern_idx]
-        if pos == len(pattern.stop_ids) - 1:
-            continue  # 終点では乗れない
+        if pos == len(pattern.stop_ids) - 1 or pos in pattern.no_pickup:
+            continue  # 終点と、乗れない位置(高速バスの降りるだけの停など)では乗れない
         for trip in pattern.trips:
             events.append((trip.departures[pos], pattern_idx, pos, trip))
     events.sort(key=lambda e: e[0])
@@ -327,8 +327,8 @@ def boardable_directions(network: transit_core.Network, stop_id: str) -> set:
     directions = set()
     for pattern_idx, pos in network.stop_routes.get(stop_id, []):
         pattern = network.patterns[pattern_idx]
-        if pos == len(pattern.stop_ids) - 1:
-            continue  # 終点では乗れない
+        if pos == len(pattern.stop_ids) - 1 or pos in pattern.no_pickup:
+            continue  # 終点と、乗れない位置では乗れない
         terminal = network.stops[pattern.stop_ids[-1]]["name"]
         directions.update((trip.route_name, terminal) for trip in pattern.trips)
     return directions
@@ -371,8 +371,13 @@ def normalize_stop_names(network: transit_core.Network) -> transit_core.Network:
 def build_web_network(feed_dirs, ref_date) -> transit_core.Network:
     """Web用のネットワーク = build_network(凍結)+ 停留所名の正規化。
     工場・配布ネットワーク(export_network.py)・地点の照合(export_point_timetables.py)は
-    必ずこれを使う(片方だけ正規化すると、端末と工場の停名がずれて照合で落ちる)"""
-    return normalize_stop_names(build_network(feed_dirs, ref_date))
+    必ずこれを使う(片方だけ正規化すると、端末と工場の停名がずれて照合で落ちる)。
+
+    2026-10-21: 「この停では乗れない/降りられない」(GTFSの pickup_type / drop_off_type)を
+    守るネットワークにした(respect_pickup_drop=True)。それまでは仙台行きの高速バスに
+    「山交ビル → 県庁前」のように山形市内だけ乗る案内が出ていた(時刻表の行の約4%)。
+    第2部の空白分析は制限なしで凍結されているので、そちらは build_network の既定のまま"""
+    return normalize_stop_names(build_network(feed_dirs, ref_date, respect_pickup_drop=True))
 
 
 _RAW_HEADSIGNS = None   # trips.txtのtrip_headsign(接頭辞付きtrip_id→行き先)。初回だけ読む
@@ -602,11 +607,14 @@ def board_options_for(network: transit_core.Network, pattern, trip,
     同じバスなのでどの停で乗ってもよい。徒歩が近い順に並べ、近い MAX_BOARD_OPTIONS 件に絞る。
     near_home: {stop_id: 徒歩分}(その地区の徒歩圏内の全停。build_originsの候補ではなく
       「全部」。同じ路線が続けて通る近隣停を漏らさず拾うため)。
-    up_to_pos: 降車(または乗換)の位置。これより前の停だけが乗車候補になる"""
+    up_to_pos: 降車(または乗換)の位置。これより前の停だけが乗車候補になる
+      (乗れない位置=pattern.no_pickup の停は候補にしない)"""
     opts = []
     seen = set()
     for p in range(up_to_pos):
         sid = pattern.stop_ids[p]
+        if p in pattern.no_pickup:
+            continue
         if sid in near_home and sid not in seen:
             seen.add(sid)
             opts.append({
@@ -628,11 +636,14 @@ def alight_options_for(network: transit_core.Network, pattern, trip,
     「帰りも近いバス停の表示・選択を」)。同じバスなのでどの停で降りてもよい。
     徒歩が近い順に並べ、近い MAX_BOARD_OPTIONS 件に絞る。
     home_walks: {stop_id: 徒歩分}(その地区の徒歩圏内の降車候補停。targets[tid]由来)。
-    from_pos: 乗車位置。これより後の停だけが降車候補になる"""
+    from_pos: 乗車位置。これより後の停だけが降車候補になる
+      (降りられない位置=pattern.no_drop の停は候補にしない)"""
     opts = []
     seen = set()
     for p in range(from_pos + 1, len(pattern.stop_ids)):
         sid = pattern.stop_ids[p]
+        if p in pattern.no_drop:
+            continue
         if sid in home_walks and sid not in seen:
             seen.add(sid)
             opts.append({
@@ -711,6 +722,8 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
         # そのため「バス到着+徒歩」の合計が一番小さい停留所を選ぶ
         direct_hit = {}   # 行き先id -> (到着時刻, 降車停留所, 降車位置)
         for later_pos in range(pos + 1, len(pattern.stop_ids)):
+            if later_pos in pattern.no_drop:
+                continue  # 降りられない位置(高速バスの乗るだけの停など)
             sid = pattern.stop_ids[later_pos]
             for tid, walk_min, _name in stop_to_targets.get(sid, []):
                 total = trip.arrivals[later_pos] + round(walk_min)
@@ -782,8 +795,12 @@ def scan_from_origin(network: transit_core.Network, origin_stops: list,
                 leg1 = ride_legs[0]
                 pat, t = trip_lookup.get(leg1.trip_id, (None, None))
                 if pat is not None:
-                    board_pos = pat.stop_ids.index(leg1.from_stop)
-                    transfer_pos = pat.stop_ids.index(leg1.to_stop, board_pos + 1)
+                    # 循環バスは同じ停を2回通ることがあるので、乗れる位置・降りられる位置を選ぶ
+                    board_pos = next(i for i, sid in enumerate(pat.stop_ids)
+                                     if sid == leg1.from_stop and i not in pat.no_pickup)
+                    transfer_pos = next(i for i, sid in enumerate(pat.stop_ids)
+                                        if i > board_pos and sid == leg1.to_stop
+                                        and i not in pat.no_drop)
                     b_opts = board_options_for(network, pat, t, transfer_pos, near_home)
             transfer_rows[tid].append(
                 (depart_min, make_itinerary(path, arrival, network, board_name, alight_place,

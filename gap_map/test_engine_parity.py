@@ -88,6 +88,16 @@ def make_random_network(seed: int):
         footpaths.setdefault(a, []).append((b, w))
         footpaths.setdefault(b, []).append((a, w))
 
+    # 「この位置では乗れない/降りられない」(2026-10-21 追加)。高速バスのように、
+    # 一部のパターンにだけ制限を付ける。上の乱数とは別の乱数で決めるので、
+    # 停の並び・時刻・徒歩は制限を足す前と同じネットワークのまま
+    rnd_limit = random.Random(seed * 31337)
+    for pat in patterns:
+        if rnd_limit.random() < 0.4:
+            positions = range(len(pat.stop_ids))
+            pat.no_pickup = frozenset(i for i in positions if rnd_limit.random() < 0.35)
+            pat.no_drop = frozenset(i for i in positions if rnd_limit.random() < 0.35)
+
     return tc.Network(patterns=patterns, stop_routes=stop_routes, stops=stops,
                       footpaths=footpaths)
 
@@ -97,7 +107,9 @@ def network_to_json(net):
         "patterns": [{"stop_ids": list(p.stop_ids),
                       "trips": [{"trip_id": t.trip_id, "route_name": t.route_name,
                                  "arrivals": t.arrivals, "departures": t.departures}
-                                for t in p.trips]} for p in net.patterns],
+                                for t in p.trips],
+                      "no_pickup": sorted(p.no_pickup), "no_drop": sorted(p.no_drop)}
+                     for p in net.patterns],
         "stop_routes": {k: [list(v) for v in vs] for k, vs in net.stop_routes.items()},
         "stops": net.stops,
         "footpaths": {k: [list(v) for v in vs] for k, vs in (net.footpaths or {}).items()},
@@ -115,6 +127,11 @@ const { raptorSearch, reconstructPath } = require(process.argv[2]);
 const cases = JSON.parse(require("fs").readFileSync(process.argv[3], "utf8"));
 const out = [];
 for (const c of cases) {
+  // 乗れない/降りられない位置は、network.js と同じく Set にして渡す
+  for (const p of c.network.patterns) {
+    p.no_pickup = new Set(p.no_pickup);
+    p.no_drop = new Set(p.no_drop);
+  }
   const res = raptorSearch(c.network, c.initial_stops, c.max_transfers, c.min_transfer_min);
   const arrivals = {};
   for (const [sid, v] of res) arrivals[sid] = v.arrival;
@@ -162,6 +179,28 @@ def build_cases(seeds):
         cases.append({"network": network_to_json(net), "initial_stops": initial,
                       "max_transfers": max_transfers, "min_transfer_min": min_transfer})
     return cases, expected
+
+
+def test_random_limits_change_some_answers():
+    """乱数の「乗れない/降りられない位置」が、ちゃんと答えを変える場面を含んでいること
+    (制限がどれも答えに影響しない乱数だと、下の照合が素通りしてしまうため)"""
+    changed = 0
+    for seed in range(1, 201):
+        net = make_random_network(seed)
+        if not any(p.no_pickup or p.no_drop for p in net.patterns):
+            continue
+        rnd = random.Random(seed * 7919)
+        stop_ids = sorted(net.stops)
+        initial = {s: rnd.randint(280, 520)
+                   for s in rnd.sample(stop_ids, rnd.randint(1, min(3, len(stop_ids))))}
+        with_limits = tc.raptor_search(net, dict(initial), max_transfers=2)
+        for p in net.patterns:
+            p.no_pickup = p.no_drop = frozenset()
+        without = tc.raptor_search(net, dict(initial), max_transfers=2)
+        if {s: v["arrival"] for s, v in with_limits.items()} != \
+                {s: v["arrival"] for s, v in without.items()}:
+            changed += 1
+    assert changed >= 30, f"制限で答えが変わったのは{changed}通りだけ"
 
 
 def test_js_matches_python_on_many_random_networks():

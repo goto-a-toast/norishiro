@@ -15,7 +15,8 @@ RAPTORとは(概要):
 このファイルが扱うデータの形:
   Trip    : 1本の便。停車パターン内での各停留所の到着・出発時刻(分)を持つ
   Pattern : 停車パターン1つ分。停まる停留所の並び(stop_ids)と、そこを通る
-            便(Trip)の一覧(出発時刻の昇順に並んでいること)
+            便(Trip)の一覧(出発時刻の昇順に並んでいること)。
+            「この位置では乗れない/降りられない」(no_pickup/no_drop)も持てる
   Network : Pattern一覧、「どの停留所がどのパターンの何番目か」の索引、
             停留所の情報(名前・緯度経度)、徒歩で乗り換えられる停留所のペア(footpaths)
   Leg     : 経路の1区間(乗車 or 徒歩)の記録。「直前の区間(prev)」を作成した
@@ -42,9 +43,18 @@ class Trip:
 @dataclass
 class Pattern:
     """停車パターン1つ分(停まる停留所の並びが完全に同じ便のグループ)。
-    trips は departures[0](先頭停留所の出発時刻)の昇順に並んでいる必要がある"""
+    trips は departures[0](先頭停留所の出発時刻)の昇順に並んでいる必要がある。
+
+    no_pickup / no_drop(2026-10-21 追加): 「この位置では乗れない」「この位置では降りられない」
+    停留所の位置(stop_idsの添字)の集合。GTFSの pickup_type / drop_off_type が1の停。
+    例: 仙台行きの高速バスは山形市内の停では乗るだけ(降りられない)、仙台市内の停では
+    降りるだけ(乗れない)。同じパターンの便はすべて同じ制限を持つ(build_network.py が
+    制限ごとにパターンを分ける)ので、「いちばん早い便だけを追えばよい」というRAPTORの
+    前提はそのまま成り立つ。既定は空=制限なし(第2部の空白分析は制限なしで凍結されている)"""
     stop_ids: tuple       # tuple[str, ...]
     trips: list           # list[Trip]
+    no_pickup: frozenset = frozenset()   # frozenset[int 位置]
+    no_drop: frozenset = frozenset()     # frozenset[int 位置]
 
 
 @dataclass
@@ -170,6 +180,8 @@ def _scan_pattern(pattern: Pattern, boarding_times: dict, boarding_leg: dict,
       その停留所に到着可能な時刻(boarding_times)が分かっていれば、
       そこから乗れる一番早い便を探して「乗車」する。すでに何かの便に
       乗っている(乗車中の)場合は、後続の停留所への到着時刻を記録していく。
+      乗れない位置(no_pickup)では乗車せず、降りられない位置(no_drop)では
+      到着を記録しない(バスはそのまま乗り続けて先へ進む)。
       乗車した瞬間の「直前区間」(boarding_leg)をLegにそのまま埋め込むので、
       あとから他の停留所の状態が変わっても、この区間の由来は変化しない。
     """
@@ -179,8 +191,8 @@ def _scan_pattern(pattern: Pattern, boarding_times: dict, boarding_leg: dict,
     board_prev_leg = None
 
     for pos, stop_id in enumerate(pattern.stop_ids):
-        # (1) この停留所でもっと早い便に乗れないか確認する
-        if stop_id in boarding_times:
+        # (1) この停留所でもっと早い便に乗れないか確認する(乗れない位置は飛ばす)
+        if stop_id in boarding_times and pos not in pattern.no_pickup:
             earliest_time = boarding_times[stop_id]
             candidate = _earliest_boardable_trip(pattern, pos, earliest_time)
             if candidate is not None and (
@@ -191,8 +203,9 @@ def _scan_pattern(pattern: Pattern, boarding_times: dict, boarding_leg: dict,
                 board_stop_id = stop_id
                 board_prev_leg = boarding_leg[stop_id]
 
-        # (2) 今乗車中の便があれば、この停留所への到着を記録する(乗った本人の停留所は除く)
-        if current_trip is not None and pos > board_pos:
+        # (2) 今乗車中の便があれば、この停留所への到着を記録する(乗った本人の停留所と、
+        #     降りられない位置は除く)
+        if current_trip is not None and pos > board_pos and pos not in pattern.no_drop:
             arrival = current_trip.arrivals[pos]
             prev_update = round_updates.get(stop_id)
             if prev_update is None or arrival < prev_update[0]:

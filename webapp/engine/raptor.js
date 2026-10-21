@@ -61,6 +61,8 @@ function earliestBoardableTrip(pattern, pos, earliestTime) {
 
 // 1つの停車パターンを停留所の並び順に走査する(RAPTORのコア処理)。
 // roundUpdates は Map(stop_id → [到着時刻, leg])
+// pattern.no_pickup / no_drop(Set。無ければ制限なし)は「この位置では乗れない/降りられない」
+// (transit_core.Pattern と同じ。仙台行きの高速バスの山形市内の停は乗るだけ、など)
 function scanPattern(pattern, boardingTimes, boardingLeg, roundUpdates) {
   let currentTrip = null;
   let boardPos = null;
@@ -70,8 +72,8 @@ function scanPattern(pattern, boardingTimes, boardingLeg, roundUpdates) {
   for (let pos = 0; pos < pattern.stop_ids.length; pos++) {
     const stopId = pattern.stop_ids[pos];
 
-    // (1) この停留所で、もっと早い便に乗れないか確認する
-    if (boardingTimes.has(stopId)) {
+    // (1) この停留所で、もっと早い便に乗れないか確認する(乗れない位置は飛ばす)
+    if (boardingTimes.has(stopId) && !pattern.no_pickup?.has(pos)) {
       const earliestTime = boardingTimes.get(stopId);
       const candidate = earliestBoardableTrip(pattern, pos, earliestTime);
       if (candidate !== null &&
@@ -83,8 +85,8 @@ function scanPattern(pattern, boardingTimes, boardingLeg, roundUpdates) {
       }
     }
 
-    // (2) 乗車中なら、この停留所への到着を記録する(乗った本人の停留所は除く)
-    if (currentTrip !== null && pos > boardPos) {
+    // (2) 乗車中なら、この停留所への到着を記録する(乗った本人の停留所と、降りられない位置は除く)
+    if (currentTrip !== null && pos > boardPos && !pattern.no_drop?.has(pos)) {
       const arrival = currentTrip.arrivals[pos];
       const prev = roundUpdates.get(stopId);
       if (prev === undefined || arrival < prev[0]) {
