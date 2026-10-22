@@ -825,3 +825,32 @@ def test_normalize_stop_names_makes_fullwidth_alnum_halfwidth():
     })
     normalize_stop_names(net)
     assert [net.stops[k]["name"] for k in "abcd"] == ["NHK前", "本町・Q1", "四ツ谷(往路)", "七日町"]
+
+
+# ===============================================================
+# forbid_far_alighting(2026-10-21): 対象地域から遠い停では降りない
+# ===============================================================
+def test_forbid_far_alighting_blocks_round_trip_via_far_stop():
+    """仙台(遠い停)まで行き、乗り換えて戻る経路を選べなくする。地域の中の停は今までどおり"""
+    from export_web_data import forbid_far_alighting
+    from transit_core import raptor_search
+    # Y=山形(地区の点のすぐそば)、K=上山(地区の点のすぐそば)、S=仙台(50km東)
+    stops = {"Y": {"name": "Y", "lat": 38.25, "lon": 140.33},
+             "K": {"name": "K", "lat": 38.15, "lon": 140.27},
+             "S": {"name": "S", "lat": 38.26, "lon": 140.88}}
+    to_sendai = Pattern(stop_ids=("Y", "S"),
+                        trips=[Trip(trip_id="YS", route_name="仙台行き", arrivals=[400, 460], departures=[400, 460])])
+    to_kami = Pattern(stop_ids=("S", "K"),
+                      trips=[Trip(trip_id="SK", route_name="上山行き", arrivals=[480, 560], departures=[480, 560])])
+    patterns = [to_sendai, to_kami]
+    stop_routes = {"Y": [(0, 0)], "S": [(0, 1), (1, 0)], "K": [(1, 1)]}
+    net = Network(patterns=patterns, stop_routes=stop_routes, stops=stops, footpaths={})
+
+    before = raptor_search(net, {"Y": 390}, max_transfers=1)
+    assert before["K"]["arrival"] == 560          # 直す前は仙台で乗り換えて上山に着けてしまう
+
+    forbid_far_alighting(net, [(38.25, 140.33), (38.15, 140.27)], far_m=20000)
+    assert to_sendai.no_drop == {1}               # 仙台では降りられない
+    assert not to_kami.no_drop                    # 上山(地域の中)では今までどおり降りられる
+    after = raptor_search(net, {"Y": 390}, max_transfers=1)
+    assert "K" not in after and "S" not in after

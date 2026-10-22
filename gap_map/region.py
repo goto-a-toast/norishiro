@@ -51,6 +51,11 @@ YAMAGATA_DEFAULTS = {
     "restricted_feeds": [
         {"dir": "feeds_manual/済生病院シャトル", "facilities": ["f20"]},
     ],
+    # 時刻表Webで「降りない」停の距離(メートル)。地区の代表点と行き先のどれからもこれより遠い停では
+    # 降りない(乗り換えにも使わない)。高速バスで仙台まで行って戻ってくる、規則上は乗れるが
+    # 現実的ではない便を出さないため(2026-10-21 開発者決定)。山形では 5〜30km のどれでも
+    # 落ちる便は同じ(宮城県の3停を使う47行だけ)で、余裕をみて 20km にした
+    "far_stop_m": 20000,
     # フィード取得先一覧CSV(download_gtfs.py が読む。gtfs-data.jp のURL一覧)
     "gtfs_feeds_csv": "yamagata_gtfs_feeds.csv",
 

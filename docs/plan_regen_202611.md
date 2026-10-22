@@ -29,6 +29,7 @@
 今の GTFS のまま地区ファイル・配布ネットワーク・stop_search.json を作り直した(便 131,749 → 128,690・違反 0・
 照合 全2,356組一致)。**11月の作り直しでは何もしなくてよい**(工場が制限を読む)。stop_search.json も
 `python3 gap_map/make_stop_search.py` で作り直すこと(「その停で乗れる便の数」が変わる)。
+同日、「仙台まで行って戻る」47行も出さないことにした(20km より遠い停では降りない。region.py の `far_stop_m`)。便 128,740。
 
 > **⚠ 第2部の空白分析は再計算しない。** `compute_access.py`・`output/access_mesh.csv`・確定数値
 > (第2版 = git tag `gap-map-analysis-v2`。11,455人・45.5%・314人)には触らない。この計画で作り直すのは

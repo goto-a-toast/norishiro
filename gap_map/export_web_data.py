@@ -137,6 +137,9 @@ DESTINATIONS_JSON = WEBAPP_DATA_DIR / "destinations.json"
 # 土曜20260613・日祝20260614=例外の影響がない直近の週末)
 from region import REGION, is_default_region, region_expected
 
+# 時刻表Webで降りない遠い停の距離(region.py の far_stop_m。forbid_far_alighting)
+FAR_STOP_M = REGION.get("far_stop_m", 20000)
+
 REFERENCE_DATES = dict(REGION["reference_dates"])
 DAY_TYPE_LABELS = {"weekday": "平日", "saturday": "土曜", "sunday_holiday": "日曜・祝日"}
 
@@ -376,8 +379,46 @@ def build_web_network(feed_dirs, ref_date) -> transit_core.Network:
     2026-10-21: 「この停では乗れない/降りられない」(GTFSの pickup_type / drop_off_type)を
     守るネットワークにした(respect_pickup_drop=True)。それまでは仙台行きの高速バスに
     「山交ビル → 県庁前」のように山形市内だけ乗る案内が出ていた(時刻表の行の約4%)。
-    第2部の空白分析は制限なしで凍結されているので、そちらは build_network の既定のまま"""
-    return normalize_stop_names(build_network(feed_dirs, ref_date, respect_pickup_drop=True))
+    第2部の空白分析は制限なしで凍結されているので、そちらは build_network の既定のまま。
+
+    あわせて、対象地域から遠い停では降りないことにする(forbid_far_alighting。同日)"""
+    network = normalize_stop_names(build_network(feed_dirs, ref_date, respect_pickup_drop=True))
+    return forbid_far_alighting(network, area_points())
+
+
+_AREA_POINTS = None   # 地区の代表点(サブ地区も)と行き先の座標。初回だけ読む
+
+
+def area_points() -> list:
+    """対象地域の目印になる点 [(緯度, 経度), ...]。地区の代表点(サブ地区も)と行き先。
+    「遠い停」の判定(forbid_far_alighting)に使う"""
+    global _AREA_POINTS
+    if _AREA_POINTS is None:
+        districts = flatten_districts(json.loads(DISTRICTS_JSON.read_text(encoding="utf-8")))
+        destinations = json.loads(DESTINATIONS_JSON.read_text(encoding="utf-8"))
+        _AREA_POINTS = [(d["lat"], d["lon"]) for d in list(districts) + list(destinations)]
+    return _AREA_POINTS
+
+
+def forbid_far_alighting(network: transit_core.Network, points: list,
+                         far_m: float = FAR_STOP_M) -> transit_core.Network:
+    """対象地域の目印(points)のどれからも far_m より遠い停を、すべてのパターンで
+    「降りられない位置」(no_drop)にする(2026-10-21 開発者決定「規則上は乗れるものの
+    現実的ではないものは選べないものとする」)。
+
+    高速バスは仙台側の停で降りられるので、山形市内から上山へ「仙台行きで宮城県庁市役所前まで行き、
+    上山行きに乗り換えて戻る」(4時間)のような便が、規則上は乗れる経路として出ていた。
+    家も行き先も対象地域の中にあるので、遠い停で降りるのは乗り換えて戻るときだけ。
+    そこで遠い停では降りないことにする(通り過ぎるのはかまわない)。
+    パターン単位の制限なので、同じパターンの便はすべて同じ制限=RAPTORの前提はそのまま。
+    配布ネットワーク(export_network.py の pattern_limits)にも入るので、端末の計算も同じになる"""
+    far = {sid for sid, s in network.stops.items()
+           if all(haversine_m(s["lat"], s["lon"], lat, lon) > far_m for lat, lon in points)}
+    for pattern in network.patterns:
+        positions = {i for i, sid in enumerate(pattern.stop_ids) if i > 0 and sid in far}
+        if positions:
+            pattern.no_drop = frozenset(pattern.no_drop | positions)
+    return network
 
 
 _RAW_HEADSIGNS = None   # trips.txtのtrip_headsign(接頭辞付きtrip_id→行き先)。初回だけ読む
