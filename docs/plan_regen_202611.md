@@ -20,7 +20,7 @@ F・G は未実施(今回は見送り)。第1部 PDF(§3 の 11)は Mac で配�
 | stop_search.json | 626停 → 571停 |
 
 検算: `python3 -m pytest -q gap_map` 138件合格(test_region の代表日・期限を更新)/
-`node gap_map/verify_timetable_parity.js` 全2,356組・便123,662件一致/817地点照合 → 下の handover に記録/
+`node gap_map/verify_timetable_parity.js` 全2,356組・便123,662件一致/817地点(4バッチ)= 817地点×38 = 31,046組・便1,274,019件すべて一致/
 ヘッドレス Chrome で かんたん(d23→f01 で「きょうは『日曜・祝日』ダイヤです」・d38c は「バスで行けません」+予約制乗合タクシー)・しっかり・玄関を確認(JSエラーなし)。
 meta.json: 判定表 2026-11-01〜2027-03-17 の137日。11/23・1/1・1/11・2/11・2/23 = 日祝。closed_dates = シャトル 12/29〜31。
 
